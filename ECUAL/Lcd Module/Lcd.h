@@ -15,7 +15,7 @@
 //#include "../../Microcontroller/Utility Module/Common_Macros.h"
 #include "../../MCAL/Dio Module/Dio.h"
 #include "Lcd_Cfg.h"
-//#include "../../MCAL/Delay Module/Delay.h"
+#include "../../Microcontroller/Delay Module/Delay.h"
 #include "../../Libraries/Utility Module/Utility.h"
 // #include "../../Microcontroller/Utility Module/Utility.h"
 

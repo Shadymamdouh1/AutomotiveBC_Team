@@ -35,6 +35,8 @@ enuLcd_Status_t Lcd_init(void)
 	Dio_init(strDio_pins);
 	#if (AsyncMode == TRUE)
 		GptInit();
+	#else
+		Delay_ms(20);
 	#endif	
 	
 	//Activate 4 bit mode
@@ -63,7 +65,7 @@ enuLcd_Status_t Lcd_init(void)
 enuLcd_Status_t Lcd_toggleEnable(void)
 {
 	Dio_writePin(EN_DIO_ID, PIN_HIGH);		//set enable ON	
-	//Delay_ms(1);		
+	Delay_ms(1);		
 	Dio_writePin(EN_DIO_ID, PIN_LOW);		//set enable OFF
 	
 	return LCD_STATUS_ERROR_OK;
@@ -92,7 +94,7 @@ enuLcd_Status_t Lcd_sendData_4bitMode(uint8_t u8_data)
 	#if (AsyncMode == TRUE)
 		GptStart_aSync(TIMER_USED_ID, DelayTicks, LcdDelayFinished);
 	#elif (AsyncMode == FALSE)
-		//Delay_ms(2);
+		Delay_ms(2);
 	#else
 		return LCD_STATUS_ERROR_NOK;
 	#endif

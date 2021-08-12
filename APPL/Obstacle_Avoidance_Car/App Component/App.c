@@ -75,7 +75,7 @@ enuApp_Status_t App_init(void)
 /**************************************************************************************/
 
 	/* Call the Robot Module initializer */
-	if(ROBOT_STATUS_ERROR_OK != ObstacleAvoidance_init())
+	if(E_OK != ObstacleAvoidance_init())
 		return APP_STATUS_ERROR_NOK;
 
 	/* Update enuCurrentAppStatus to initialized */
