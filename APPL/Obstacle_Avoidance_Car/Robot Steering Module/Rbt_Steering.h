@@ -6,8 +6,8 @@
  */ 
 
 
-#ifndef ROBOT_H_
-#define ROBOT_H_
+#ifndef RBT_STEERING_H_
+#define RBT_STEERING_H_
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
@@ -34,17 +34,17 @@
 /*
  * Data Type for Robot state
  */
-typedef uint8_t u8_RobotState_t;
+typedef uint8_t RobotState_t;
 
 /*
  * Data Type for Robot direction
  */
-typedef uint8_t u8_RobotDir_t;
+typedef uint8_t RobotDir_t;
 
 /*
  * Data Type for Robot Speed
  */
-typedef uint8_t u8_RobotSpeed_t;
+typedef uint8_t RobotSpeed_t;
 
 /*
  * Data Type for Robot return status
@@ -60,31 +60,31 @@ typedef enum
 	ROBOT_STATUS_ERROR_STOPPED,
 	ROBOT_STATUS_INIT,
 	ROBOT_STATUS_UNINIT
-}enuRobot_Status_t;
+}Robot_Status_t;
 
 /*
  * Data Type for Robot configurations
  */
 typedef struct  
 {
-	u8_MotorChannel_t u8_leftMotorID; //Variable holds the left motor index from the MOTOR Module
-	u8_MotorChannel_t u8_rightMotorID; //Variable holds the right motor index from the MOTOR Module
-}strRobot_Config_t;
+	MotorChannel_t Rbt_leftMotorID; //Variable holds the left motor index from the MOTOR Module
+	MotorChannel_t Rbt_rightMotorID; //Variable holds the right motor index from the MOTOR Module
+}RbtSteering_Config_t;
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to initialize the Robot module */
-enuRobot_Status_t Robot_init(void);
+Robot_Status_t RbtSteering_init(void);
 
 /* Function to move the Robot a given direction with given speed in % */
-enuRobot_Status_t Robot_move(u8_RobotDir_t u8_direction, u8_RobotSpeed_t u8_speed);
+Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 
 /* Function to stop Robot */
-enuRobot_Status_t Robot_stop(void);
+Robot_Status_t RbtSteering_stop(void);
 
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
-extern const strRobot_Config_t str_RobotsConfig;
+extern const RbtSteering_Config_t RbtSteering_Configuratons;
 
-#endif /* ROBOT_H_ */
+#endif /* RBT_STEERING_H_ */
