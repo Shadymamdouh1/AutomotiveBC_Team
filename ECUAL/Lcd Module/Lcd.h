@@ -12,12 +12,12 @@
 /* INCLUDES */
 
 #include "../../Microcontroller/Platform_Types.h"
-//#include "../../Microcontroller/Utility Module/Common_Macros.h"
+#include "../../Libraries/Common_Macros.h"
 #include "../../MCAL/Dio Module/Dio.h"
 #include "Lcd_Cfg.h"
-//#include "../../MCAL/Delay Module/Delay.h"
+#include "../../Microcontroller/Delay Module/Delay.h"
 #include "../../Libraries/Utility Module/Utility.h"
-// #include "../../Microcontroller/Utility Module/Utility.h"
+
 
 #if (AsyncMode == TRUE)
 	#include "../../MCAL/Gpt Module/Gpt.h"
@@ -26,11 +26,14 @@
 
 /* CONSTANTS */
 /* Commands */
-#define CLEAR			0x01
-#define HOME			0x02
-#define ENTRY_MODE		0x06
-#define DISPLAY_ON		0x0C
-#define	DISPLAY_OFF		0x08
+#define CLEAR						0x01
+#define HOME						0x02
+#define ENTRY_MODE					0x06
+#define DISPLAY_ON					0x0C
+#define	DISPLAY_OFF					0x08
+#define LINES_2_FONT_5x8			0x28
+#define INIT_4BITS_COMMAND_1		0x33
+#define INIT_4BITS_COMMAND_2		0x32
 
 /* states when using async mode */
 #if (AsyncMode == TRUE)
@@ -69,10 +72,12 @@ enuLcd_Status_t Lcd_sendLowerNibble(uint8_t u8_data);
 enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base); 
 
 #if (AsyncMode == TRUE)
-	enuLcd_Status_t Lcd_asyncSendString(uint8_t* au8_string);
-	enuLcd_Status_t Lcd_asyncClearDisplay(void);
-	enuLcd_Status_t Lcd_asyncCursorPosition(uint8_t u8_xAxis, uint8_t u8_yAxis);
 	void LcdDelayFinished(void);
 #endif
+
+
+enuLcd_Status_t Lcd_init_test(void);
+enuLcd_Status_t Lcd_sendCommand_test(uint8_t u8_command);
+enuLcd_Status_t Lcd_sendData_4bitMode_test(uint8_t u8_data);
 
 #endif /* LCD_H_ */
