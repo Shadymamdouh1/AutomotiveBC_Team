@@ -23,7 +23,7 @@ static pfGpt_CallBack_t T0ovfCallback;
 static pfGpt_CallBack_t T1ovfCallback;
 static pfGpt_CallBack_t T2ovfCallback;
 
-enuGpt_Status_t Gpt_Status[GPT_CHANNELS] = {GPT_STATUS_ERROR_OK};
+enuGpt_Status_t Gpt_Status[GPT_CHANNELS] = {GPT_STATUS_ERROR_NOK};
 enuGpt_initStatus_t Gpt_Init = GPT_NOT_INITIALIZED;
 
 /*- LOCAL FUNCTIONS IMPLEMENTATION

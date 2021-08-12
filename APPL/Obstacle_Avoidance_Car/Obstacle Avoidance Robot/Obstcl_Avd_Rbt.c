@@ -12,7 +12,7 @@
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 
 ModuleState_t ObstclAvd_State = OBSTCLE_AVD_MOD_UNINITIALIZED;
-uint8_t distance_u8 = 199;
+uint8_t distance_u8 = 90;
 uint8_t distance_au8[4] = {0};
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -51,9 +51,9 @@ Std_ReturnType ObstacleAvoidance_init(void)
 		return E_NOT_OK;
 		
 	/* Call the LCD Module initializer */
-// 	if(LCD_STATUS_ERROR_OK != Lcd_init())
-// 		return E_NOT_OK;
-	
+	if(LCD_STATUS_ERROR_OK != Lcd_init())
+		return E_NOT_OK;
+	Lcd_sendString((uint8_t*)"    Distance");
 	/* Call the Ultrasonic Module initializer */
 //  	if(SRVC_STATUS_ERROR_OK != Ultrasonic_init())
 //  		return APP_STATUS_ERROR_NOK;
@@ -98,7 +98,7 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 	if((btn_state == PIN_HIGH) && (btn_flag == PIN_LOW))
 	{
 		btn_flag = PIN_HIGH;
-		distance_u8-=50;
+		distance_u8-=10;
 	}else if(btn_state == PIN_LOW)
 	{
 		btn_flag = PIN_LOW;
@@ -110,7 +110,7 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_50)
 		{
 			ObstclAvd_State = OB_AVD_DISTANCE_UNDER_50;
-			RbtSteering_move(ROBOT_DIR_FRWRD, 60);
+			RbtSteering_move(ROBOT_DIR_FRWRD, 20);
 		}
 	}
 	/* If distance = 50 */
@@ -119,7 +119,7 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_50)
 		{
 			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_50;
-			RbtSteering_move(ROBOT_DIR_RIGHT, 60);
+			RbtSteering_move(ROBOT_DIR_RIGHT, 15);
 		}
 	}
 	/* If distance < 50 */
@@ -128,13 +128,13 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 		if (ObstclAvd_State != OB_AVD_DISTANCE_OVER_50)
 		{
 			ObstclAvd_State = OB_AVD_DISTANCE_OVER_50;
-			RbtSteering_move(ROBOT_DIR_BKWRD, 60);
+			RbtSteering_move(ROBOT_DIR_BKWRD, 20);
 		}
 	}
 /* Print Distance on LCD */
-#if 0
+#if 1
 	integerToString((uint16_t)distance_u8, distance_au8, DEC);
-	Lcd_cursorPosition(1,1);
+	Lcd_cursorPosition(2,8);
 	Lcd_sendString(distance_au8);
 #endif
 /*******************************************************************************/

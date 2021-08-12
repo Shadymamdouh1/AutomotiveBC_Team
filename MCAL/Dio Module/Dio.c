@@ -33,6 +33,7 @@ static uint8_t u8_Dio_Status = DIO_NOT_INITIALIZED;
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 enuDio_Status_t Dio_init(strDio_Config_t* pstrDio_pins)
 {
+	if(u8_Dio_Status == DIO_INITIALIZED) return DIO_STATUS_ERROR_NOK;
 	uint8_t u8_loopIndex=0;
 	/*-* check if the input configuration pointer is not a NULL_PTR *-*/
 	if (NULL_PTR == pstrDio_pins)
