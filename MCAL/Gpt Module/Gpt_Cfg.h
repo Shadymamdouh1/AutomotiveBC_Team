@@ -13,8 +13,10 @@
 /* CONSTANTS */
 
 /* user set the number of pins used in the project */
-#define GPT_USED_CHANNELS   2
+
+#define GPT_USED_CHANNELS   3
 #define SYS_CLOCK_FREQUENCY		8000000
+
 
 #define TIMER_0   0
 #define TIMER_1   1

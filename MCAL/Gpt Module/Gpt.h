@@ -10,10 +10,10 @@
 #define GPT_H_
 
 /*- INCLUDES -----------------------------------------------*/
-
 #include "..\..\Microcontroller\Platform_Types.h"
 #include "../Interrupt Driver/ISR.h"
 #include "..\..\Microcontroller\Atmega32 Registers\Gpt_Regs.h"
+
 #include "Gpt_Cfg.h"
 //#include "../../MCAL/Interrupt Driver/ISR.h"
 
@@ -62,6 +62,7 @@ enuGpt_Status_t GptStop(uint8_t ChannelId);
 
 
 void setOvfCallback(pfGpt_CallBack_t FunToBeCalledInISR);
+
 
 /*- EXTERN VARIABLE DECLARATIONS ----------------------------------*/
 extern strGpt_Config_t strGpt_Channels[GPT_USED_CHANNELS];
