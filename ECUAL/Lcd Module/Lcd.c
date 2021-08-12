@@ -24,6 +24,8 @@ uint8_t LCD_SET_CURSOR_STATE = IDLE;
 uint8_t LCD_SENDING_CHAR = IDLE;
 uint8_t LCD_SEND_COMMAND_STATE = IDLE;
 
+uint8_t Lcd_Init_DoneFlag = FALSE;
+
 #define LCD_INIT_4BITS_COMMAND_1_ID			1
 #define LCD_INIT_4BITS_COMMAND_2_ID			2
 #define LCD_LINES_2_FONT_5x8_COMMAND_ID		3		
@@ -169,6 +171,12 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 	{
 		if(Lcd_Init == LCD_INITIALIZED || LCD_SEND_COMMAND_STATE == RUNNING) return LCD_STATUS_ERROR_NOK;
 		
+		if(Lcd_Init_DoneFlag == TRUE)
+		{
+			Lcd_Init = LCD_INITIALIZED;
+			return LCD_STATUS_ERROR_OK;
+		}
+		
 		Dio_init(strDio_pins);
 		GptInit();
 		
@@ -236,7 +244,16 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 			}
 			return LCD_STATUS_ERROR_NOK;
 		}
-		else if(LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == IDLE)
+		else if(LCD_NEXT_STATE == SET_CURSOR_PENDING)
+		{
+			LCD_SET_CURSOR_STATE = RUNNING;
+			LCD_NEXT_STATE = IDLE;
+		}
+		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING)
+		{
+			return LCD_STATUS_ERROR_NOK;
+		}
+		else if(LCD_NEXT_STATE == IDLE)
 		{
 			LCD_SET_CURSOR_STATE = RUNNING;
 			LCD_NEXT_STATE = IDLE;
@@ -246,7 +263,9 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 			return LCD_STATUS_ERROR_NOK;
 		}
 		
-		Lcd_cursorPosition(u8_xAxis, u8_yAxis);
+		uint8_t au8_positions[4] = {0, 64, Lcd_Columns, Lcd_Columns+64};
+		Lcd_sendCommand(0x80+au8_positions[u8_xAxis-1]+(u8_yAxis-1));
+		
 		return LCD_STATUS_ERROR_OK;
 	}
 	
@@ -262,7 +281,16 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 			}
 			return LCD_STATUS_ERROR_NOK;
 		}
-		else if(LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_NEXT_STATE == IDLE)
+		else if(LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING)
+		{
+			LCD_CLEAR_DISPLAY_STATE = RUNNING;
+			LCD_NEXT_STATE = IDLE;
+		}
+		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == SET_CURSOR_PENDING)
+		{
+			return LCD_STATUS_ERROR_NOK;
+		}
+		else if( LCD_NEXT_STATE == IDLE)
 		{
 			LCD_CLEAR_DISPLAY_STATE = RUNNING;
 			LCD_NEXT_STATE = IDLE;
@@ -278,11 +306,8 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 	
 	enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 	{
-		if(Lcd_Init != LCD_INITIALIZED) return LCD_STATUS_ERROR_NOK;
+		if(Lcd_Init != LCD_INITIALIZED || LCD_SENDING_CHAR == RUNNING) return LCD_STATUS_ERROR_NOK;
 		
-		if(LCD_SENDING_CHAR == RUNNING) return LCD_STATUS_ERROR_NOK;
-		LCD_SENDING_CHAR = RUNNING;
-	
 		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING)
 		{
 			if(LCD_NEXT_STATE == IDLE)
@@ -291,16 +316,28 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 			}
 			return LCD_STATUS_ERROR_NOK;
 		}
-		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == IDLE)
+		else if(LCD_NEXT_STATE == SEND_STRING_PENDING)
 		{
 			LCD_SEND_STRING_STATE = RUNNING;
 			LCD_NEXT_STATE = SEND_STRING_PENDING;
+			LCD_SENDING_CHAR = RUNNING;
+		}
+		else if(LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING)
+		{
+			return LCD_STATUS_ERROR_NOK;
+		}
+		else if(LCD_NEXT_STATE == IDLE)
+		{
+			LCD_SEND_STRING_STATE = RUNNING;
+			LCD_NEXT_STATE = SEND_STRING_PENDING;
+			LCD_SENDING_CHAR = RUNNING;
 		}
 		else
 		{
 			return LCD_STATUS_ERROR_NOK;
 		}
-	
+		
+		
 		static uint8_t u8_stringIndexCounter = Initial_Value;
 		
 		if(au8_string[u8_stringIndexCounter]!='\0')
@@ -352,7 +389,7 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 			if(gu8_currentlyRunningCommand == LCD_DISPLAY_ON_COMMAND_ID)
 			{
 				/* if all commands done state module as initialized */
-				Lcd_Init = LCD_INITIALIZED;
+				Lcd_Init_DoneFlag = TRUE;
 				LCD_SEND_COMMAND_STATE = IDLE;			
 			}
 			else

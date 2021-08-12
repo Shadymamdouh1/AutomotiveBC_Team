@@ -37,8 +37,8 @@
 
 /* states when using async mode */
 #if (AsyncMode == TRUE)
-	#define RUNNING						0
-	#define IDLE						1
+	#define IDLE						0
+	#define RUNNING						1
 	#define CLEAR_DISPLAY_PENDING		2
 	#define SET_CURSOR_PENDING			3
 	#define SEND_STRING_PENDING			4
