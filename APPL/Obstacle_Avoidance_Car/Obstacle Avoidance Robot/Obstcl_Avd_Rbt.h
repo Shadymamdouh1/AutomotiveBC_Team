@@ -19,6 +19,9 @@
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 #define OBSTCLE_AVD_MOD_UNINITIALIZED			0U
 #define OBSTCLE_AVD_MOD_INITIALIZED				1U
+#define OB_AVD_DISTANCE_UNDER_50				2U
+#define OB_AVD_DISTANCE_EQUAL_50				3U
+#define OB_AVD_DISTANCE_OVER_50					4U
 /*******************************************************************************
  *                          Module Data Types                                  *
  *******************************************************************************/
