@@ -10,7 +10,7 @@
 #define LCD_CFG_H_
 
 /* Async Cfg */
-#define AsyncMode			TRUE
+#define AsyncMode			FALSE
 #define	DelayTicks			250
 #define TIMER_USED_ID		TIMER_CHANNEL_0_ID
 /*********************************************/
