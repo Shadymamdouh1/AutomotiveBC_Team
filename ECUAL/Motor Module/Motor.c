@@ -11,8 +11,8 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
-u8_MotorState_t	gau8_MotorsState[MOTORS_USED_NUM] = {MOTOR_STOPPED};
-uint8_t gu8_MotorModuleStatus = MOTOR_STATUS_UNINIT;
+MotorState_t MotorsState_gau8[MOTORS_USED_NUM] = {MOTOR_STOPPED};
+uint8_t MotorModuleStatus_gau8 = MOTOR_STATUS_UNINIT;
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
@@ -23,17 +23,17 @@ uint8_t gu8_MotorModuleStatus = MOTOR_STATUS_UNINIT;
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuMotor_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Return value: Motor_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Initialize the Motor module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to initialize the motor module */
-enuMotor_Status_t Motor_init(void)
+Motor_Status_t Motor_init(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
 	/* Check if the Motor module is already initialized */
-	if(gu8_MotorModuleStatus == MOTOR_STATUS_INIT)
+	if(MotorModuleStatus_gau8 == MOTOR_STATUS_INIT)
 	{
 		return MOTOR_STATUS_INIT;
 	}else{/*Nothing to here*/}
@@ -49,7 +49,7 @@ enuMotor_Status_t Motor_init(void)
 		return MOTOR_STATUS_ERROR_NOK;
 	
 	/* Change the state of the module to initialized */
-	gu8_MotorModuleStatus = MOTOR_STATUS_INIT;
+	MotorModuleStatus_gau8 = MOTOR_STATUS_INIT;
 	return MOTOR_STATUS_ERROR_OK;
 }
 
@@ -63,17 +63,17 @@ enuMotor_Status_t Motor_init(void)
 *					u8_direction - Direction of the motor (CLOCK WISE - ANTI CLOCK WISE)
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuMotor_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Return value: Motor_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Move the motor in the given direction.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to move the motor forward with given speed in % */
-enuMotor_Status_t Motor_run(u8_MotorChannel_t u8_motorID, u8_MotorSpeed_t u8_speed, u8_MotorDir_t u8_direction)
+Motor_Status_t Motor_run(MotorChannel_t u8_motorID, MotorSpeed_t u8_speed, MotorDir_t u8_direction)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
 	/* Check if the Motor module is not initialized */
-	if(gu8_MotorModuleStatus != MOTOR_STATUS_INIT)
+	if(MotorModuleStatus_gau8 != MOTOR_STATUS_INIT)
 	{
 		return MOTOR_STATUS_UNINIT;
 	}else{/*Nothing to here*/}
@@ -96,7 +96,7 @@ enuMotor_Status_t Motor_run(u8_MotorChannel_t u8_motorID, u8_MotorSpeed_t u8_spe
 	}else{/*Nothing to here*/}
 	
 	/* Check if the motor is already running */
-	if(gau8_MotorsState[u8_motorID] == MOTOR_RUNNING)		
+	if(MotorsState_gau8[u8_motorID] == MOTOR_RUNNING)		
 	{
 		return MOTOR_STATUS_ERROR_RUNNING;
 	}else{/*Nothing to here*/}
@@ -114,19 +114,19 @@ enuMotor_Status_t Motor_run(u8_MotorChannel_t u8_motorID, u8_MotorSpeed_t u8_spe
 	}
 	if(u8_direction == MOTOR_DIR_CLK_WISE) /* Activate the Motor in the Clock Wise Direction */
 	{
-		Dio_writePin(str_MotorsConfig[u8_motorID].u8_MotorDirPin1, PIN_HIGH);
-		Dio_writePin(str_MotorsConfig[u8_motorID].u8_MotorDirPin2, PIN_LOW);
+		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, PIN_HIGH);
+		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, PIN_LOW);
 	}else if(u8_direction == MOTOR_DIR_ANTI_CLK_WISE) /* Activate the Motor in the Anti Clock Wise Direction */
 	{
-		Dio_writePin(str_MotorsConfig[u8_motorID].u8_MotorDirPin1, PIN_LOW);
-		Dio_writePin(str_MotorsConfig[u8_motorID].u8_MotorDirPin2, PIN_HIGH);
+		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, PIN_LOW);
+		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, PIN_HIGH);
 	}
 	
 	/* Change the state of the Motor to Running */
-	gau8_MotorsState[u8_motorID] = MOTOR_RUNNING;
+	MotorsState_gau8[u8_motorID] = MOTOR_RUNNING;
 	
 	/* Start the PWM Wave for the given speed and frequency */
-	SWPwm_Start(str_MotorsConfig[u8_motorID].u8_MotorPwmChannel, str_MotorsConfig[u8_motorID].u16_Frequency, u8_speed);
+	SWPwm_Start(MotorsConfigurations_str[u8_motorID].u8_MotorPwmChannel, MotorsConfigurations_str[u8_motorID].u16_Frequency, u8_speed);
 	
 	return MOTOR_STATUS_ERROR_OK;
 }
@@ -141,11 +141,11 @@ enuMotor_Status_t Motor_run(u8_MotorChannel_t u8_motorID, u8_MotorSpeed_t u8_spe
 * Parameters (in): u8_motorID - Index for the motor in the module
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuMotor_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Return value: Motor_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Stop the motor.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to stop motor */
-enuMotor_Status_t Motor_stop(u8_MotorChannel_t u8_motorID)
+Motor_Status_t Motor_stop(MotorChannel_t u8_motorID)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
@@ -164,8 +164,8 @@ enuMotor_Status_t Motor_stop(u8_MotorChannel_t u8_motorID)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Stop the Motor by driving the pins to LOW */
-	Dio_writePin(str_MotorsConfig[u8_motorID].u8_MotorDirPin1, PIN_LOW);
-	Dio_writePin(str_MotorsConfig[u8_motorID].u8_MotorDirPin2, PIN_LOW);
+	Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, PIN_LOW);
+	Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, PIN_LOW);
 	
 	uint8_t u8_loopIndex = 0;
 	
@@ -181,7 +181,7 @@ enuMotor_Status_t Motor_stop(u8_MotorChannel_t u8_motorID)
 		{
 			continue;
 		}
-		if(str_MotorsConfig[u8_motorID].u8_MotorPwmChannel == str_MotorsConfig[u8_loopIndex].u8_MotorPwmChannel)
+		if(MotorsConfigurations_str[u8_motorID].u8_MotorPwmChannel == MotorsConfigurations_str[u8_loopIndex].u8_MotorPwmChannel)
 		{ /* Another motor with the ID u8_loopIndex is using the same PWM Channel --> then break to save its Index (u8_loopIndex) */
 			break;
 		}
@@ -190,15 +190,15 @@ enuMotor_Status_t Motor_stop(u8_MotorChannel_t u8_motorID)
 	
 	if(u8_loopIndex == MOTORS_USED_NUM)
 	{ /* In case that there isn't any motor using the same PWM Channel --> Stop the PWM */
-		SWPwm_Stop(str_MotorsConfig[u8_motorID].u8_MotorPwmChannel);
+		SWPwm_Stop(MotorsConfigurations_str[u8_motorID].u8_MotorPwmChannel);
 	}else
 	{/* In case that there is another motor using the same PWM Channel */
-		if (gau8_MotorsState[u8_loopIndex] == MOTOR_STOPPED) /* Check if the other motor is not running */
+		if (MotorsState_gau8[u8_loopIndex] == MOTOR_STOPPED) /* Check if the other motor is not running */
 		{/* In case that the other motor is not running --> Stop the PWM */
-			SWPwm_Stop(str_MotorsConfig[u8_motorID].u8_MotorPwmChannel);
+			SWPwm_Stop(MotorsConfigurations_str[u8_motorID].u8_MotorPwmChannel);
 		} 
 	}
 	/* Change the state of this motor to Stopped */
-	gau8_MotorsState[u8_motorID] = MOTOR_STOPPED;
+	MotorsState_gau8[u8_motorID] = MOTOR_STOPPED;
 	return MOTOR_STATUS_ERROR_OK;
 }

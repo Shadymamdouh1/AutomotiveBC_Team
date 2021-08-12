@@ -7,16 +7,16 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "App.h"
+#include "Obstcl_Avd_Rbt.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
-static enuRobotAction_t enuCurrentAction = ROBOT_ACTION_STOP;
-static enuApp_Status_t enuCurrentAppStatus = APP_STATUS_UNINITIALIZED;
-uint8_t gau8_num[4] = {0};
-uint16_t gu16_num = 0;
+
+ModuleState_t ObstclAvd_State = OBSTCLE_AVD_MOD_UNINITIALIZED;
+
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
+#if 0
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 * Service Name: RobotApp_start
 * Sync/Async: Synchronous
@@ -27,44 +27,47 @@ uint16_t gu16_num = 0;
 * Return value: enuApp_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Start the Application.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-enuApp_Status_t App_start(void)
+enuApp_Status_t RobotApp_start(void)
 {
 	/**************************************************************************************/
 	/*								Function Implementation								  */
 	/**************************************************************************************/
 	/* Initialize the Car application */
-	if(App_init() != APP_STATUS_ERROR_OK)
+	if(RobotApp_init() != APP_STATUS_ERROR_OK)
 		return APP_STATUS_ERROR_NOK;
+	EnableGlobalInterrupts();
 	
+	
+	Robot_move(ROBOT_DIR_FRWRD, 20);
 	/* Application Super Loop */
 	while (1)
 	{
-		/* Run the Obstacle Avoidance main function */
-		if(ObstacleAvoidance_mainFunction() != E_OK)
-			return E_NOT_OK;
+		/* Update the car status */
+		if(RobotApp_update() != APP_STATUS_ERROR_OK)
+			return APP_STATUS_ERROR_NOK;
 			
 	}
 }
-
+#endif
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: App_init
+* Service Name: ObstacleAvoidance_init
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuApp_Status_t - return the status of the function ERROR_OK or NOT_OK
-* Description: Function to Initialize the Application.
+* Return value: Std_ReturnType - return the status of the function E_OK or E_NOT_OK
+* Description: Function to Initialize the Obstacle Avoidance Module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-enuApp_Status_t App_init(void)
+Std_ReturnType ObstacleAvoidance_init(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
-	/* Check if the Application was already initialized */
-	if (enuCurrentAppStatus == APP_STATUS_INITIALIZED)
+	/* Check if the Module was already initialized */
+	if (ObstclAvd_State == OBSTCLE_AVD_MOD_INITIALIZED)
 	{
-		return APP_STATUS_INITIALIZED;
+		return E_OK;
 	}
 /**************************************************************************************/
 /*								End of Error Checking								  */
@@ -75,33 +78,44 @@ enuApp_Status_t App_init(void)
 /**************************************************************************************/
 
 	/* Call the Robot Module initializer */
-	if(ROBOT_STATUS_ERROR_OK != ObstacleAvoidance_init())
-		return APP_STATUS_ERROR_NOK;
+	if(ROBOT_STATUS_ERROR_OK != RbtSteering_init())
+		return E_NOT_OK;
+		
+	/* Call the LCD Module initializer */
+	if(LCD_STATUS_ERROR_OK != Lcd_init())
+		return E_NOT_OK;
+	
+	EnableGlobalInterrupts();
+	
+//	RbtSteering_move(ROBOT_DIR_FRWRD, 20);
+	/* Call the Ultrasonic Module initializer */
+//  	if(SRVC_STATUS_ERROR_OK != Ultrasonic_init())
+//  		return APP_STATUS_ERROR_NOK;
 
-	/* Update enuCurrentAppStatus to initialized */
-	enuCurrentAppStatus = APP_STATUS_INITIALIZED;
-	return APP_STATUS_ERROR_OK;
+	/* Update ObstclAvd_State to initialized */
+	ObstclAvd_State = OBSTCLE_AVD_MOD_INITIALIZED;
+	return E_OK;
 }
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: RobotApp_update
-* Sync/Async: Synchronous
+* Service Name: ObstacleAvoidance_mainFunction
+* Sync/Async: ASynchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuApp_Status_t - return the status of the function ERROR_OK or NOT_OK
-* Description: Function to Update the state of the application.
+* Return value: Std_ReturnType - return the status of the function E_OK or E_NOT_OK
+* Description: Periodic function/task of the module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-enuApp_Status_t App_update(void)
+Std_ReturnType ObstacleAvoidance_mainFunction(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
-	/* Check if the Application was already initialized */
-	if (enuCurrentAppStatus != APP_STATUS_INITIALIZED)
+	/* Check if the Module was already initialized */
+	if (ObstclAvd_State != OBSTCLE_AVD_MOD_INITIALIZED)
 	{
-		return APP_STATUS_UNINITIALIZED;
+		return E_NOT_OK;
 	}
 /**************************************************************************************/
 /*								End of Error Checking								  */
@@ -111,10 +125,20 @@ enuApp_Status_t App_update(void)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	
-	ObstacleAvoidance_mainFunction();
+/* Read Ultrasonic Distance */
+	
+
+/* Take Robot Action */
+	/* If distance > 50 */
+	
+	/* If distance = 50 */
+	
+	/* If distance < 50 */
+	
+/* Print Distance on LCD */
 	
 /*******************************************************************************/
 /*******************************************************************************/
 
-	return APP_STATUS_ERROR_OK;
+	return E_OK;
 }

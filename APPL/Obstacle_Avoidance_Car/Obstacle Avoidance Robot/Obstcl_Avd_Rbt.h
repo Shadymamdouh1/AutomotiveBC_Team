@@ -6,57 +6,37 @@
  */ 
 
 
-#ifndef APP_H_
-#define APP_H_
+#ifndef OBSTCL_AVD_RBT_H_
+#define OBSTCL_AVD_RBT_H_
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "../Obstacle Avoidance Robot/Obstcl_Avd_Rbt.h"
+#include "../Robot Steering Module/Rbt_Steering.h"
 #include "../../../ECUAL/Lcd Module/Lcd.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
-
+#define OBSTCLE_AVD_MOD_UNINITIALIZED			0U
+#define OBSTCLE_AVD_MOD_INITIALIZED				1U
 /*******************************************************************************
  *                          Module Data Types                                  *
  *******************************************************************************/
 /*
- * Data Type for App return status
- */
-typedef enum
-{
-	APP_STATUS_ERROR_NOK,
-	APP_STATUS_ERROR_OK,
-	APP_STATUS_ERROR_ID_INVALID,
-	APP_STATUS_ERROR_NULL,
-	APP_STATUS_INITIALIZED,
-	APP_STATUS_UNINITIALIZED
-}enuApp_Status_t;
+* Data Type for App return status
+*/
+typedef uint8_t ModuleState_t;
 
-/*
- * Data Type for Car Action state
- */
-typedef enum
-{
-	ROBOT_ACTION_STOP,
-	ROBOT_ACTION_FRWRD,
-	ROBOT_ACTION_BKWRD,
-	ROBOT_ACTION_RIGHT
-}enuRobotAction_t;
 
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
-/* Function to Start the application */
-enuApp_Status_t App_start(void);
+/* Function to initialize the Obstacle Avoidance Module */
+Std_ReturnType ObstacleAvoidance_init(void);
 
-/* Function to initialize the Application */
-enuApp_Status_t App_init(void);
-
-/* Function to update the application */
-enuApp_Status_t App_update(void);
+/* Periodic Function of the Obstacle Avoidance Module */
+Std_ReturnType ObstacleAvoidance_mainFunction(void);
 
 
 
-#endif /* APP_H_ */
+#endif /* OBSTCL_AVD_RBT_H_ */

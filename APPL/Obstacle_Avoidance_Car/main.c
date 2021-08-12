@@ -11,7 +11,7 @@
 int main(void)
 {
 
-	RobotApp_start();
+	App_start();
 	
     /* Replace with your application code */
     while (1) 
