@@ -38,7 +38,7 @@ enuApp_Status_t RobotApp_start(void)
 	EnableGlobalInterrupts();
 	
 	
-	Robot_move(ROBOT_DIR_FRWRD, 70);
+	Robot_move(ROBOT_DIR_FRWRD, 20);
 	/* Application Super Loop */
 	while (1)
 	{
