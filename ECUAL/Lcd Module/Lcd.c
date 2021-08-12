@@ -14,7 +14,7 @@
 -------------------------------*/
 enuLcd_Status_t Lcd_Status = LCD_STATUS_ERROR_OK;
 enuLcd_initStatus_t Lcd_Init = LCD_NOT_INITIALIZED;
-uint8_t gu8_delayFlag = 0;
+
 /* states */
 #if (AsyncMode == TRUE)
 	uint8_t LCD_NEXT_STATE = IDLE;
@@ -23,6 +23,7 @@ uint8_t gu8_delayFlag = 0;
 	uint8_t LCD_SET_CURSOR_STATE = IDLE;
 	uint8_t LCD_SENDING_CHAR = FALSE;
 #endif	
+
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/
 
@@ -32,7 +33,7 @@ enuLcd_Status_t Lcd_init(void)
 	
 	Lcd_Init = LCD_INITIALIZED;
 	
-	Dio_init(strDio_pins);
+	Dio_init();
 	#if (AsyncMode == TRUE)
 		GptInit();
 	#endif	
@@ -62,9 +63,9 @@ enuLcd_Status_t Lcd_init(void)
 
 enuLcd_Status_t Lcd_toggleEnable(void)
 {
-	Dio_writePin(EN_DIO_ID, PIN_HIGH);		//set enable ON	
-	//Delay_ms(1);		
-	Dio_writePin(EN_DIO_ID, PIN_LOW);		//set enable OFF
+	Dio_writePin(EN_DIO_ID, STD_HIGH);		//set enable ON	
+	Delay_ms(1);		
+	Dio_writePin(EN_DIO_ID, STD_LOW);		//set enable OFF
 	
 	return LCD_STATUS_ERROR_OK;
 }
@@ -73,7 +74,7 @@ enuLcd_Status_t Lcd_toggleEnable(void)
 enuLcd_Status_t Lcd_sendCommand(uint8_t u8_command)
 {
 
-	Dio_writePin(RS_DIO_ID, PIN_LOW);			//activate command mode
+	Dio_writePin(RS_DIO_ID, STD_LOW);			//activate command mode
 	
 	Lcd_sendData_4bitMode(u8_command);
 	
@@ -83,16 +84,16 @@ enuLcd_Status_t Lcd_sendCommand(uint8_t u8_command)
 
 enuLcd_Status_t Lcd_sendData_4bitMode(uint8_t u8_data)
 {
-	DIO_PORTB_DATA ^= 1<<0;
 	Lcd_sendHigherNibble(u8_data);							//send higher nibble
 	Lcd_toggleEnable();		//toggle enable
 
 	Lcd_sendLowerNibble(u8_data);							//send lower nibble
 	Lcd_toggleEnable();		//toggle enable
+	
 	#if (AsyncMode == TRUE)
 		GptStart_aSync(TIMER_USED_ID, DelayTicks, LcdDelayFinished);
 	#elif (AsyncMode == FALSE)
-		//Delay_ms(2);
+		Delay_ms(2);
 	#else
 		return LCD_STATUS_ERROR_NOK;
 	#endif
@@ -103,15 +104,15 @@ enuLcd_Status_t Lcd_sendData_4bitMode(uint8_t u8_data)
 
 enuLcd_Status_t Lcd_sendCharacter(uint8_t u8_char)
 {
-	Dio_writePin(RS_DIO_ID, PIN_HIGH);		//activate DATA mode
+	Dio_writePin(RS_DIO_ID, STD_HIGH);		//activate DATA mode
 	Lcd_sendData_4bitMode(u8_char);
 	return LCD_STATUS_ERROR_OK;
 }
 
 enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 {
-	uint8_t u8_loopCounter = 0;
-	for (u8_loopCounter=0;au8_string[u8_loopCounter]!='\0';u8_loopCounter++)
+	uint8_t u8_loopCounter = Initial_Value;
+	for (u8_loopCounter=Initial_Value;au8_string[u8_loopCounter]!='\0';u8_loopCounter++)
 	{
 		Lcd_sendCharacter(au8_string[u8_loopCounter]);
 	}
@@ -137,38 +138,38 @@ enuLcd_Status_t Lcd_sendLowerNibble(uint8_t u8_data)
 {
 	if((u8_data & 0x01) != 0)
 	{
-		Dio_writePin(D4_DIO_ID, PIN_HIGH);
+		Dio_writePin(D4_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D4_DIO_ID, PIN_LOW);
+		Dio_writePin(D4_DIO_ID, STD_LOW);
 	}
 
 	if((u8_data & 0x02) != 0)
 	{
-		Dio_writePin(D5_DIO_ID, PIN_HIGH);
+		Dio_writePin(D5_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D5_DIO_ID, PIN_LOW);
+		Dio_writePin(D5_DIO_ID, STD_LOW);
 	}
 	
 	if((u8_data & 0x04) != 0)
 	{
-		Dio_writePin(D6_DIO_ID, PIN_HIGH);
+		Dio_writePin(D6_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D6_DIO_ID, PIN_LOW);
+		Dio_writePin(D6_DIO_ID, STD_LOW);
 	}
 	
 	if((u8_data & 0x08) != 0)
 	{
-		Dio_writePin(D7_DIO_ID, PIN_HIGH);
+		Dio_writePin(D7_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D7_DIO_ID, PIN_LOW);
+		Dio_writePin(D7_DIO_ID, STD_LOW);
 	}
 	
 	return LCD_STATUS_ERROR_OK;			
@@ -178,38 +179,38 @@ enuLcd_Status_t Lcd_sendHigherNibble(uint8_t u8_data)
 {
 	if((u8_data & 0x10) != 0)
 	{
-		Dio_writePin(D4_DIO_ID, PIN_HIGH);
+		Dio_writePin(D4_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D4_DIO_ID, PIN_LOW);
+		Dio_writePin(D4_DIO_ID, STD_LOW);
 	}
 
 	if((u8_data & 0x20) != 0)
 	{
-		Dio_writePin(D5_DIO_ID, PIN_HIGH);
+		Dio_writePin(D5_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D5_DIO_ID, PIN_LOW);
+		Dio_writePin(D5_DIO_ID, STD_LOW);
 	}
 	
 	if((u8_data & 0x40) != 0)
 	{
-		Dio_writePin(D6_DIO_ID, PIN_HIGH);
+		Dio_writePin(D6_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D6_DIO_ID, PIN_LOW);
+		Dio_writePin(D6_DIO_ID, STD_LOW);
 	}
 	
 	if((u8_data & 0x80) != 0)
 	{
-		Dio_writePin(D7_DIO_ID, PIN_HIGH);
+		Dio_writePin(D7_DIO_ID, STD_HIGH);
 	}
 	else
 	{
-		Dio_writePin(D7_DIO_ID, PIN_LOW);
+		Dio_writePin(D7_DIO_ID, STD_LOW);
 	}
 	
 	return LCD_STATUS_ERROR_OK;
@@ -283,10 +284,9 @@ enuLcd_Status_t Lcd_clearDisplay(void)
 	
 	enuLcd_Status_t Lcd_asyncSendString(uint8_t* au8_string)
 	{
-		if(LCD_SENDING_CHAR == TRUE) 
-		{
-			return LCD_STATUS_ERROR_NOK;
-		}
+		if(LCD_SENDING_CHAR == TRUE) return LCD_STATUS_ERROR_NOK;
+		LCD_SENDING_CHAR = TRUE;
+
 		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING)
 		{
 			if(LCD_NEXT_STATE == IDLE)
@@ -304,9 +304,8 @@ enuLcd_Status_t Lcd_clearDisplay(void)
 		{
 			return LCD_STATUS_ERROR_NOK;
 		}
-		
-		LCD_SENDING_CHAR = TRUE;
-		static uint8_t u8_stringIndexCounter = 0;
+
+		static uint8_t u8_stringIndexCounter = Initial_Value;
 		
 		if(au8_string[u8_stringIndexCounter]!='\0')
 		{
@@ -315,7 +314,7 @@ enuLcd_Status_t Lcd_clearDisplay(void)
 		}
 		else
 		{
-			u8_stringIndexCounter = 0;
+			u8_stringIndexCounter = Initial_Value;
 			LCD_SEND_STRING_STATE = IDLE;
 			LCD_NEXT_STATE = IDLE;
 			LCD_SENDING_CHAR = FALSE;
@@ -323,6 +322,8 @@ enuLcd_Status_t Lcd_clearDisplay(void)
 
 		return LCD_STATUS_ERROR_OK;
 	}
+	
+	
 	void LcdDelayFinished(void)
 	{
 		if(LCD_SET_CURSOR_STATE == RUNNING)

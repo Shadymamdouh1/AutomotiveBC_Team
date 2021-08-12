@@ -11,16 +11,15 @@
 
 /* INCLUDES */
 
-#include "../../Microcontroller/Platform_Types.h"
-//#include "../../Microcontroller/Utility Module/Common_Macros.h"
-#include "../../MCAL/Dio Module/Dio.h"
+#include "../../Microcontroller/Std_Types.h"
+#include "../../Microcontroller/Utility Module/Common_Macros.h"
+#include "../../MCAL/Dio Driver/Dio.h"
 #include "Lcd_Cfg.h"
-//#include "../../MCAL/Delay Module/Delay.h"
-#include "../../Libraries/Utility Module/Utility.h"
-// #include "../../Microcontroller/Utility Module/Utility.h"
+#include "../../Microcontroller/Delay Module/Delay.h"
+#include "../../Microcontroller/Utility Module/Utility.h"
 
 #if (AsyncMode == TRUE)
-	#include "../../MCAL/Gpt Module/Gpt.h"
+	#include "../../MCAL/Gpt Driver/Gpt.h"
 #endif
 
 
