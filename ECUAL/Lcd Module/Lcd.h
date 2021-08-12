@@ -37,11 +37,12 @@
 
 /* states when using async mode */
 #if (AsyncMode == TRUE)
-	#define IDLE						0
-	#define RUNNING						1
+	#define IDLE						7
+	#define RUNNING						6
 	#define CLEAR_DISPLAY_PENDING		2
 	#define SET_CURSOR_PENDING			3
 	#define SEND_STRING_PENDING			4
+	#define SEND_INT_PENDING			5
 #endif
 /*- ENUMS --------------------------------------------------*/
 typedef enum
@@ -73,6 +74,7 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base);
 
 #if (AsyncMode == TRUE)
 	void LcdDelayFinished(void);
+	void LcdPoweringUpFinished(void);
 #endif
 
 
