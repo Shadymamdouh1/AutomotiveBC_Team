@@ -7,6 +7,8 @@
 ******************************************************************************/
 #include "ISR.h"
 
+
+
 /* CONSTANTS */
 
 #define LOW_LEVEL			0			//The low level of INT0 generates an interrupt request.
@@ -35,7 +37,7 @@ void DisableGlobalInterrupts(void)
 
 void EnableExternalInterrupts_INT0(uint8_t senseControl)
 {
-	SET_BIT(GICR_R, INT0_B);
+	
 	switch(senseControl)
 	{
 		case(LOW_LEVEL):
@@ -63,6 +65,7 @@ void EnableExternalInterrupts_INT0(uint8_t senseControl)
 			break;
 		}					
 	}
+	SET_BIT(GICR_R, INT0_B);
 	EnableGlobalInterrupts();
 }
 
