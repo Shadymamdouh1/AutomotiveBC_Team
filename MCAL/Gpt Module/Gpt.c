@@ -12,7 +12,8 @@
 #include "../../Microcontroller/Atmega32 Registers/Gpt_Regs.h"
 
 #define GPT_CHANNELS			3
-
+/* it will be used to stop the timer1 if it started and didn't stop till reach this value */
+#define MAX_TICKS_T1 100000000UL
 /*- GLOBAL STATIC VARIABLES
 -------------------------------*/
 static volatile uint32_t gu32_T0_OvfCounts = 0;
@@ -22,6 +23,8 @@ static volatile uint32_t gu32_T2_OvfCounts = 0;
 static pfGpt_CallBack_t T0ovfCallback;
 static pfGpt_CallBack_t T1ovfCallback;
 static pfGpt_CallBack_t T2ovfCallback;
+
+static uint32_t gu32_T1_OVF_TICKS =0;
 
 enuGpt_Status_t Gpt_Status[GPT_CHANNELS] = {GPT_STATUS_ERROR_OK};
 enuGpt_initStatus_t Gpt_Init = GPT_NOT_INITIALIZED;
@@ -1232,7 +1235,7 @@ enuGpt_Status_t GptStop(uint8_t ChannelId)
 			
 			break;
 		}
-/*************************************************************************/
+
 case(TIMER_1):
 {
 	
@@ -1246,7 +1249,7 @@ case(TIMER_1):
 	
 	break;
 }
-/*************************************************************************/		
+
 		
 		case(TIMER_2):
 		{
@@ -1265,7 +1268,139 @@ case(TIMER_1):
 	
 	return GPT_STATUS_ERROR_OK;
 }
+/**************************************************************/
+/*****************************************************************************************
+* Parameters (in): Channel Id
+* Parameters (out): Error Status
+* Return value: enuGpt_Status_t
+* Description: this function will stop the timer if the timer starts and exceeds the max numbers 
+			   of counts allowed 
+******************************************************************************************/
+#if 0
+void T1ExpireFunc(void)
+{
+	GptStop(TIMER_1);
+}
+#endif
+/*****************************************************************************************
+* Parameters (in): Channel Id
+* Parameters (out): Error Status
+* Return value: enuGpt_Status_t
+* Description: Starts a given timer
+******************************************************************************************/
+enuGpt_Status_t Gpt_StartTimer(uint8_t ChannelId)
+{
+	switch(strGpt_Channels[ChannelId].u8_TimerNumber)
+	{
+		case(TIMER_1):
+		{
+			//GptStart_aSync(TIMER_1,MAX_TICKS_T1,T1ExpireFunc);
+			if(Gpt_Status[TIMER_1] == GPT_STATUS_ALREADY_RUNNING)
+			{
+				return GPT_STATUS_ALREADY_RUNNING;
+			}
+			Gpt_Status[TIMER_1] = GPT_STATUS_ALREADY_RUNNING;
+			
+			/*T1ovfCallback = FunToBeCalledInISR;*/
+			
+			/* set ticks */
+			TCNT1_R = 0x00;
+				
+			/* set to prescaler */
+			switch(strGpt_Channels[ChannelId].u8_Prescaler)
+			{
+				case(PRESCALER_1):
+				{
+						
+					SET_BIT(TCCR1B_R, CS10_B);
+					CLEAR_BIT(TCCR1B_R, CS11_B);
+					CLEAR_BIT(TCCR1B_R, CS12_B);
+						
+					SET_BIT(TIMSK_R, TOIE1_B);
+						
+					break;
+				}
+				case(PRESCALER_8):
+				{
+					CLEAR_BIT(TCCR1B_R, CS10_B);
+					SET_BIT(TCCR1B_R, CS11_B);
+					CLEAR_BIT(TCCR1B_R, CS12_B);
+						
+					SET_BIT(TIMSK_R, TOIE1_B);
+						
 
+						
+					break;
+				}
+				case(PRESCALER_64):
+				{
+					SET_BIT(TCCR1B_R, CS10_B);
+					SET_BIT(TCCR1B_R, CS11_B);
+					CLEAR_BIT(TCCR1B_R, CS12_B);
+						
+					SET_BIT(TIMSK_R, TOIE1_B);
+						
+						
+					break;
+				}
+				case(PRESCALER_256):
+				{
+					CLEAR_BIT(TCCR1B_R, CS10_B);
+					CLEAR_BIT(TCCR1B_R, CS11_B);
+					SET_BIT(TCCR1B_R, CS12_B);
+						
+					SET_BIT(TIMSK_R, TOIE1_B);
+						
+						
+					break;
+				}
+				case(PRESCALER_1024):
+				{
+					SET_BIT(TCCR1B_R, CS10_B);
+					CLEAR_BIT(TCCR1B_R, CS11_B);
+					SET_BIT(TCCR1B_R, CS12_B);
+						
+					SET_BIT(TIMSK_R,TOIE1_B);
+						
+						
+					break;
+				}
+				default: return GPT_STATUS_ERROR_NOK;
+			}
+			
+			break;
+		}
+		default: return GPT_STATUS_ERROR_NOK;
+	}
+	
+	return GPT_STATUS_ERROR_OK;
+}
+/*****************************************************************************************
+* Parameters (in): Channel Id
+* Parameters (out): Error Status
+* Return value: enuGpt_Status_t
+* Description: Returns counter val after Start 
+******************************************************************************************/
+void Gpt_ReturnCounterVal(uint8_t ChannelId , uint32_t *u32_CounterVal)
+{
+	uint32_t u32_Temp;
+	switch(ChannelId)
+	{
+		case TIMER_1 :
+		{
+			
+				u32_Temp =((gu32_T1_OVF_TICKS*TIMER_1_MAX_TICKS)+TCNT1_R);
+				*u32_CounterVal=u32_Temp;
+				gu32_T1_OVF_TICKS=0;
+				
+			break;
+		}
+		
+	}
+	
+}
+
+/***********************************************************/
 /* Interrupts */
 
 /*****************************************************************************************
@@ -1308,16 +1443,22 @@ ISR(TIMER0_OVF)
 ******************************************************************************************/
 ISR(TIMER1_OVF)
 {
+	gu32_T1_OVF_TICKS++;
+	#if 0
 	if(gu32_T1_OvfCounts == 0)
 	{
 		Gpt_Status[TIMER_1] = GPT_STATUS_NOT_RUNNING;
 		GptStop(TIMER_1);
+		/* Reset  gu32_T1_OVF_TICKS */
+		gu32_T1_OVF_TICKS=0;
 		T1ovfCallback();
+		
 	}
 	else
 	{
 		gu32_T1_OvfCounts--;
 	}
+	#endif
 }
 /*****************************************************************************************
 * Parameters (in): None
