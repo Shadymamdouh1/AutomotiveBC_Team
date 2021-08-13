@@ -11,7 +11,9 @@
 
 /* Async Cfg */
 #define AsyncMode			TRUE
-#define	DelayTicks			250
+#define	DelayTicks_Commands			250
+#define	DelayTicks_PowerUp			2500
+
 #define TIMER_USED_ID		TIMER_CHANNEL_0_ID
 /*********************************************/
 #define Lcd_Rows			2

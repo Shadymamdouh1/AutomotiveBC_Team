@@ -26,7 +26,7 @@ static pfGpt_CallBack_t T2ovfCallback;
 
 static uint32_t gu32_T1_OVF_TICKS =0;
 
-enuGpt_Status_t Gpt_Status[GPT_CHANNELS] = {GPT_STATUS_ERROR_OK};
+enuGpt_Status_t Gpt_Status[GPT_CHANNELS] = {GPT_STATUS_ERROR_NOK};
 enuGpt_initStatus_t Gpt_Init = GPT_NOT_INITIALIZED;
 
 /*- LOCAL FUNCTIONS IMPLEMENTATION

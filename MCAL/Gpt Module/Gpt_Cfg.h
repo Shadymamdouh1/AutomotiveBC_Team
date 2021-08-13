@@ -33,5 +33,6 @@
 #define NORMAL_MODE   0
 
 #define TIMER_CHANNEL_0_ID	0
-#define TIMER_CHANNEL_2_ID	1
+#define TIMER_CHANNEL_1_ID	1
+#define TIMER_CHANNEL_2_ID	2
 #endif /* GPT_CFG_H_ */

@@ -6,8 +6,8 @@
  */ 
 
 
-#ifndef ROBOT_CFG_H_
-#define ROBOT_CFG_H_
+#ifndef RBT_STEERING_CFG_H_
+#define RBT_STEERING_CFG_H_
 
 /* Identifier for the direction of Motor from the Motor Module */
 /*          FORWARD == Clock Wise            */
@@ -16,4 +16,4 @@
 #define MOTOR_BKWRD		MOTOR_DIR_ANTI_CLK_WISE
 
 
-#endif /* ROBOT_CFG_H_ */
+#endif /* RBT_STEERING_CFG_H_ */

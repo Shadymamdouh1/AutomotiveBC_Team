@@ -1,5 +1,5 @@
 /*
- * Robot.c
+ * Rbt_Steering.c
  *
  * Created: 9/8/2021 11:15:40 AM
  *  Author: Ahmed Nabil
@@ -7,7 +7,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "Robot.h"
+#include "Rbt_Steering.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -19,39 +19,35 @@
 #define ROBOT_STOPPED				0U
 #define ROBOT_RUNNING				1U
 
-
-
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
-
 /* Holds the current state of the Robot */
-u8_RobotState_t	gau8_RobotState = ROBOT_STOPPED;
+RobotState_t RobotState_gau8 = ROBOT_STOPPED;
+
 /* Holds the status of the Robot Module */
-uint8_t gu8_RobotModuleStatus = ROBOT_STATUS_UNINIT;
-
-
+uint8_t RobotModuleStatus_gu8 = ROBOT_STATUS_UNINIT;
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: Robot_init
+* Service Name: RbtSteering_init
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuRobot_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Return value: Robot_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Initialize the Robot module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to initialize the Robot module */
-enuRobot_Status_t Robot_init(void)
+Robot_Status_t RbtSteering_init(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
 	/* Check if the Robot module is already initialized */
-	if(gu8_RobotModuleStatus == ROBOT_STATUS_INIT)
+	if(RobotModuleStatus_gu8 == ROBOT_STATUS_INIT)
 	{
 		return ROBOT_STATUS_INIT;
 	}else{/*Nothing to here*/}
@@ -67,30 +63,30 @@ enuRobot_Status_t Robot_init(void)
 		return ROBOT_STATUS_ERROR_NOK;
 	
 	/* Change the state of the module to initialized */
-	gu8_RobotModuleStatus = ROBOT_STATUS_INIT;
+	RobotModuleStatus_gu8 = ROBOT_STATUS_INIT;
 	return ROBOT_STATUS_ERROR_OK;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: Robot_move
+* Service Name: RbtSteering_move
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): u8_speed - Speed of the robot in %
 *				   u8_direction - Direction of the robot (Forward - Backward - Left - Right)
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuRobot_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Return value: Robot_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Move the Robot in the given direction with a given speed in %.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to move the Robot forward with given speed in % */
-enuRobot_Status_t Robot_move(u8_RobotDir_t u8_direction, u8_RobotSpeed_t u8_speed)
+Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
 	/* Check if the ROBOT module is not initialized */
-	if(gu8_RobotModuleStatus != ROBOT_STATUS_INIT)
+	if(RobotModuleStatus_gu8 != ROBOT_STATUS_INIT)
 	{
 		return ROBOT_STATUS_UNINIT;
 	}else{/*Nothing to here*/}
@@ -108,10 +104,10 @@ enuRobot_Status_t Robot_move(u8_RobotDir_t u8_direction, u8_RobotSpeed_t u8_spee
 	}else{/*Nothing to here*/}
 	
 	/* Check if the Robot is already running */
-	if(gau8_RobotState == ROBOT_RUNNING)		
+	if(RobotState_gau8 == ROBOT_RUNNING)		
 	{
 		/* Stop the Robot to Run again with the new speed and direction */
-		Robot_stop();
+		RbtSteering_stop();
 	}else{/*Nothing to here*/}
 /**************************************************************************************/
 /*								End of Error Checking								  */
@@ -122,44 +118,44 @@ enuRobot_Status_t Robot_move(u8_RobotDir_t u8_direction, u8_RobotSpeed_t u8_spee
 /**************************************************************************************/
 	if(u8_speed == 0) 
 	{
-		Robot_stop();
+		RbtSteering_stop();
 		return ROBOT_STATUS_ERROR_OK;
 	}
 	switch (u8_direction)
 	{	/* If the give Direction is Forward */
 		case ROBOT_DIR_FRWRD:
 			/* Run Left Motor in Forward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_leftMotorID, u8_speed, MOTOR_FRWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_leftMotorID, u8_speed, MOTOR_FRWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			/* Run Right Motor in Forward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_rightMotorID, u8_speed, MOTOR_FRWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_rightMotorID, u8_speed, MOTOR_FRWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			break;
 		/* If the give Direction is Forward */
 		case ROBOT_DIR_BKWRD:
 			/* Run Left Motor in Backward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_leftMotorID, u8_speed, MOTOR_BKWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_leftMotorID, u8_speed, MOTOR_BKWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			/* Run Right Motor in Backward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_rightMotorID, u8_speed, MOTOR_BKWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_rightMotorID, u8_speed, MOTOR_BKWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			break;
 		/* If the give Direction is Forward */
 		case ROBOT_DIR_LEFT:
 			/* Run Left Motor in Backward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_leftMotorID, u8_speed, MOTOR_BKWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_leftMotorID, u8_speed, MOTOR_BKWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			/* Run Right Motor in Forward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_rightMotorID, u8_speed, MOTOR_FRWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_rightMotorID, u8_speed, MOTOR_FRWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			break;
 		/* If the give Direction is Forward */
 		case ROBOT_DIR_RIGHT:
 			/* Run Left Motor in Forward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_leftMotorID, u8_speed, MOTOR_FRWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_leftMotorID, u8_speed, MOTOR_FRWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			/* Run Right Motor in Backward Direction */
-			if( MOTOR_STATUS_ERROR_OK != Motor_run(str_RobotsConfig.u8_rightMotorID, u8_speed, MOTOR_BKWRD))
+			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_rightMotorID, u8_speed, MOTOR_BKWRD))
 				return ROBOT_STATUS_ERROR_NOK;
 			break;
 		default:
@@ -167,30 +163,30 @@ enuRobot_Status_t Robot_move(u8_RobotDir_t u8_direction, u8_RobotSpeed_t u8_spee
 	}
 	
 	/* Change the state of the Motor to Running */
-	gau8_RobotState = ROBOT_RUNNING;
+	RobotState_gau8 = ROBOT_RUNNING;
 	
 	return MOTOR_STATUS_ERROR_OK;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: Robot_stop
+* Service Name: RbtSteering_stop
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuMotor_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Return value: Robot_Status_t - return the status of the function ERROR_OK or NOT_OK
 * Description: Function to Stop the Robot.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to stop robot */
-enuRobot_Status_t Robot_stop()
+Robot_Status_t RbtSteering_stop()
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
 	/* Check if the motor index is invalid */
-	if (ROBOT_STOPPED == gu8_RobotModuleStatus)
+	if (ROBOT_STOPPED == RobotModuleStatus_gu8)
 	{
 		return ROBOT_STATUS_ERROR_STOPPED;
 	}else{/*Nothing to here*/}
@@ -203,9 +199,9 @@ enuRobot_Status_t Robot_stop()
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Stop Left and Right Motors */
-	Motor_stop(str_RobotsConfig.u8_leftMotorID);
-	Motor_stop(str_RobotsConfig.u8_rightMotorID);
+	Motor_stop(RbtSteering_Configuratons.Rbt_leftMotorID);
+	Motor_stop(RbtSteering_Configuratons.Rbt_rightMotorID);
 	/* Change the state of the Robot to Stopped */
-	gau8_RobotState = ROBOT_STOPPED;
+	RobotState_gau8 = ROBOT_STOPPED;
 	return MOTOR_STATUS_ERROR_OK;
 }

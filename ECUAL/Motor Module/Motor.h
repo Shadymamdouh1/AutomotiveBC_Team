@@ -29,22 +29,22 @@
 /*
  * Data Type for Motor state
  */
-typedef uint8_t u8_MotorState_t;
+typedef uint8_t MotorState_t;
 
 /*
  * Data Type for Motor Channel ID
  */
-typedef uint8_t u8_MotorChannel_t;
+typedef uint8_t MotorChannel_t;
 
 /*
  * Data Type for Motor Speed
  */
-typedef uint8_t u8_MotorSpeed_t;
+typedef uint8_t MotorSpeed_t;
 
 /*
  * Data Type for Motor Direction
  */
-typedef uint8_t u8_MotorDir_t;
+typedef uint8_t MotorDir_t;
 
 /*
  * Data Type for Motor return status
@@ -59,7 +59,7 @@ typedef enum
 	MOTOR_STATUS_ERROR_RUNNING,
 	MOTOR_STATUS_INIT,
 	MOTOR_STATUS_UNINIT
-}enuMotor_Status_t;
+}Motor_Status_t;
 
 /*
  * Data Type for Motor configurations
@@ -70,25 +70,25 @@ typedef struct
 	uint8_t u8_MotorDirPin1;
 	uint8_t u8_MotorDirPin2;
 	uint16_t u16_Frequency;
-}strMotor_Config_t;
+}Motor_Config_t;
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to initialize the motor module */
-enuMotor_Status_t Motor_init(void);
+Motor_Status_t Motor_init(void);
 
 /* Function to move the motor forward with given speed in % */
-enuMotor_Status_t Motor_run(u8_MotorChannel_t u8_motorID, u8_MotorSpeed_t u8_speed, u8_MotorDir_t u8_direction);
+Motor_Status_t Motor_run(MotorChannel_t u8_motorID, MotorSpeed_t u8_speed, MotorDir_t u8_direction);
 
 /* Function to move the motor backward with given speed in % */
 //enuMotor_Status_t Motor_moveBackward(uint8_t u8_motorID, uint8_t u8_speed);
 
 /* Function to stop motor */
-enuMotor_Status_t Motor_stop(u8_MotorChannel_t u8_motorID);
+Motor_Status_t Motor_stop(MotorChannel_t u8_motorID);
 
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
-extern const strMotor_Config_t str_MotorsConfig[MOTORS_USED_NUM];
+extern const Motor_Config_t MotorsConfigurations_str[MOTORS_USED_NUM];
 
 #endif /* MOTOR_H_ */

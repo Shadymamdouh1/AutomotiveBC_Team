@@ -7,64 +7,36 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "App.h"
+#include "Obstcl_Avd_Rbt.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
-static enuRobotAction_t enuCurrentAction = ROBOT_ACTION_STOP;
-static enuApp_Status_t enuCurrentAppStatus = APP_STATUS_UNINITIALIZED;
-uint8_t gau8_num[4] = {0};
-uint16_t gu16_num = 0;
+
+ModuleState_t ObstclAvd_State = OBSTCLE_AVD_MOD_UNINITIALIZED;
+uint8_t distance_u8 = 90;
+uint8_t distance_au8[4] = {0};
+
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: RobotApp_start
+* Service Name: ObstacleAvoidance_init
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuApp_Status_t - return the status of the function ERROR_OK or NOT_OK
-* Description: Function to Start the Application.
+* Return value: Std_ReturnType - return the status of the function E_OK or E_NOT_OK
+* Description: Function to Initialize the Obstacle Avoidance Module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-enuApp_Status_t App_start(void)
-{
-	/**************************************************************************************/
-	/*								Function Implementation								  */
-	/**************************************************************************************/
-	/* Initialize the Car application */
-	if(App_init() != APP_STATUS_ERROR_OK)
-		return APP_STATUS_ERROR_NOK;
-	
-	/* Application Super Loop */
-	while (1)
-	{
-		/* Run the Obstacle Avoidance main function */
-		if(ObstacleAvoidance_mainFunction() != E_OK)
-			return E_NOT_OK;
-			
-	}
-}
-
-/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: App_init
-* Sync/Async: Synchronous
-* Reentrancy: Non reentrant
-* Parameters (in): None
-* Parameters (inout): None
-* Parameters (out): None
-* Return value: enuApp_Status_t - return the status of the function ERROR_OK or NOT_OK
-* Description: Function to Initialize the Application.
-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-enuApp_Status_t App_init(void)
+Std_ReturnType ObstacleAvoidance_init(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
-	/* Check if the Application was already initialized */
-	if (enuCurrentAppStatus == APP_STATUS_INITIALIZED)
+	/* Check if the Module was already initialized */
+	if (ObstclAvd_State != OBSTCLE_AVD_MOD_UNINITIALIZED)
 	{
-		return APP_STATUS_INITIALIZED;
+		return E_OK;
 	}
 /**************************************************************************************/
 /*								End of Error Checking								  */
@@ -73,35 +45,43 @@ enuApp_Status_t App_init(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-
+	EnableGlobalInterrupts();
 	/* Call the Robot Module initializer */
-	if(E_OK != ObstacleAvoidance_init())
-		return APP_STATUS_ERROR_NOK;
+	if(ROBOT_STATUS_ERROR_OK != RbtSteering_init())
+		return E_NOT_OK;
+		
+	/* Call the LCD Module initializer */
+	if(LCD_STATUS_ERROR_OK != Lcd_init())
+		return E_NOT_OK;
+	Lcd_sendString((uint8_t*)"    Distance");
+	/* Call the Ultrasonic Module initializer */
+//  	if(SRVC_STATUS_ERROR_OK != Ultrasonic_init())
+//  		return APP_STATUS_ERROR_NOK;
 
-	/* Update enuCurrentAppStatus to initialized */
-	enuCurrentAppStatus = APP_STATUS_INITIALIZED;
-	return APP_STATUS_ERROR_OK;
+	/* Update ObstclAvd_State to initialized */
+	ObstclAvd_State = OBSTCLE_AVD_MOD_INITIALIZED;
+	return E_OK;
 }
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: RobotApp_update
-* Sync/Async: Synchronous
+* Service Name: ObstacleAvoidance_mainFunction
+* Sync/Async: ASynchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
 * Parameters (inout): None
 * Parameters (out): None
-* Return value: enuApp_Status_t - return the status of the function ERROR_OK or NOT_OK
-* Description: Function to Update the state of the application.
+* Return value: Std_ReturnType - return the status of the function E_OK or E_NOT_OK
+* Description: Periodic function/task of the module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-enuApp_Status_t App_update(void)
+Std_ReturnType ObstacleAvoidance_mainFunction(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
-	/* Check if the Application was already initialized */
-	if (enuCurrentAppStatus != APP_STATUS_INITIALIZED)
+	/* Check if the Module was already initialized */
+	if (ObstclAvd_State == OBSTCLE_AVD_MOD_UNINITIALIZED)
 	{
-		return APP_STATUS_UNINITIALIZED;
+		return E_NOT_OK;
 	}
 /**************************************************************************************/
 /*								End of Error Checking								  */
@@ -110,11 +90,55 @@ enuApp_Status_t App_update(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	
-	ObstacleAvoidance_mainFunction();
-	
+	uint8_t btn_state=PIN_LOW;
+	static uint8_t btn_flag=PIN_LOW;
+/* Read Ultrasonic Distance */
+	/* Read button as for testing */
+	Dio_readPin(DIO_BTN1_CHANNEL_ID, &btn_state);
+	if((btn_state == PIN_HIGH) && (btn_flag == PIN_LOW))
+	{
+		btn_flag = PIN_HIGH;
+		distance_u8-=10;
+	}else if(btn_state == PIN_LOW)
+	{
+		btn_flag = PIN_LOW;
+	}
+/* Take Robot Action */
+	/* If distance > 50 */
+	if(distance_u8 > 50)
+	{
+		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_50)
+		{
+			ObstclAvd_State = OB_AVD_DISTANCE_UNDER_50;
+			RbtSteering_move(ROBOT_DIR_FRWRD, 20);
+		}
+	}
+	/* If distance = 50 */
+	else if(distance_u8 == 50)
+	{
+		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_50)
+		{
+			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_50;
+			RbtSteering_move(ROBOT_DIR_RIGHT, 15);
+		}
+	}
+	/* If distance < 50 */
+	else
+	{
+		if (ObstclAvd_State != OB_AVD_DISTANCE_OVER_50)
+		{
+			ObstclAvd_State = OB_AVD_DISTANCE_OVER_50;
+			RbtSteering_move(ROBOT_DIR_BKWRD, 20);
+		}
+	}
+/* Print Distance on LCD */
+#if 1
+	integerToString((uint16_t)distance_u8, distance_au8, DEC);
+	Lcd_cursorPosition(2,8);
+	Lcd_sendString(distance_au8);
+#endif
 /*******************************************************************************/
 /*******************************************************************************/
 
-	return APP_STATUS_ERROR_OK;
+	return E_OK;
 }
