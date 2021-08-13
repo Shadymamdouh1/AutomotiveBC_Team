@@ -21,19 +21,12 @@ uint8_t LCD_NEXT_STATE = IDLE;
 uint8_t LCD_SEND_STRING_STATE = IDLE;
 uint8_t LCD_CLEAR_DISPLAY_STATE = IDLE;
 uint8_t LCD_SET_CURSOR_STATE = IDLE;
-uint8_t LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
+uint8_t LCD_SENDING_CHAR_STATE = IDLE;
 uint8_t LCD_SEND_COMMAND_STATE = IDLE;
 uint8_t LCD_SENDING_INT_STATE = IDLE;
-uint8_t LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
 
 uint8_t Lcd_Init_DoneFlag = FALSE;
 uint8_t Lcd_PoweringUp_Flag = FALSE;
-
-uint8_t gau8_currentString[Lcd_Columns];
-uint8_t gau8_currentInteger[6];
-
-uint8_t gu8_currentX = Initial_Value;
-uint8_t gu8_currentY = Initial_Value;
 
 #define LCD_INIT_4BITS_COMMAND_1_ID			1
 #define LCD_INIT_4BITS_COMMAND_2_ID			2
@@ -45,10 +38,7 @@ uint8_t gu8_currentY = Initial_Value;
 
 uint8_t gu8_currentlyRunningCommand = LCD_INIT_4BITS_COMMAND_1_ID;
  
-/* one time strings option, to be redesigned later in cfg.c */
-uint8_t gau8_oneTimeString_1[10] = "Distance:";
 
-uint8_t gu8_oneTimeString_1_Flag = FALSE;
 
 #endif
 
@@ -233,44 +223,31 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 	{
 		if(Lcd_Init != LCD_INITIALIZED) return LCD_STATUS_ERROR_NOK;
 		
-		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SEND_STRING_STATE == RUNNING 
-		   || LCD_SENDING_INT_STATE == RUNNING)
+		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SEND_STRING_STATE == RUNNING || LCD_SENDING_INT_STATE == RUNNING)
 		{
 			if(LCD_NEXT_STATE == IDLE)
 			{
-				gu8_currentX = u8_xAxis;
-				gu8_currentY = u8_yAxis;
 				LCD_NEXT_STATE = SET_CURSOR_PENDING;
 			}
 			return LCD_STATUS_ERROR_NOK;
 		}
 		else if(LCD_NEXT_STATE == SET_CURSOR_PENDING)
 		{
-			if(gu8_currentX == u8_xAxis && gu8_currentY == u8_yAxis)
-			{
-				LCD_SET_CURSOR_STATE = RUNNING;
-				LCD_NEXT_STATE = IDLE;			
-			}
-			else
-			{
-				return LCD_STATUS_ERROR_NOK;
-			}
-
+			LCD_SET_CURSOR_STATE = RUNNING;
+			LCD_NEXT_STATE = IDLE;
 		}
-		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING 
-				|| LCD_NEXT_STATE == SEND_INT_PENDING)
+		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_SENDING_INT_STATE == SEND_INT_PENDING)
 		{
 			return LCD_STATUS_ERROR_NOK;
 		}
 		else if(LCD_NEXT_STATE == IDLE)
 		{
-			gu8_currentX = u8_xAxis;
-			gu8_currentY = u8_yAxis;
 			LCD_SET_CURSOR_STATE = RUNNING;
+			LCD_NEXT_STATE = IDLE;
 		}
 		else
 		{
-			/* RUN */
+			return LCD_STATUS_ERROR_NOK;
 		}
 		
 		uint8_t au8_positions[4] = {0, 64, Lcd_Columns, Lcd_Columns+64};
@@ -283,8 +260,7 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 	{
 		if(Lcd_Init != LCD_INITIALIZED) return LCD_STATUS_ERROR_NOK;
 		
-		if(LCD_SEND_STRING_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING 
-		   || LCD_SENDING_INT_STATE == RUNNING)
+		if(LCD_SEND_STRING_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING || LCD_SENDING_INT_STATE == RUNNING)
 		{
 			if(LCD_NEXT_STATE == IDLE)
 			{
@@ -297,18 +273,18 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 			LCD_CLEAR_DISPLAY_STATE = RUNNING;
 			LCD_NEXT_STATE = IDLE;
 		}
-		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == SET_CURSOR_PENDING 
-				|| LCD_NEXT_STATE == SEND_INT_PENDING)
+		else if(LCD_NEXT_STATE == SEND_STRING_PENDING || LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_SENDING_INT_STATE == SEND_INT_PENDING)
 		{
 			return LCD_STATUS_ERROR_NOK;
 		}
 		else if( LCD_NEXT_STATE == IDLE)
 		{
 			LCD_CLEAR_DISPLAY_STATE = RUNNING;
+			LCD_NEXT_STATE = IDLE;
 		}
 		else
 		{
-			 /* RUN */
+			return LCD_STATUS_ERROR_NOK;
 		}
 		
 		Lcd_sendCommand(CLEAR);
@@ -317,63 +293,40 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 	
 	enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 	{
-		if(Lcd_Init != LCD_INITIALIZED || LCD_SENDING_CHAR_FOR_STRING_STATE == RUNNING) return LCD_STATUS_ERROR_NOK;
-		
-		static uint8_t u8_stringIndexCounter = Initial_Value;
-		
-		if(u8_stringIndexCounter != 0 && stringCmp(au8_string, gau8_currentString) == FALSE)
-		{
-			return LCD_STATUS_ERROR_NOK; 
-		}
+		if(Lcd_Init != LCD_INITIALIZED || LCD_SENDING_CHAR_STATE == RUNNING) return LCD_STATUS_ERROR_NOK;
 		
 		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING || LCD_SENDING_INT_STATE == RUNNING)
 		{
 			if(LCD_NEXT_STATE == IDLE)
 			{
-				stringCopy(au8_string, gau8_currentString);
 				LCD_NEXT_STATE = SEND_STRING_PENDING;
-				
 			}
 			return LCD_STATUS_ERROR_NOK;
 		}
-		else if(LCD_NEXT_STATE == SEND_STRING_PENDING && LCD_SENDING_INT_STATE != RUNNING)
+		else if(LCD_NEXT_STATE == SEND_STRING_PENDING)
 		{
-			if(stringCmp(au8_string, gau8_currentString) == TRUE)
-			{
-				LCD_SEND_STRING_STATE =  RUNNING;
-				LCD_SENDING_CHAR_FOR_STRING_STATE = RUNNING;
-				LCD_NEXT_STATE = IDLE;			
-			}
-			else
-			{
-				return LCD_STATUS_ERROR_NOK;
-			}
+			LCD_SEND_STRING_STATE = RUNNING;
+			LCD_NEXT_STATE = SEND_STRING_PENDING;
+			LCD_SENDING_CHAR_STATE = RUNNING;
 		}
-		else if((LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_NEXT_STATE == SEND_INT_PENDING) 
-				&& LCD_SEND_STRING_STATE != RUNNING)
+		else if(LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_SENDING_INT_STATE == SEND_INT_PENDING)
 		{
 			return LCD_STATUS_ERROR_NOK;
 		}
 		else if(LCD_NEXT_STATE == IDLE)
 		{
-			stringCopy(au8_string, gau8_currentString);
 			LCD_SEND_STRING_STATE = RUNNING;
-			LCD_SENDING_CHAR_FOR_STRING_STATE = RUNNING;
+			LCD_NEXT_STATE = SEND_STRING_PENDING;
+			LCD_SENDING_CHAR_STATE = RUNNING;
 		}
 		else
 		{
-			/* RUN */
-		}
-		
-		/******************** TEMP ********************/
-		if(gu8_oneTimeString_1_Flag == TRUE && stringCmp(gau8_currentString, gau8_oneTimeString_1) == TRUE)
-		{
-			u8_stringIndexCounter = Initial_Value;
-			LCD_SEND_STRING_STATE = IDLE;
-			LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
 			return LCD_STATUS_ERROR_NOK;
 		}
-		/*********************************************/
+		
+		
+		static uint8_t u8_stringIndexCounter = Initial_Value;
+		
 		if(au8_string[u8_stringIndexCounter]!='\0')
 		{
 			Lcd_sendCharacter(au8_string[u8_stringIndexCounter]);
@@ -383,160 +336,18 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 		{
 			u8_stringIndexCounter = Initial_Value;
 			LCD_SEND_STRING_STATE = IDLE;
-			LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
-			
-			/*********************** TEMP *********************************/
-			if(gu8_oneTimeString_1_Flag == FALSE)
-			{
-				if(stringCmp(gau8_currentString, gau8_oneTimeString_1) == TRUE)
-				{
-					gu8_oneTimeString_1_Flag = TRUE;
-					EmptyString(gau8_currentString);
-				}
-			}
-			/**************************************************************/
+			LCD_NEXT_STATE = IDLE;
+			LCD_SENDING_CHAR_STATE = IDLE;
 		}
 	
 		return LCD_STATUS_ERROR_OK;
 	}
-	
-	enuLcd_Status_t Lcd_sendConstInt(uint16_t u16_number, uint8_t u8_base)
-	{
-		if(Lcd_Init != LCD_INITIALIZED || LCD_SENDING_CHAR_FOR_INT_STATE == RUNNING) 
-		return LCD_STATUS_ERROR_NOK;
-		
-		uint8_t au8_string[6];
-		integerToString(u16_number, au8_string, u8_base);
-		
-		static uint8_t u8_integerIndexCounter = Initial_Value;
-		
-		if(u8_integerIndexCounter != 0 && stringCmp(au8_string, gau8_currentInteger) == FALSE)
-		{
-			return LCD_STATUS_ERROR_NOK;
-		}
-		
-		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING 
-		   || LCD_SEND_STRING_STATE == RUNNING)
-		{
-			if(LCD_NEXT_STATE == IDLE)
-			{
-				stringCopy(au8_string, gau8_currentInteger);
-				LCD_NEXT_STATE = SEND_INT_PENDING;
-			}
-			return LCD_STATUS_ERROR_NOK;
-		}
-		else if(LCD_NEXT_STATE == SEND_INT_PENDING && LCD_SEND_STRING_STATE != RUNNING)
-		{
-			if(stringCmp(au8_string, gau8_currentInteger) == TRUE)
-			{
-				LCD_SENDING_INT_STATE = RUNNING;
-				LCD_SENDING_CHAR_FOR_INT_STATE = RUNNING;
-				LCD_NEXT_STATE = IDLE;
-			}
-			else
-			{
-				return LCD_STATUS_ERROR_NOK;
-			}
-
-		}
-		else if((LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_NEXT_STATE == SEND_STRING_PENDING) 
-				&& LCD_SENDING_INT_STATE != RUNNING)
-		{
-			return LCD_STATUS_ERROR_NOK;
-		}
-		else if(LCD_NEXT_STATE == IDLE)
-		{
-			stringCopy(au8_string, gau8_currentInteger);
-			LCD_SENDING_INT_STATE = RUNNING;
-			LCD_SENDING_CHAR_FOR_INT_STATE = RUNNING;
-		}
-		else
-		{
-			/* RUN */
-		}
-		
-		
-		if(au8_string[u8_integerIndexCounter]!='\0')
-		{
-			Lcd_sendCharacter(au8_string[u8_integerIndexCounter]);
-			u8_integerIndexCounter++;
-		}
-		else
-		{
-			u8_integerIndexCounter = Initial_Value;
-			LCD_SENDING_INT_STATE = IDLE;
-			LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
-		}
-		
-		return LCD_STATUS_ERROR_OK;
-	}
-	
-	enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
-	{
-		if(Lcd_Init != LCD_INITIALIZED || LCD_SENDING_CHAR_FOR_INT_STATE == RUNNING)
-		return LCD_STATUS_ERROR_NOK;
-		
-		uint8_t au8_string[6];
-		integerToString(u16_number, au8_string, u8_base);
-		
-		static uint8_t u8_integerIndexCounter = Initial_Value;
-		
-		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING
-		|| LCD_SEND_STRING_STATE == RUNNING)
-		{
-			if(LCD_NEXT_STATE == IDLE)
-			{
-				//stringCopy(au8_string, gau8_currentInteger);
-				LCD_NEXT_STATE = SEND_INT_PENDING;
-			}
-			return LCD_STATUS_ERROR_NOK;
-		}
-		else if(LCD_NEXT_STATE == SEND_INT_PENDING && LCD_SEND_STRING_STATE != RUNNING)
-		{
-				stringCopy(au8_string, gau8_currentInteger);
-				LCD_SENDING_INT_STATE = RUNNING;
-				LCD_SENDING_CHAR_FOR_INT_STATE = RUNNING;
-				LCD_NEXT_STATE = IDLE;
-		}
-		else if((LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_NEXT_STATE == SEND_STRING_PENDING)
-		&& LCD_SENDING_INT_STATE != RUNNING)
-		{
-			return LCD_STATUS_ERROR_NOK;
-		}
-		else if(LCD_NEXT_STATE == IDLE)
-		{
-			stringCopy(au8_string, gau8_currentInteger);
-			LCD_SENDING_INT_STATE = RUNNING;
-			LCD_SENDING_CHAR_FOR_INT_STATE = RUNNING;
-		}
-		else
-		{
-			/* RUN */
-		}
-		
-		
-		if(gau8_currentInteger[u8_integerIndexCounter]!='\0')
-		{
-			Lcd_sendCharacter(gau8_currentInteger[u8_integerIndexCounter]);
-			u8_integerIndexCounter++;
-		}
-		else
-		{
-			u8_integerIndexCounter = Initial_Value;
-			LCD_SENDING_INT_STATE = IDLE;
-			LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
-			
-			EmptyString(gau8_currentInteger);
-		}
-		
-		return LCD_STATUS_ERROR_OK;
-	}	
 	
 	enuLcd_Status_t Lcd_sendData_4bitMode(uint8_t u8_data)
 	{
 		Lcd_sendHigherNibble(u8_data);							//send higher nibble
 		Lcd_toggleEnable();		//toggle enable
-		
+	
 		Lcd_sendLowerNibble(u8_data);							//send lower nibble
 		Lcd_toggleEnable();		//toggle enable
 		
@@ -556,7 +367,63 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 		Lcd_sendData_4bitMode(u8_command);
 		
 		return LCD_STATUS_ERROR_OK;
-	}	
+	}
+	
+
+
+	enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
+	{
+		if(Lcd_Init != LCD_INITIALIZED || LCD_SENDING_CHAR_STATE == RUNNING) return LCD_STATUS_ERROR_NOK;
+		
+		if(LCD_CLEAR_DISPLAY_STATE == RUNNING || LCD_SET_CURSOR_STATE == RUNNING || LCD_SEND_STRING_STATE == RUNNING)
+		{
+			if(LCD_NEXT_STATE == IDLE)
+			{
+				LCD_NEXT_STATE = SEND_INT_PENDING;
+			}
+			return LCD_STATUS_ERROR_NOK;
+		}
+		else if(LCD_NEXT_STATE == SEND_INT_PENDING)
+		{
+			LCD_SENDING_INT_STATE = RUNNING;
+			LCD_NEXT_STATE = SEND_INT_PENDING;
+			LCD_SENDING_CHAR_STATE = RUNNING;
+		}
+		else if(LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_SEND_STRING_STATE == SEND_STRING_PENDING)
+		{
+			return LCD_STATUS_ERROR_NOK;
+		}
+		else if(LCD_NEXT_STATE == IDLE)
+		{
+			LCD_SENDING_INT_STATE = RUNNING;
+			LCD_NEXT_STATE = SEND_INT_PENDING;
+			LCD_SENDING_CHAR_STATE = RUNNING;
+		}
+		else
+		{
+			return LCD_STATUS_ERROR_NOK;
+		}
+		
+		uint8_t au8_string[6];
+		integerToString(u16_number, au8_string, u8_base);
+	
+		static uint8_t u8_stringIndexCounter = Initial_Value;
+		
+		if(au8_string[u8_stringIndexCounter]!='\0')
+		{
+			Lcd_sendCharacter(au8_string[u8_stringIndexCounter]);
+			u8_stringIndexCounter++;
+		}
+		else
+		{
+			u8_stringIndexCounter = Initial_Value;
+			LCD_SENDING_INT_STATE = IDLE;
+			LCD_NEXT_STATE = IDLE;
+			LCD_SENDING_CHAR_STATE = IDLE;
+		}
+		
+		return LCD_STATUS_ERROR_OK;
+	}
 				
 	void LcdDelayFinished(void)
 	{
@@ -588,11 +455,11 @@ uint8_t gu8_oneTimeString_1_Flag = FALSE;
 			}
 			else if(LCD_SEND_STRING_STATE == RUNNING)
 			{
-				LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
+				LCD_SENDING_CHAR_STATE = IDLE;
 			}
 			else if(LCD_SENDING_INT_STATE == RUNNING)
 			{
-				LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
+				LCD_SENDING_CHAR_STATE = IDLE;
 			}						
 		}
 
