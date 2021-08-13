@@ -1,153 +1,104 @@
-/*
- * ICU.c
- *
- * Created: 8/9/2021 1:11:58 AM
- *  Author: Shady Mamoduh
- */ 
-#include "types.h"
-#include "register.h"
+/*****************************************************************************
+* Module: SW_ICU Module
+* File Name: ICU_Cfg.c
+* Description: Source file for SW_ICU Module
+* Author: Shady Mamdouh
+* Date: 8/12/2021
+******************************************************************************/
+
+/**************************INCLUDES***************************************/
 #include "ICU.h"
-static uint8_t gu8_Clockselect =0;
-ICUError_t ICU_Init(S_ICUConfig_t const *SICU_config)
+#include "..\Interrupt Driver\ISR_Cfg.h"
+#include "..\Interrupt Driver\ISR.h"
+
+
+/************************************************************************/
+/**********************States types************************************/
+#define ICU_Stoped   0
+#define ICU_Rising   1
+#define ICU_Falling  2
+#define ICU_ReadyToReturnVal 3
+/***********************************************************************/
+
+/**************************Global variables*******************************/
+static uint8_t ICU_CH1_STATE =ICU_Stoped ;
+static uint32_t ICU_CH1_Counts =0;
+/*********************************************************************/
+void ICU_CH1CallBackFunction(void)
 {
-	/*************************************************
-				    ERROR Handling 
-	************************************************/
-	/* check pointer */
-	if (SICU_config==0)
+	
+	if (ICU_CH1_STATE==ICU_Rising)
+	{
+		/* start  counter */
+		Gpt_StartTimer(ICU_1);
+		/* update function state */
+		ICU_CH1_STATE =ICU_Falling;
+		
+		
+		/* Reverse the external interrupt polarity */
+		EnableExternalInterrupts_INT0(FALLING_EDGE);
+		
+	}
+	else if (ICU_CH1_STATE==ICU_Falling)
+	{
+		
+		/* Get the counter value */
+		Gpt_ReturnCounterVal(TIMER_1,&ICU_CH1_Counts);
+		
+		/* Stop the counter */
+		GptStop(ICU_1);
+		
+		/* Update function state */
+		ICU_CH1_STATE = ICU_ReadyToReturnVal;
+		/* Enable interrupt */
+		EnableExternalInterrupts_INT0(RISING_EDGE);//
+	}
+	
+}
+void ICU_Init(void)
+{
+	GptInit();
+	/* update function state */
+	ICU_CH1_STATE =ICU_Rising;
+	/* set call back function */
+	setExtINT0Callback(ICU_CH1CallBackFunction);
+	/* Enable interrupt */
+	EnableExternalInterrupts_INT0(RISING_EDGE);//
+}
+
+ICUError_t ICU_GetONPeriod_Counts(uint8_t ChannelId , uint32_t *u32_Counts)
+{
+	/************** Error Handling **********************/
+	if(ChannelId<0 || ChannelId >4)
 	{
 		return ERROR_NOK;
 	}
-	/* check ranges */
-	/* Wrong channel ID */
-	if (SICU_config->ICU_CH < CH0 || SICU_config->ICU_CH >=INVALIDCH )
+	if (u32_Counts==0)  //NULL pointer
 	{
 		return ERROR_NOK;
 	}
-	/* wrong pre-scal value */
-	if (SICU_config->ICU_precsal < ICU_OFF || SICU_config->ICU_precsal >= INVLAIDPre )
+	/***************************************************/
+	
+	switch(ChannelId)
 	{
-		return ERROR_NOK;
-	}
-	/* wrong operation mode */
-	if (SICU_config->ICU_OperationMode < NORMAL || SICU_config->ICU_OperationMode >= INVALIDMode )
-	{
-		return ERROR_NOK;
-	}
-  /*************************************************************************/
-	switch(SICU_config->ICU_CH)
-	{  
-		/* in our case Timer 1 represents CH0 */
-		case CH0 : 
+		case ICU_1 :
 		{
-			if (SICU_config->ICU_OperationMode == NORMAL)
-			{   
-				/* clear WGM10 and WGM11 */
-				TCCR1A &=~(0b11<<WGM10);
-				
-				/* clear WGM12 and WGM13 */
-				TCCR1B &=~(0b11<<WGM12);
-				
-			}
-			else
+			if (ICU_CH1_STATE==ICU_ReadyToReturnVal)
 			{
-				/* for future use */
+				*u32_Counts = ICU_CH1_Counts;
+				/* Update state */
+				ICU_CH1_STATE = ICU_Stoped ;
+				
+				return ERROR_OK;
 			}
 			break;
 		}
 	}
-	/* assigning clock source to global variable to be used by start function */
-	/* ICU will start once the clock source is assigned so it will be handled later*/
 	
-	gu8_Clockselect = SICU_config->ICU_precsal;
-}
-//static uint16_t RisingCounts;
-static uint16_t FalligCounts ;
-static uint8_t ICU_State=OFF;
-ICUError_t ICU_MeasureONDuration(uint8_t u8_channel, uint16_t *ICU_Counts)
-{
-	
-	/*************************************************
-				    ERROR Handling 
-	************************************************/
-	if (ICU_Counts==0)
-	{
-		/* NULL Pointer */
-		return ERROR_NOK;
-	}
-	if ( u8_channel >=INVALIDCH )
-	{
-		return ERROR_NOK;
-	}
-	
-	/***********************************/
-	if (ICU_State == OFF)
-	{ 
-		
-		
-		
-		
-		/* enable rising edge mode */
-		TCCR1B |=(1<<ICES1);
-		ICU_State =rising_mode;
-		
-		/* Start the counter */
-		/*start ICU by assigning the clock */
-		/* clear CS12:10 */
-		TCCR1B &=~(0b111<<CS10);
-		
-		/* set clock */
-		TCCR1B |=(gu8_Clockselect<<CS10);
-		
-	}
-	/* if ICU flag is high */
-	if ( ( (TIFR &(1<<ICF1))>>ICF1 ) ==1 )
-	{
-		if (ICU_State==rising_mode)
-		{
-			/* get ICU counts */
-			//RisingCounts =ICR1;
-			TCNT1 =0;
-			/* clear flag */
-			TIFR |=(1<<ICF1);
-			
-			ICU_State =falling_mode;
-			
-			/* enable falling edge */
-			TCCR1B &=~(1<<ICES1);
-			
-			
-			
-		}
-		else //if (ICU_State == falling_mode)
-		{
-			   FalligCounts = ICR1;
-			   /* clear flag */
-			   TIFR |=(1<<ICF1);
-			   
-			   /* update state to off */
-			   ICU_State = OFF;
-			   
-			   //* clear counter */
-			   TCNT1 =0;
-			   
-			   /* disable the ICU */
-			   
-			   /* set clock to 0*/
-			   TCCR1B &=~(0b111<<CS10);
-			   
-			   /* update the difference in counts */
-			  *ICU_Counts = FalligCounts;
-			  
-			  
-			  
-			  return ERROR_OK;
-		}
-		
-		
-		
-		
-		
-	}
 	return ERROR_NOK;
 }
+
+
+
+
+
