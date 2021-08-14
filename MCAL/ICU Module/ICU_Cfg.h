@@ -10,13 +10,11 @@
 #ifndef ICU_CFG_H_
 #define ICU_CFG_H_
 
-#define ICU_USED_CHANNELS   1
+#define ICU_USED_CHANNELS		1
 
 
 
-#define ICU_0   0
-#define ICU_1   1
-#define ICU_2   2
+#define ICU_CHANNEL_0			0
 
 
 #endif /* ICU_CFG_H_ */

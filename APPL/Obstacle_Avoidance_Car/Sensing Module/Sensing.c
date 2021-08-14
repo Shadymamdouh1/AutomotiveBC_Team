@@ -69,13 +69,13 @@ Std_ReturnType Sensing_init(void)
 * Service Name: Sensing_getObstcleDistance
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
-* Parameters (in): None
+* Parameters (in): DistanceID_u8 - ID for the distance to be read.
 * Parameters (inout): None
-* Parameters (out): None
+* Parameters (out): Sensing_distanceCM_pu16 - pointer to a variable to hold the returned distance
 * Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
-* Description: Function used to get distance between the sensor and the facing obstacle
+* Description: Function used to get distance as given in the ID
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-Std_ReturnType Sensing_getObstcleDistance(uint16_t *Sensing_distanceCM_pu16)
+Std_ReturnType Sensing_getDistance(uint8_t DistanceID_u8, uint16_t *Sensing_distanceCM_pu16)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
@@ -84,13 +84,18 @@ Std_ReturnType Sensing_getObstcleDistance(uint16_t *Sensing_distanceCM_pu16)
 	if(SensingModuleStatus_gu8 != SENSING_STATUS_INIT)
 	{
 		return E_NOT_OK;
-	}else{/*Nothing to here*/}
+	}else{/*Nothing to do here*/}
 		
 	/* Check if the pointer variable is NULL */
 	if (NULL_PTR == Sensing_distanceCM_pu16)
 	{
 		return E_NOT_OK;
-	}else{/*Nothing to here*/}
+	}else{/*Nothing to do here*/}
+		
+	if(DistanceID_u8 >= SENSING_DISTANCE_INVALID)
+	{
+		return E_NOT_OK;
+	}else{/* Nothing to do here*/}
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
@@ -98,8 +103,22 @@ Std_ReturnType Sensing_getObstcleDistance(uint16_t *Sensing_distanceCM_pu16)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
+	uint16_t tempDistance_u16 = 0;
 	
 	/* Read Ultrasonic Distance */
-	Ultrasonic_GetDistance(1, Sensing_distanceCM_pu16);
-	return E_OK;
+	if(Ultrasonic_GetDistance(US_CHANNEL_FRONT, &tempDistance_u16) == E_OK)
+	{
+		if(tempDistance_u16 > ULTRASONIC_MAX_DISTANCE_RANGE)
+		{
+			*Sensing_distanceCM_pu16 = ULTRASONIC_MAX_DISTANCE_RANGE;
+		}else
+		{
+			*Sensing_distanceCM_pu16 = tempDistance_u16;
+		}
+		return E_OK;
+	}else
+	{
+		return E_NOT_OK;
+	}
+	return E_NOT_OK;
 }

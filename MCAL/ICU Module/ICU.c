@@ -14,93 +14,102 @@
 
 /************************************************************************/
 /**********************States types************************************/
-#define ICU_Stoped   0
-#define ICU_Rising   1
-#define ICU_Falling  2
-#define ICU_ReadyToReturnVal 3
+#define ICU_STOPPED				0
+#define ICU_RISING			    1
+#define ICU_FALLING			    2
+#define ICU_RETURN_READY	    3
 /***********************************************************************/
 
 /**************************Global variables*******************************/
-static uint8_t ICU_CH1_STATE =ICU_Stoped ;
-static uint32_t ICU_CH1_Counts =0;
+static uint8_t ICU_state[ICU_USED_CHANNELS] = {ICU_STOPPED} ;
+static uint32_t ICU_Counts[ICU_USED_CHANNELS] = {0};
 /*********************************************************************/
-void ICU_CH1CallBackFunction(void)
+static void ICU_CH0CallBackFunction(void)
 {
 	
-	if (ICU_CH1_STATE==ICU_Rising)
+	if (ICU_state[ICU_CHANNEL_0] == ICU_RISING)
 	{
 		/* start  counter */
-		Gpt_StartTimer(ICU_1);
-		/* update function state */
-		ICU_CH1_STATE =ICU_Falling;
+		Gpt_StartTimer(TIMER_CHANNEL_1_ID);
+		/* ICU_state[ICU_0] function state */
+		ICU_state[ICU_CHANNEL_0] =ICU_FALLING;
 		
 		
 		/* Reverse the external interrupt polarity */
 		EnableExternalInterrupts_INT2(FALLING_EDGE);
 		
 	}
-	else if (ICU_CH1_STATE==ICU_Falling)
+	else if (ICU_state[ICU_CHANNEL_0]==ICU_FALLING)
 	{
 		
 		/* Get the counter value */
-		Gpt_ReturnCounterVal(TIMER_1,&ICU_CH1_Counts);
+		Gpt_ReturnCounterVal(TIMER_CHANNEL_1_ID, &ICU_Counts[ICU_CHANNEL_0]);
 		
 		/* Stop the counter */
-		GptStop(ICU_1);
+		GptStop(TIMER_CHANNEL_1_ID);
 		
 		/* Update function state */
-		ICU_CH1_STATE = ICU_ReadyToReturnVal;
-		/* Enable interrupt */
+		ICU_state[ICU_CHANNEL_0] = ICU_RETURN_READY;
 		
 		/* disable interrupt */
 		DisableExternalInterrupts_INT2();
-		//EnableExternalInterrupts_INT0(RISING_EDGE);
 	}
-	
 }
-void ICU_Init(void)
+Std_ReturnType ICU_Init(void)
 {
 	GptInit();
-	/* update function state */
-	ICU_CH1_STATE =ICU_Rising;
-	setExtINT2Callback(ICU_CH1CallBackFunction);
-	EnableExternalInterrupts_INT2(RISING_EDGE);
-}
-
-ICUError_t ICU_GetONPeriod_Counts(uint8_t ChannelId , uint32_t *u32_Counts)
-{
-	/************** Error Handling **********************/
-	if(ChannelId<0 || ChannelId >4)
+	uint8_t loopCounter_u8 = 0;
+	for (loopCounter_u8=0; loopCounter_u8<ICU_USED_CHANNELS; loopCounter_u8++)
 	{
-		return ERROR_NOK;
-	}
-	if (u32_Counts==0)  //NULL pointer
-	{
-		return ERROR_NOK;
-	}
-	/***************************************************/
-	
-	switch(ChannelId)
-	{
-		
-		case ICU_1 :
+		/* update function state */
+		ICU_state[loopCounter_u8] =ICU_RISING;
+		switch(ICU_Configurations[loopCounter_u8].Ext_InterruptChannel)
 		{
-			if (ICU_CH1_STATE==ICU_ReadyToReturnVal)
-			{
-				*u32_Counts = ICU_CH1_Counts;
-				
-				ICU_CH1_STATE =ICU_Rising;
-				/* set call back function */
-				setExtINT2Callback(ICU_CH1CallBackFunction);
-				/* Enable interrupt */
+			case EXT_INT0:
+				setExtINT0Callback(ICU_CH0CallBackFunction);
+				EnableExternalInterrupts_INT0(RISING_EDGE);
+				break;
+			case EXT_INT1:
+// 				setExtINT1Callback(ICU_CH1CallBackFunction);
+// 				EnableExternalInterrupts_INT1(RISING_EDGE);
+				break;
+			case EXT_INT2:
+				setExtINT2Callback(ICU_CH0CallBackFunction);
 				EnableExternalInterrupts_INT2(RISING_EDGE);
-				return ERROR_OK;
-			}
-			break;
+				break;
+			default:
+				return E_NOT_OK;
 		}
 	}
+	return E_OK;
+}
+
+Std_ReturnType ICU_GetONPeriod_Counts(ICU_channel_t ChannelId_u8 , ICU_Counts_t *Counts_pu32)
+{
+	/************** Error Handling **********************/
+	if(ChannelId_u8 >= ICU_USED_CHANNELS)
+	{
+		return E_NOT_OK;
+	}
+	if (Counts_pu32 == NULL_PTR)  //NULL pointer
+	{
+		return E_NOT_OK;
+	}
+	/***************************************************/
+
+	if (ICU_state[ChannelId_u8]==ICU_RETURN_READY)
+	{
+		*Counts_pu32 = ICU_Counts[ChannelId_u8];
+				
+		ICU_state[ChannelId_u8] =ICU_RISING;
+		/* set call back function */
+		setExtINT2Callback(ICU_CH0CallBackFunction);
+		/* Enable interrupt */
+		EnableExternalInterrupts_INT2(RISING_EDGE);
+		return E_OK;
+	}
 	
-	return ERROR_NOK;
+	return E_NOT_OK;
 }
 
 

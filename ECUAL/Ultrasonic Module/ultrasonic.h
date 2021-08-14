@@ -9,28 +9,26 @@
 
 #ifndef ULTRASONIC_H_
 #define ULTRASONIC_H_
+#include "..\..\MCAL\ICU Module\ICU.h"
+#include "..\..\MCAL\Dio Module\Dio.h"
 #include "..\..\Microcontroller\Platform_Types.h"
 #include "../../Microcontroller/Std_types.h"
 #include "Ultrasonic_Cfg.h"
-typedef enum US_Status_t
-{
-	US_ERROR_OK,
-	US_ERROR_NOK
-}US_Status_t;
+
+typedef uint8_t US_Channel_t;
 
 typedef struct US_Config_t
 {
-	uint8_t US_ChannedID;
-	uint32_t CPU_FREQ ;
-	uint32_t US_CHPreScaler;
-	}US_Config_t;
+	ICU_channel_t ICU_ChannedID;
+	uint8_t Trigger_Pin;
+}US_ChannelConfig_t;
 
 /************************************************************
 				        APIs
 ************************************************************/
-US_Status_t Ultrasonic_Init(void);
-US_Status_t Ultrasonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance);
+Std_ReturnType Ultrasonic_Init(void);
+Std_ReturnType Ultrasonic_GetDistance(US_Channel_t US_ChannelID ,  uint16_t *u16_Distance);
 /*- EXTERN VARIABLE DECLARATIONS */
-extern US_Config_t US_Channels[US_USED_CHANNELS] ;
+extern const US_ChannelConfig_t US_Configurations[US_USED_CHANNELS] ;
 
 #endif /* ULTRASONIC_H_ */
