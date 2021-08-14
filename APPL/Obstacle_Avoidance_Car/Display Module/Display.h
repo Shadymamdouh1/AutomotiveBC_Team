@@ -14,10 +14,6 @@
 #include "../../../ECUAL/Lcd Module/Lcd.h"
 #include "Display_LCfg.h"
 
-/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-/*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
-#define DISPLAY_LCD_16x2_ID					0U
-#define DISPLAY_ID_INVALID					1U
 
 /*******************************************************************************
  *                          Module Data Types                                  *
@@ -29,17 +25,14 @@
 typedef uint8_t Display_State_t;
 
 /*
- * Data Type for Display Module configurations
+ * Data Type for Displays
  */
-typedef struct  
-{
-	
-}Display_Config_t;
+typedef uint8_t Displays_List_t;
 /*******************************************************************************
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to initialize the module */
-Std_ReturnType Display_init(void);
+Std_ReturnType Display_init(uint8_t DisplayID_u8);
 
 /* Function used to display an input from the application on a Display Screen with the given ID */
 Std_ReturnType Display_printString(uint8_t DisplayID_u8, uint8_t *StringToPrint_pu8);
@@ -49,6 +42,6 @@ Std_ReturnType Display_printInteger(uint8_t DisplayID_u8, uint16_t u16_number);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
-extern const Display_Config_t Display_Configuratons;
+const Displays_List_t Displays[DISPLAY_USED_NUM];
 
 #endif /* DISPLAY_H_ */

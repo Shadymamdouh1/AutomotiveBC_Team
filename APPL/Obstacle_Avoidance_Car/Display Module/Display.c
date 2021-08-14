@@ -44,8 +44,14 @@ Std_ReturnType Display_init(uint8_t DisplayID_u8)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	/* Initialize the Display Module */
-	Lcd_init();
+	switch(Displays[DisplayID_u8])
+	{
+		case LCD_ID_0:
+		{
+			/* Initialize the Display Module */
+			Lcd_init();
+		}
+	}
 	return E_OK;
 }
 
@@ -83,7 +89,13 @@ Std_ReturnType Display_printString(uint8_t DisplayID_u8, uint8_t *StringToPrint_
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	Lcd_sendString((uint8_t*)StringToPrint_pu8);
+	switch(Displays[DisplayID_u8])
+	{
+		case LCD_ID_0:
+		{
+			Lcd_sendString((uint8_t*)StringToPrint_pu8);
+		}
+	}
 	
 	return E_NOT_OK;
 }
@@ -116,9 +128,15 @@ Std_ReturnType Display_printInteger(uint8_t DisplayID_u8, uint16_t u16_number)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	Lcd_cursorPosition(1, 11);
-	Lcd_sendVariableInt(u16_number, DEC);
-	Lcd_sendString((uint8_t*)" ");
+	switch(Displays[DisplayID_u8])
+	{
+		case LCD_ID_0:
+		{
+			Lcd_cursorPosition(1, 11);
+			Lcd_sendVariableInt(u16_number, DEC);
+			Lcd_sendString((uint8_t*)" ");
+		}
+	}
 				
 	return E_NOT_OK;
 }

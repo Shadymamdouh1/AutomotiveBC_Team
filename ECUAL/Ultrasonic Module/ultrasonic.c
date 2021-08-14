@@ -14,7 +14,7 @@
 #define US_METER_CM_FACTOR			100UL
 #define US_DISTANCE_DIVISION	    2UL
 #define SOUND_VELOCITY				343UL
-#define TOGGLE_DELAY				100U
+#define TOGGLE_DELAY_COUNTS			100U
 /********************************Global variables******************************/
 
 static uint8_t US_State[US_USED_CHANNELS] = {US_STOPPED};
@@ -24,7 +24,7 @@ static uint8_t US_State[US_USED_CHANNELS] = {US_STOPPED};
 Std_ReturnType Ultrasonic_Init(void)
 {    
 	
-	Dio_init(strDio_pins);
+	//Dio_init(strDio_pins);
 	ICU_Init();
 	
 	return E_OK;
@@ -36,7 +36,7 @@ void US_Trigger(US_Channel_t US_ChannelID)
 	uint8_t u8_counter=0;
 	Dio_writePin(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_HIGH);
 	/* delay */
-	for(u8_counter=0 ;u8_counter<TOGGLE_DELAY ;u8_counter++);
+	for(u8_counter=0 ;u8_counter<TOGGLE_DELAY_COUNTS ;u8_counter++);
 	
 	Dio_writePin(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_LOW);
 }
@@ -83,8 +83,7 @@ Std_ReturnType Ultrasonic_GetDistance(US_Channel_t US_ChannelID ,  uint16_t *u16
 	else if (US_State[US_ChannelID] == US_RUNNING)
 	{
 		if (ICU_GetONPeriod_Counts(US_Configurations[US_ChannelID].ICU_ChannedID ,&US_Counts) == E_OK)
-		{
-						
+		{	
 			/* Get distance */
 			u16_DistanceVal =US_CalDistance(US_ChannelID, US_Counts);
 						

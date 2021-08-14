@@ -16,6 +16,7 @@
 
 #define TIMER_USED_ID		TIMER_CHANNEL_0_ID
 /*********************************************/
+#define LCD_ID_0			0U
 #define Lcd_Rows			2
 #define Lcd_Columns			16
 
