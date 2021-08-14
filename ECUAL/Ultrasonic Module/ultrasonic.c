@@ -24,7 +24,7 @@ static uint16_t US_CH1_Prescaler_g= 0;
 #define US_MeterToCM			100UL
 #define US_DistanceDivision	    2UL
 uint8_t  var=0 ;
-US_Status_t Ultrsonic_Init(void)
+US_Status_t Ultrasonic_Init(void)
 {    
 	//var =
 	ICU_Init();
@@ -77,8 +77,8 @@ void US_Ch1Trigger(void)
 	//Dio_writePin(PIN_0,PIN_HIGH);
 	DIO_PORTA_DATA |=(1<<0);
 	/* delay */
-	//for(u8_counter=0;u8_counter<100;u8_counter++);
-	GptStart_Sync(TIMER_1, 2);
+	for(u8_counter=0;u8_counter<100;u8_counter++);
+	
 	//Dio_writePin(PIN_0,PIN_LOW);
 	DIO_PORTA_DATA &=~(1<<0);
 }
@@ -99,7 +99,7 @@ uint16_t US_CH1_CalDistance(uint32_t u32_counts)
 }
 
 
-US_Status_t Ultrsonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance)
+US_Status_t Ultrasonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance)
 {
 	uint32_t US_CH1_Counts=0;
 	uint16_t u16_DistanceVal=0;
@@ -124,29 +124,30 @@ US_Status_t Ultrsonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance)
 				
 				/* trigger On PORTA PIN 0 */
 				US_Ch1Trigger();
-				//ICU_GetONPeriod_Counts(US_CH_1,&US_CH1_Counts);
+				ICU_GetONPeriod_Counts(US_CH_1,&US_CH1_Counts);
 				
 				return US_ERROR_NOK;
 			}
 			else if (US_CH1_state==US_CH1_Running)
 			{
-				if (ICU_GetONPeriod_Counts(US_CH_1,&US_CH1_Counts)==ERROR_OK)
-				{
-					
-					/* Get distance */
-					u16_DistanceVal =US_CH1_CalDistance(US_CH1_Counts);
-					
-					/* return the distance */
-					*u16_Distance = u16_DistanceVal;
-					/* Update State */
-					US_CH1_state = US_CH1_Stoped;
-					
-					return US_ERROR_OK;
+				//while(1)
+			//	{
+					if (ICU_GetONPeriod_Counts(US_CH_1,&US_CH1_Counts)==ERROR_OK)
+					{
+						
+						/* Get distance */
+						u16_DistanceVal =US_CH1_CalDistance(US_CH1_Counts);
+						
+						/* return the distance */
+						*u16_Distance = u16_DistanceVal;
+						/* Update State */
+						US_CH1_state = US_CH1_Stoped;
+						
+						return US_ERROR_OK;
+				//	}
 				}
-				else
-				{
-					return US_ERROR_NOK;
-				}
+				
+				
 			}
 			
 			
@@ -158,6 +159,6 @@ US_Status_t Ultrsonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance)
 		}
 		
 	}
-	
+	return US_ERROR_NOK;
 	
 }

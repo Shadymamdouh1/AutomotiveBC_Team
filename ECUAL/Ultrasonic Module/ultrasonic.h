@@ -10,6 +10,7 @@
 #ifndef ULTRASONIC_H_
 #define ULTRASONIC_H_
 #include "..\..\Microcontroller\Platform_Types.h"
+#include "../../Microcontroller/Std_types.h"
 #include "Ultrasonic_Cfg.h"
 typedef enum US_Status_t
 {
@@ -27,8 +28,8 @@ typedef struct US_Config_t
 /************************************************************
 				        APIs
 ************************************************************/
-US_Status_t Ultrsonic_Init(void);
-US_Status_t Ultrsonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance);
+US_Status_t Ultrasonic_Init(void);
+US_Status_t Ultrasonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance);
 /*- EXTERN VARIABLE DECLARATIONS */
 extern US_Config_t US_Channels[US_USED_CHANNELS] ;
 

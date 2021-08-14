@@ -36,7 +36,7 @@ void ICU_CH1CallBackFunction(void)
 		
 		
 		/* Reverse the external interrupt polarity */
-		EnableExternalInterrupts_INT0(FALLING_EDGE);
+		EnableExternalInterrupts_INT2(FALLING_EDGE);
 		
 	}
 	else if (ICU_CH1_STATE==ICU_Falling)
@@ -51,7 +51,10 @@ void ICU_CH1CallBackFunction(void)
 		/* Update function state */
 		ICU_CH1_STATE = ICU_ReadyToReturnVal;
 		/* Enable interrupt */
-		EnableExternalInterrupts_INT0(RISING_EDGE);//
+		
+		/* disable interrupt */
+		DisableExternalInterrupts_INT2();
+		//EnableExternalInterrupts_INT0(RISING_EDGE);
 	}
 	
 }
@@ -60,10 +63,8 @@ void ICU_Init(void)
 	GptInit();
 	/* update function state */
 	ICU_CH1_STATE =ICU_Rising;
-	/* set call back function */
-	setExtINT0Callback(ICU_CH1CallBackFunction);
-	/* Enable interrupt */
-	EnableExternalInterrupts_INT0(RISING_EDGE);//
+	setExtINT2Callback(ICU_CH1CallBackFunction);
+	EnableExternalInterrupts_INT2(RISING_EDGE);
 }
 
 ICUError_t ICU_GetONPeriod_Counts(uint8_t ChannelId , uint32_t *u32_Counts)
@@ -81,14 +82,18 @@ ICUError_t ICU_GetONPeriod_Counts(uint8_t ChannelId , uint32_t *u32_Counts)
 	
 	switch(ChannelId)
 	{
+		
 		case ICU_1 :
 		{
 			if (ICU_CH1_STATE==ICU_ReadyToReturnVal)
 			{
 				*u32_Counts = ICU_CH1_Counts;
-				/* Update state */
-				ICU_CH1_STATE = ICU_Stoped ;
 				
+				ICU_CH1_STATE =ICU_Rising;
+				/* set call back function */
+				setExtINT2Callback(ICU_CH1CallBackFunction);
+				/* Enable interrupt */
+				EnableExternalInterrupts_INT2(RISING_EDGE);
 				return ERROR_OK;
 			}
 			break;

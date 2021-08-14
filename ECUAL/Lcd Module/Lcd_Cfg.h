@@ -10,7 +10,7 @@
 #define LCD_CFG_H_
 
 /* Async Cfg */
-#define AsyncMode			TRUE
+#define AsyncMode					FALSE
 #define	DelayTicks_Commands			250
 #define	DelayTicks_PowerUp			2500
 

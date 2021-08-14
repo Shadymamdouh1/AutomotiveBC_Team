@@ -10,10 +10,7 @@
 #include "App.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
-static enuRobotAction_t enuCurrentAction = ROBOT_ACTION_STOP;
 static enuApp_Status_t enuCurrentAppStatus = APP_STATUS_UNINITIALIZED;
-uint8_t gau8_num[4] = {0};
-uint16_t gu16_num = 0;
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
