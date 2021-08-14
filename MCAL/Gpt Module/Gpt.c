@@ -13,7 +13,7 @@
 
 #define GPT_CHANNELS			3
 /* it will be used to stop the timer1 if it started and didn't stop till reach this value */
-#define MAX_TICKS_T1 100000000UL
+#define MAX_TICKS_T1			100000000UL
 /*- GLOBAL STATIC VARIABLES
 -------------------------------*/
 static volatile uint32_t gu32_T0_OvfCounts = 0;

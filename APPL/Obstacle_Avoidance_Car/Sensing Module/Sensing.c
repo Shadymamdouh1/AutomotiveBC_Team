@@ -57,7 +57,7 @@ Std_ReturnType Sensing_init(void)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Initialize the Ultrasonic Module */
-	//Ultrasonic_init();
+	Ultrasonic_Init();
 	
 	/* Change the state of the module to initialized */
 	SensingModuleStatus_gu8 = SENSING_STATUS_INIT;
@@ -99,5 +99,7 @@ Std_ReturnType Sensing_getObstcleDistance(uint16_t *Sensing_distanceCM_pu16)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	
+	/* Read Ultrasonic Distance */
+	Ultrasonic_GetDistance(1, Sensing_distanceCM_pu16);
 	return E_OK;
 }
