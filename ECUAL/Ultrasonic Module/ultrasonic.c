@@ -5,7 +5,6 @@
 * Author: Shady Mamdouh
 * Date: 8/12/2021
 ******************************************************************************/
-#include "..\..\Microcontroller\Platform_Types.h"
 #include "Ultrasonic.h"
 /*****************************/
 
