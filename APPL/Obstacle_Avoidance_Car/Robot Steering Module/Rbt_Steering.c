@@ -8,7 +8,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "Rbt_Steering.h"
-
+#include "..\..\..\Microcontroller\Delay Module\Delay.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
@@ -148,6 +148,7 @@ Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed)
 			/* Run Right Motor in Forward Direction */
 			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_rightMotorID, u8_speed, MOTOR_FRWRD))
 				return ROBOT_STATUS_ERROR_NOK;
+			Delay_ms(STEERING_LEFT_DELAY);
 			break;
 		/* If the give Direction is Forward */
 		case ROBOT_DIR_RIGHT:
@@ -157,6 +158,7 @@ Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed)
 			/* Run Right Motor in Backward Direction */
 			if( MOTOR_STATUS_ERROR_OK != Motor_run(RbtSteering_Configuratons.Rbt_rightMotorID, u8_speed, MOTOR_BKWRD))
 				return ROBOT_STATUS_ERROR_NOK;
+			Delay_ms(STEERING_RIGHT_DELAY);
 			break;
 		default:
 			return ROBOT_STATUS_ERROR_NOK;

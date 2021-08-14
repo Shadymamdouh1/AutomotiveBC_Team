@@ -12,7 +12,7 @@
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 
 ModuleState_t ObstclAvd_State = OBSTCLE_AVD_MOD_UNINITIALIZED;
-uint16_t distance_u16 = 63;
+uint16_t distance_u16 = 0;
 uint8_t distance_au8[4] = {0};
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -51,8 +51,8 @@ Std_ReturnType ObstacleAvoidance_init(void)
 		return E_NOT_OK;
 		
 	/* Call the LCD Module initializer */
-	Lcd_init();
-	Lcd_sendString((uint8_t*)"    Distance");
+// 	Lcd_init();
+// 	Lcd_sendString((uint8_t*)"    Distance");
 	/* Call the Sensing Module initializer */
 	Sensing_init();
 
@@ -84,8 +84,8 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
-// 	Lcd_init();
-// 	Lcd_sendString((uint8_t*)"    Distance");
+	Lcd_init();
+	Lcd_sendString((uint8_t*)"Distance: ");
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
@@ -107,39 +107,42 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 		}
 	}
 	/* If distance within threshold range */
-	if((distance_u16 < OB_AVD_HIGH_THRESHOLD) && (distance_u16 > OB_AVD_LOW_THRESHOLD))
+	else if((distance_u16 < OB_AVD_HIGH_THRESHOLD) && (distance_u16 > OB_AVD_LOW_THRESHOLD))
 	{
 		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_THRSHOLD)
 		{
 			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_THRSHOLD;
 			RbtSteering_move(ROBOT_DIR_RIGHT, OB_RBT_RIGHT_SPEED);
-			Delay_ms(320);
 		}
 	}
 	/* If distance < OB_AVD_LOW_THRESHOLD */
-	if(distance_u16 < OB_AVD_LOW_THRESHOLD)
+	else if(distance_u16 < OB_AVD_LOW_THRESHOLD)
 	{
 		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_THRSHOLD)
 		{
 			ObstclAvd_State = OB_AVD_DISTANCE_UNDER_THRSHOLD;
 			RbtSteering_move(ROBOT_DIR_BKWRD, OB_RBT_BKWRD_SPEED);
 		}
+	}else
+	{
+		/* All cases are covered */
 	}
 	
-/* Print Distance on LCD */
-	integerToString((uint16_t)distance_u16, distance_au8, DEC);
-	if(distance_u16 < 10)
-	{
-		distance_au8[1]=' ';
-		distance_au8[2]=' ';
-		distance_au8[3]='\0';
-	}else if(distance_u16 < 100)
-	{
-		distance_au8[2]=' ';
-		distance_au8[3]='\0';
-	}
-	Lcd_cursorPosition(2,8);
-	Lcd_sendString(distance_au8);
+// /* Print Distance on LCD */
+// 	integerToString((uint16_t)distance_u16, distance_au8, DEC);
+// 	if(distance_u16 < 10)
+// 	{
+// 		distance_au8[1]=' ';
+// 		distance_au8[2]=' ';
+// 		distance_au8[3]='\0';
+// 	}else if(distance_u16 < 100)
+// 	{
+// 		distance_au8[2]=' ';
+// 		distance_au8[3]='\0';
+// 	}
+	Lcd_cursorPosition(1, 11);
+	Lcd_sendVariableInt(distance_u16, DEC);
+	Lcd_sendString((uint8_t*)" ");
 /*******************************************************************************/
 /*******************************************************************************/
 
