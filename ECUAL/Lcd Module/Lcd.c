@@ -21,10 +21,9 @@ uint8_t LCD_NEXT_STATE = IDLE;
 uint8_t LCD_SEND_STRING_STATE = IDLE;
 uint8_t LCD_CLEAR_DISPLAY_STATE = IDLE;
 uint8_t LCD_SET_CURSOR_STATE = IDLE;
-uint8_t LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
 uint8_t LCD_SEND_COMMAND_STATE = IDLE;
 uint8_t LCD_SENDING_INT_STATE = IDLE;
-uint8_t LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
+
 
 uint8_t Lcd_Init_DoneFlag = FALSE;
 uint8_t Lcd_PoweringUp_Flag = FALSE;
@@ -341,7 +340,6 @@ enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 			stringCopy(au8_string, gau8_currentString);
 			EmptyString(gau8_nextString);
 			LCD_SEND_STRING_STATE =  RUNNING;
-			LCD_SENDING_CHAR_FOR_STRING_STATE = RUNNING;
 			LCD_NEXT_STATE = IDLE;
 		}
 		else
@@ -365,8 +363,7 @@ enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 		else
 		{
 			stringCopy(au8_string, gau8_currentString);
-			LCD_SEND_STRING_STATE = RUNNING;
-			LCD_SENDING_CHAR_FOR_STRING_STATE = RUNNING;			
+			LCD_SEND_STRING_STATE = RUNNING;			
 		}
 	}
 	else
@@ -383,7 +380,6 @@ enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 	{
 		u8_stringIndexCounter = Initial_Value;
 		LCD_SEND_STRING_STATE = IDLE;
-		LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
 		return LCD_STATUS_ERROR_NOK;
 	}
 	/*********************************************/
@@ -396,7 +392,6 @@ enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 	{
 		u8_stringIndexCounter = Initial_Value;
 		LCD_SEND_STRING_STATE = IDLE;
-		LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
 		
 		/*********************** TEMP *********************************/
 		if(gu8_oneTimeString_1_Flag == FALSE)
@@ -437,11 +432,10 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 	{
 		stringCopy(au8_string, gau8_currentInteger);
 		LCD_SENDING_INT_STATE = RUNNING;
-		LCD_SENDING_CHAR_FOR_INT_STATE = RUNNING;
 		LCD_NEXT_STATE = IDLE;
 	}
 	else if((LCD_NEXT_STATE == SET_CURSOR_PENDING || LCD_NEXT_STATE == CLEAR_DISPLAY_PENDING || LCD_NEXT_STATE == SEND_STRING_PENDING)
-	&& LCD_SENDING_INT_STATE != RUNNING)
+			 && LCD_SENDING_INT_STATE != RUNNING)
 	{
 		return LCD_STATUS_ERROR_NOK;
 	}
@@ -455,8 +449,7 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 		else
 		{
 			stringCopy(au8_string, gau8_currentInteger);
-			LCD_SENDING_INT_STATE = RUNNING;
-			LCD_SENDING_CHAR_FOR_INT_STATE = RUNNING;	
+			LCD_SENDING_INT_STATE = RUNNING;	
 		}
 
 	}
@@ -475,7 +468,6 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base)
 	{
 		u8_integerIndexCounter = Initial_Value;
 		LCD_SENDING_INT_STATE = IDLE;
-		LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
 		
 		EmptyString(gau8_currentInteger);
 	}
@@ -536,14 +528,6 @@ void LcdDelayFinished(void)
 		{
 			LCD_CLEAR_DISPLAY_STATE = IDLE;
 			LCD_SEND_COMMAND_STATE = IDLE;
-		}
-		else if(LCD_SEND_STRING_STATE == RUNNING)
-		{
-			LCD_SENDING_CHAR_FOR_STRING_STATE = IDLE;
-		}
-		else if(LCD_SENDING_INT_STATE == RUNNING)
-		{
-			LCD_SENDING_CHAR_FOR_INT_STATE = IDLE;
 		}
 	}
 
