@@ -51,8 +51,7 @@ Std_ReturnType ObstacleAvoidance_init(void)
 		return E_NOT_OK;
 		
 	/* Call the LCD Module initializer */
-	if(LCD_STATUS_ERROR_OK != Lcd_init())
-		return E_NOT_OK;
+	Lcd_init();
 	Lcd_sendString((uint8_t*)"    Distance");
 	/* Call the Sensing Module initializer */
 	Sensing_init();
@@ -85,7 +84,8 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
-	//Lcd_init();
+// 	Lcd_init();
+// 	Lcd_sendString((uint8_t*)"    Distance");
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
