@@ -89,43 +89,57 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-
+	uint16_t tempDistance_u16 = 0;
+	
 /* Get the distance to the nearest obstacle */
-	Sensing_getObstcleDistance(&distance_u16);
+	if(Sensing_getDistance(SENSING_FRONT_OBSTACLE_DISTANCE, &tempDistance_u16) == E_OK)
+	{
+		distance_u16 = tempDistance_u16;
+	}
 /* Take Robot Action */
-	/* If distance > 50 */
-	if(distance_u16 > 50)
+	/* If distance > OB_AVD_HIGH_THRESHOLD */
+	if(distance_u16 > OB_AVD_HIGH_THRESHOLD)
 	{
-		if (ObstclAvd_State != OB_AVD_DISTANCE_OVER_50)
+		if (ObstclAvd_State != OB_AVD_DISTANCE_OVER_THRSHOLD)
 		{
-			ObstclAvd_State = OB_AVD_DISTANCE_OVER_50;
-			RbtSteering_move(ROBOT_DIR_FRWRD, 20);
+			ObstclAvd_State = OB_AVD_DISTANCE_OVER_THRSHOLD;
+			RbtSteering_move(ROBOT_DIR_FRWRD, OB_RBT_FRWRD_SPEED);
 		}
 	}
-	/* If distance = 50 */
-	else if(distance_u16 == 50)
+	/* If distance within threshold range */
+	if((distance_u16 < OB_AVD_HIGH_THRESHOLD) && (distance_u16 > OB_AVD_LOW_THRESHOLD))
 	{
-		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_50)
+		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_THRSHOLD)
 		{
-			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_50;
-			RbtSteering_move(ROBOT_DIR_RIGHT, 15);
+			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_THRSHOLD;
+			RbtSteering_move(ROBOT_DIR_RIGHT, OB_RBT_RIGHT_SPEED);
+			Delay_ms(320);
 		}
 	}
-	/* If distance < 50 */
-	else
+	/* If distance < OB_AVD_LOW_THRESHOLD */
+	if(distance_u16 < OB_AVD_LOW_THRESHOLD)
 	{
-		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_50)
+		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_THRSHOLD)
 		{
-			ObstclAvd_State = OB_AVD_DISTANCE_OVER_50;
-			RbtSteering_move(ROBOT_DIR_BKWRD, 20);
+			ObstclAvd_State = OB_AVD_DISTANCE_UNDER_THRSHOLD;
+			RbtSteering_move(ROBOT_DIR_BKWRD, OB_RBT_BKWRD_SPEED);
 		}
 	}
+	
 /* Print Distance on LCD */
-#if 1
 	integerToString((uint16_t)distance_u16, distance_au8, DEC);
+	if(distance_u16 < 10)
+	{
+		distance_au8[1]=' ';
+		distance_au8[2]=' ';
+		distance_au8[3]='\0';
+	}else if(distance_u16 < 100)
+	{
+		distance_au8[2]=' ';
+		distance_au8[3]='\0';
+	}
 	Lcd_cursorPosition(2,8);
 	Lcd_sendString(distance_au8);
-#endif
 /*******************************************************************************/
 /*******************************************************************************/
 

@@ -14,9 +14,7 @@
 
 /*----------------------------------------------*/
 /* configuration of used ICU channels */
-ICU_channel_t ICU_Channels[ICU_USED_CHANNELS]=
+const ICU_ChannelConfig_t ICU_Configurations[ICU_USED_CHANNELS]=
 {
-	/*ICU Channel*/
-	ICU_1
-	
+	{TIMER_CHANNEL_1_ID, EXT_INT2}
 };
