@@ -37,9 +37,8 @@ enuApp_Status_t App_start(void)
 	while (1)
 	{
 		/* Run the Obstacle Avoidance main function */
-		if(ObstacleAvoidance_mainFunction() != E_OK)
+		if(App_update() != E_OK)
 			return E_NOT_OK;
-			
 	}
 }
 
@@ -107,7 +106,7 @@ enuApp_Status_t App_update(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	
+	/* Calling the Main function of the Obstacle Avoidance Application */
 	ObstacleAvoidance_mainFunction();
 	
 /*******************************************************************************/

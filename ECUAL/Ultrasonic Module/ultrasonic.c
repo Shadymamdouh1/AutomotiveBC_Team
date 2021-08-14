@@ -19,26 +19,14 @@
 
 static uint8_t US_State[US_USED_CHANNELS] = {US_STOPPED};
 	
-#if 0
-static uint16_t US_ChannelsPrescaler[US_USED_CHANNELS]= {0};
-static uint8_t US_ChannelTimer[US_USED_CHANNELS] = {0};
-static uint8_t US_ChannelICU[US_USED_CHANNELS] = {0};
-#endif
 
 
 Std_ReturnType Ultrasonic_Init(void)
 {    
+	
+	Dio_init(strDio_pins);
 	ICU_Init();
 	
-	#if 0
-	uint8_t u8_counter =0;
-	for(u8_counter=0;u8_counter<US_USED_CHANNELS ;u8_counter++)
-    {			  
-		/* Update Channel PreScaler */
-		US_ChannelICU[u8_counter] = US_Configurations[u8_counter].ICU_ChannedID;
-		US_ChannelTimer[u8_counter] = ICU_Configurations[US_ChannelICU[u8_counter]]->
-	}
-	#endif
 	return E_OK;
 }
 
