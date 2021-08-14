@@ -5,103 +5,71 @@
 * Author: Shady Mamdouh
 * Date: 8/12/2021
 ******************************************************************************/
-#include "..\..\MCAL\ICU Module\ICU.h"
-//#include "..\..\MCAL\Dio Module\Dio.h"
-#include "..\..\Microcontroller\Platform_Types.h"
 #include "Ultrasonic.h"
-/******************************/     //    Attention will be removed !!!!!!!!!!!!!!!!!!!!!!
-#include "..\..\Microcontroller\Atmega32 Registers\Dio_regs.h"
 /*****************************/
 
+/************************** Constants ***********************************/
+#define US_STOPPED					0UL
+#define US_RUNNING					1UL
+#define US_METER_CM_FACTOR			100UL
+#define US_DISTANCE_DIVISION	    2UL
+#define SOUND_VELOCITY				343UL
+#define TOGGLE_DELAY				100U
+/********************************Global variables******************************/
 
-/********************************Global variables &	Constants ******************************/
-#define SOUND_VELOCITY 343UL
-static uint32_t  US_CH1_CPU_FREQ_g= 0;
-static uint16_t US_CH1_Prescaler_g= 0;
-
-#define US_CH1_Stoped			0UL
-#define US_CH1_Running			1UL
-#define US_MeterToCM			100UL
-#define US_DistanceDivision	    2UL
-uint8_t  var=0 ;
-US_Status_t Ultrasonic_Init(void)
-{    
-	//var =
-	ICU_Init();
-	uint8_t u8_counter =0;
+static uint8_t US_State[US_USED_CHANNELS] = {US_STOPPED};
 	
+#if 0
+static uint16_t US_ChannelsPrescaler[US_USED_CHANNELS]= {0};
+static uint8_t US_ChannelTimer[US_USED_CHANNELS] = {0};
+static uint8_t US_ChannelICU[US_USED_CHANNELS] = {0};
+#endif
+
+
+Std_ReturnType Ultrasonic_Init(void)
+{    
+	ICU_Init();
+	
+	#if 0
+	uint8_t u8_counter =0;
 	for(u8_counter=0;u8_counter<US_USED_CHANNELS ;u8_counter++)
-      {
-		  switch(US_Channels[u8_counter].US_ChannedID)
-		  {
-			  case US_CH_1 :
-			  {
-				  /******************************* ERROR HANDLING ***************************************/
-				 if ( ((US_Channels[u8_counter].CPU_FREQ ) > CPU_FREQ_16M ) || ( (US_Channels[u8_counter].CPU_FREQ) <CPU_FREQ_1M ) )
-				 {
-					 break;
-				 }
-				 if (US_Channels[u8_counter].US_CHPreScaler > CPU_FREQ_16M)
-				 {
-					 break;
-				 }
-				/*********************************************************************************************/
-				
-				  /* Update channel frequency */
-				  US_CH1_CPU_FREQ_g = US_Channels[u8_counter].CPU_FREQ;
-				  
-				  /* Update Channel PreScaler */
-				  US_CH1_Prescaler_g = US_Channels[u8_counter].US_CHPreScaler;
-				 
-				  
-				  break;
-	          }
-			  
-			  default :
-			  {
-					return US_ERROR_NOK;
-			  }
-		  }
-		   
-	  }
-	  return US_ERROR_OK;
+    {			  
+		/* Update Channel PreScaler */
+		US_ChannelICU[u8_counter] = US_Configurations[u8_counter].ICU_ChannedID;
+		US_ChannelTimer[u8_counter] = ICU_Configurations[US_ChannelICU[u8_counter]]->
+	}
+	#endif
+	return E_OK;
 }
 
 
-void US_Ch1Trigger(void)
+void US_Trigger(US_Channel_t US_ChannelID)
 {
 	uint8_t u8_counter=0;
-	/*********will be removed *****************/
-	DIO_PORTA_DIR |=(1<<0);                                        // attention !!!!!!
-	/*******************************************/
-	//Dio_writePin(PIN_0,PIN_HIGH);
-	DIO_PORTA_DATA |=(1<<0);
+	Dio_writePin(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_HIGH);
 	/* delay */
-	for(u8_counter=0;u8_counter<100;u8_counter++);
+	for(u8_counter=0 ;u8_counter<TOGGLE_DELAY ;u8_counter++);
 	
-	//Dio_writePin(PIN_0,PIN_LOW);
-	DIO_PORTA_DATA &=~(1<<0);
+	Dio_writePin(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_LOW);
 }
 
 
-static uint8_t US_CH1_state = US_CH1_Stoped;
-
-
-uint16_t US_CH1_CalDistance(uint32_t u32_counts)
+uint16_t US_CalDistance(US_Channel_t US_ChannelID, uint32_t u32_counts)
 {
 	uint16_t u16_Disance=0;
-	float32_t TIME ;
-	TIME = (u32_counts *((float32_t)US_CH1_Prescaler_g/US_CH1_CPU_FREQ_g));
+	float32_t time_f32 ;
+	time_f32 = (u32_counts *((float32_t)(strGpt_Channels[ ICU_Configurations[ US_Configurations[US_ChannelID].ICU_ChannedID ].Gpt_Channel ].u8_Prescaler)\
+									/SYS_CLOCK_FREQUENCY));
 	
-	u16_Disance=( ((SOUND_VELOCITY*TIME)/US_DistanceDivision) *US_MeterToCM );
+	u16_Disance=( ((SOUND_VELOCITY*time_f32)/US_DISTANCE_DIVISION) *US_METER_CM_FACTOR );
 	
 	return u16_Disance;
 }
 
 
-US_Status_t Ultrasonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance)
+Std_ReturnType Ultrasonic_GetDistance(US_Channel_t US_ChannelID ,  uint16_t *u16_Distance)
 {
-	uint32_t US_CH1_Counts=0;
+	uint32_t US_Counts=0;
 	uint16_t u16_DistanceVal=0;
 	/***************************************************************
 						Error handling
@@ -109,56 +77,36 @@ US_Status_t Ultrasonic_GetDistance(uint8_t US_Channel ,  uint16_t *u16_Distance)
 	/* NULL Pointer check */
 	if (u16_Distance == 0)
 	{
-		return US_ERROR_NOK;
+		return E_NOT_OK;
 	}
 	/************************************************************/
-	switch(US_Channel)
+	/* check state */
+	if(US_State[US_ChannelID] == US_STOPPED)
 	{
-		case US_CH_1 :
-		{
-			/* check state */
-			if(US_CH1_state==US_CH1_Stoped)
-			{
-				/* Update State */
-				US_CH1_state =US_CH1_Running;
+		/* Update State */
+		US_State[US_ChannelID] = US_RUNNING;
 				
-				/* trigger On PORTA PIN 0 */
-				US_Ch1Trigger();
-				ICU_GetONPeriod_Counts(US_CH_1,&US_CH1_Counts);
+		/* trigger On PORTA PIN 0 */
+		US_Trigger(US_ChannelID);
+		ICU_GetONPeriod_Counts(US_Configurations[US_ChannelID].ICU_ChannedID ,&US_Counts);
 				
-				return US_ERROR_NOK;
-			}
-			else if (US_CH1_state==US_CH1_Running)
-			{
-				//while(1)
-			//	{
-					if (ICU_GetONPeriod_Counts(US_CH_1,&US_CH1_Counts)==ERROR_OK)
-					{
-						
-						/* Get distance */
-						u16_DistanceVal =US_CH1_CalDistance(US_CH1_Counts);
-						
-						/* return the distance */
-						*u16_Distance = u16_DistanceVal;
-						/* Update State */
-						US_CH1_state = US_CH1_Stoped;
-						
-						return US_ERROR_OK;
-				//	}
-				}
-				
-				
-			}
-			
-			
-			break;
-		}
-		default  :  
-		{
-			return US_ERROR_NOK;
-		}
-		
+		return E_NOT_OK;
 	}
-	return US_ERROR_NOK;
-	
+	else if (US_State[US_ChannelID] == US_RUNNING)
+	{
+		if (ICU_GetONPeriod_Counts(US_Configurations[US_ChannelID].ICU_ChannedID ,&US_Counts) == E_OK)
+		{
+						
+			/* Get distance */
+			u16_DistanceVal =US_CalDistance(US_ChannelID, US_Counts);
+						
+			/* return the distance */
+			*u16_Distance = u16_DistanceVal;
+			/* Update State */
+			US_State[US_ChannelID] = US_STOPPED;
+						
+			return E_OK;
+		}
+	}
+	return E_NOT_OK;
 }

@@ -16,6 +16,8 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
+#define SENSING_FRONT_OBSTACLE_DISTANCE			0U
+#define SENSING_DISTANCE_INVALID				1U
 
 /*******************************************************************************
  *                          Module Data Types                                  *
@@ -40,7 +42,7 @@ typedef struct
 Std_ReturnType Sensing_init(void);
 
 /* Function used to get distance between the sensor and the facing obstacle */
-Std_ReturnType Sensing_getObstcleDistance(uint16_t *Sensing_distanceCM_pu16);
+Std_ReturnType Sensing_getDistance(uint8_t DistanceID_u8, uint16_t *Sensing_distanceCM_pu16);
 
 
 /*******************************************************************************

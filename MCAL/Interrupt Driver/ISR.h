@@ -45,6 +45,10 @@ typedef void (*pfINT2_CallBack_t)(void);
 void vector (void) __attribute__ ((signal,used)) __VA_ARGS__; \
 void vector (void)
 
+
+#define EXT_INT0			0U
+#define EXT_INT1			1U
+#define EXT_INT2			2U
 /*************************************************************************************/
 /*- Function Declarations
 -------------------------------*/

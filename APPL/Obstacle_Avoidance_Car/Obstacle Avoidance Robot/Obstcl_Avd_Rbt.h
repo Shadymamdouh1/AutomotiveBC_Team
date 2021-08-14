@@ -20,9 +20,14 @@
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 #define OBSTCLE_AVD_MOD_UNINITIALIZED			0U
 #define OBSTCLE_AVD_MOD_INITIALIZED				1U
-#define OB_AVD_DISTANCE_UNDER_50				2U
-#define OB_AVD_DISTANCE_EQUAL_50				3U
-#define OB_AVD_DISTANCE_OVER_50					4U
+#define OB_AVD_DISTANCE_UNDER_THRSHOLD			2U
+#define OB_AVD_DISTANCE_EQUAL_THRSHOLD			3U
+#define OB_AVD_DISTANCE_OVER_THRSHOLD			4U
+#define OB_AVD_HIGH_THRESHOLD					55U
+#define OB_AVD_LOW_THRESHOLD					45U
+#define OB_RBT_FRWRD_SPEED						20U
+#define OB_RBT_BKWRD_SPEED						20U
+#define OB_RBT_RIGHT_SPEED						20U
 /*******************************************************************************
  *                          Module Data Types                                  *
  *******************************************************************************/

@@ -12,7 +12,7 @@
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 
 ModuleState_t ObstclAvd_State = OBSTCLE_AVD_MOD_UNINITIALIZED;
-uint16_t distance_u16 = 63;
+uint16_t distance_u16 = 0;
 uint8_t distance_au8[4] = {0};
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -51,9 +51,8 @@ Std_ReturnType ObstacleAvoidance_init(void)
 		return E_NOT_OK;
 		
 	/* Call the LCD Module initializer */
-	if(LCD_STATUS_ERROR_OK != Lcd_init())
-		return E_NOT_OK;
-	Lcd_sendString((uint8_t*)"    Distance");
+// 	Lcd_init();
+// 	Lcd_sendString((uint8_t*)"    Distance");
 	/* Call the Sensing Module initializer */
 	Sensing_init();
 
@@ -85,47 +84,65 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
-	//Lcd_init();
+	Lcd_init();
+	Lcd_sendString((uint8_t*)"Distance: ");
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-
+	uint16_t tempDistance_u16 = 0;
+	
 /* Get the distance to the nearest obstacle */
-	Sensing_getObstcleDistance(&distance_u16);
+	if(Sensing_getDistance(SENSING_FRONT_OBSTACLE_DISTANCE, &tempDistance_u16) == E_OK)
+	{
+		distance_u16 = tempDistance_u16;
+	}
 /* Take Robot Action */
-	/* If distance > 50 */
-	if(distance_u16 > 50)
+	/* If distance > OB_AVD_HIGH_THRESHOLD */
+	if(distance_u16 > OB_AVD_HIGH_THRESHOLD)
 	{
-		if (ObstclAvd_State != OB_AVD_DISTANCE_OVER_50)
+		if (ObstclAvd_State != OB_AVD_DISTANCE_OVER_THRSHOLD)
 		{
-			ObstclAvd_State = OB_AVD_DISTANCE_OVER_50;
-			RbtSteering_move(ROBOT_DIR_FRWRD, 20);
+			ObstclAvd_State = OB_AVD_DISTANCE_OVER_THRSHOLD;
+			RbtSteering_move(ROBOT_DIR_FRWRD, OB_RBT_FRWRD_SPEED);
 		}
 	}
-	/* If distance = 50 */
-	else if(distance_u16 == 50)
+	/* If distance within threshold range */
+	else if((distance_u16 < OB_AVD_HIGH_THRESHOLD) && (distance_u16 > OB_AVD_LOW_THRESHOLD))
 	{
-		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_50)
+		if (ObstclAvd_State != OB_AVD_DISTANCE_EQUAL_THRSHOLD)
 		{
-			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_50;
-			RbtSteering_move(ROBOT_DIR_RIGHT, 15);
+			ObstclAvd_State = OB_AVD_DISTANCE_EQUAL_THRSHOLD;
+			RbtSteering_move(ROBOT_DIR_RIGHT, OB_RBT_RIGHT_SPEED);
 		}
 	}
-	/* If distance < 50 */
-	else
+	/* If distance < OB_AVD_LOW_THRESHOLD */
+	else if(distance_u16 < OB_AVD_LOW_THRESHOLD)
 	{
-		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_50)
+		if (ObstclAvd_State != OB_AVD_DISTANCE_UNDER_THRSHOLD)
 		{
-			ObstclAvd_State = OB_AVD_DISTANCE_OVER_50;
-			RbtSteering_move(ROBOT_DIR_BKWRD, 20);
+			ObstclAvd_State = OB_AVD_DISTANCE_UNDER_THRSHOLD;
+			RbtSteering_move(ROBOT_DIR_BKWRD, OB_RBT_BKWRD_SPEED);
 		}
+	}else
+	{
+		/* All cases are covered */
 	}
-/* Print Distance on LCD */
-#if 1
-	integerToString((uint16_t)distance_u16, distance_au8, DEC);
-	Lcd_cursorPosition(2,8);
-	Lcd_sendString(distance_au8);
-#endif
+	
+// /* Print Distance on LCD */
+// 	integerToString((uint16_t)distance_u16, distance_au8, DEC);
+// 	if(distance_u16 < 10)
+// 	{
+// 		distance_au8[1]=' ';
+// 		distance_au8[2]=' ';
+// 		distance_au8[3]='\0';
+// 	}else if(distance_u16 < 100)
+// 	{
+// 		distance_au8[2]=' ';
+// 		distance_au8[3]='\0';
+// 	}
+	Lcd_cursorPosition(1, 11);
+	Lcd_sendVariableInt(distance_u16, DEC);
+	Lcd_sendString((uint8_t*)" ");
 /*******************************************************************************/
 /*******************************************************************************/
 

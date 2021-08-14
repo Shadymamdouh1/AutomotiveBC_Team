@@ -9,10 +9,10 @@
 #include "Ultrasonic.h"
 
 
-US_Config_t US_Channels[US_USED_CHANNELS] =
+const US_ChannelConfig_t US_Configurations[US_USED_CHANNELS] =
 {
-	/* US_ChannedID */   /* CPU_FREQ */  /*US_CHPreScaler */
-	{  US_CH_1     ,   CPU_FREQ_8M  , PreScaler_8 }
+	/* ICU_ChannedID */  /* DIO Trig Channel */
+	{  ICU_CHANNEL_0  ,   DIO_US_TRG_CHANNEL_ID  }
 	
 };
 	

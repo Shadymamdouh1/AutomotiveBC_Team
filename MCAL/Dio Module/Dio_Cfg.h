@@ -26,8 +26,9 @@
 #define DioConf_PWM_D4_PORT_NUM				PORT_D
 #define DioConf_IN3_D6_PORT_NUM				PORT_D
 #define DioConf_IN4_D7_PORT_NUM				PORT_D
-#define DioConf_BTN1_C4_PORT_NUM			PORT_C
-#define DioConf_US_TRG_PORT_NUM				PORT_C
+#define DioConf_BTN0_C4_PORT_NUM			PORT_C
+#define DioConf_US_TRG_PORT_NUM				PORT_A
+
 
 /* DIO Configured Channel ID's */
 #define DioConf_LCD_RS_PIN_NUM				PIN_1
@@ -42,7 +43,7 @@
 #define DioConf_PWM_D4_PIN_NUM				PIN_4
 #define DioConf_IN3_D6_PIN_NUM				PIN_6
 #define DioConf_IN4_D7_PIN_NUM				PIN_7
-#define DioConf_BTN1_C4_PIN_NUM				PIN_4
+#define DioConf_BTN0_C4_PIN_NUM				PIN_4
 #define DioConf_US_TRG_PIN_NUM				PIN_0
 
 /* Channel Index in the array of structures in Dio_Cfg.c */
@@ -58,6 +59,6 @@
 #define DIO_PWM_CHANNEL_ID					9
 #define DIO_IN3_CHANNEL_ID					10
 #define DIO_IN4_CHANNEL_ID					11
-#define DIO_BTN1_CHANNEL_ID					12
+#define DIO_BTN0_CHANNEL_ID					12
 #define DIO_US_TRG_CHANNEL_ID				13
 #endif /* DIO_CFG_H_ */

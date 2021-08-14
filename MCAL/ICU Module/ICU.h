@@ -9,23 +9,33 @@
 
 #ifndef ICU_H_
 #define ICU_H_
+#include "..\..\Microcontroller\Std_types.h"
 #include "..\..\Microcontroller\Platform_Types.h"
 #include "ICU_Cfg.h"
-
 #include "..\Gpt Module\Gpt.h"
+
+/*
+ * Data type for the ICU Channel
+ */
 typedef uint8_t ICU_channel_t;
 
+/*
+ * Data type for the ICU Counts
+ */
+typedef uint32_t ICU_Counts_t;
 
-typedef enum ICUError_t
+/*
+ * Data type for the ICU Configurations
+ */
+typedef struct
 {
-	ERROR_OK,
-	ERROR_NOK
-	
-}ICUError_t;
+	uint8_t Gpt_Channel;
+	uint8_t Ext_InterruptChannel;
+}ICU_ChannelConfig_t;
 
-void ICU_Init(void);
-ICUError_t ICU_GetONPeriod_Counts(uint8_t ChannelId , uint32_t *u32_Counts);
+Std_ReturnType ICU_Init(void);
+Std_ReturnType ICU_GetONPeriod_Counts(ICU_channel_t ChannelId_u8 , ICU_Counts_t *Counts_pu32);
 
 /*- EXTERN VARIABLE DECLARATIONS ----------------------------------*/
-extern ICU_channel_t ICU_Channels[ICU_USED_CHANNELS];
+extern const ICU_ChannelConfig_t ICU_Configurations[ICU_USED_CHANNELS];
 #endif /* ICU_H_ */
