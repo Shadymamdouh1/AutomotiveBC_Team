@@ -16,7 +16,7 @@
 
 /*- PRIMITIVE TYPES ----------------------------------------*/
 typedef void (*pfINT0_CallBack_t)(void);
-
+typedef void (*pfINT2_CallBack_t)(void);
 
 /*- Vector Table
 -------------------------------*/
@@ -53,9 +53,10 @@ void DisableGlobalInterrupts(void);
 
 void DisableExternalInterrupts_INT0();
 void EnableExternalInterrupts_INT0(uint8_t senseControl);
-
-
-
 void setExtINT0Callback(pfINT0_CallBack_t FunToBeCalledInISR);
+
+void DisableExternalInterrupts_INT2();
+void EnableExternalInterrupts_INT2(uint8_t senseControl);
+void setExtINT2Callback(pfINT2_CallBack_t FunToBeCalledInISR);
 
 #endif /* ISR_H_ */

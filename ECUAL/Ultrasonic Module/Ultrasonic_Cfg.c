@@ -12,6 +12,7 @@
 US_Config_t US_Channels[US_USED_CHANNELS] =
 {
 	/* US_ChannedID */   /* CPU_FREQ */  /*US_CHPreScaler */
-	   {  US_CH_1     ,   CPU_FREQ_8M  , PreScaler_64 }
+	{  US_CH_1     ,   CPU_FREQ_8M  , PreScaler_8 }
 	
 };
+	

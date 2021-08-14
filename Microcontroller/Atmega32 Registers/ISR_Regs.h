@@ -35,6 +35,10 @@
 #define ISC01_B			1
 #define ISC10_B			2
 #define ISC11_B			3
+/*************************************************************************************/
+#define MCUCSR_R		(*(volatile uint8_t * const)0x0054)
+
+#define ISC2_B			6
 
 
 #endif /*  ISR_REGS_H_ */

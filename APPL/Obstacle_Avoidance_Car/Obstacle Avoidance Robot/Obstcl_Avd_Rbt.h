@@ -13,6 +13,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "../Robot Steering Module/Rbt_Steering.h"
+#include "../Sensing Module/Sensing.h"
 #include "../../../ECUAL/Lcd Module/Lcd.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/

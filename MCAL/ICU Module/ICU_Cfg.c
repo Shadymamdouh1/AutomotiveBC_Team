@@ -16,7 +16,7 @@
 /* configuration of used ICU channels */
 ICU_channel_t ICU_Channels[ICU_USED_CHANNELS]=
 {
-	/*ICU Channel*/  
-	ICU_1 
+	/*ICU Channel*/
+	ICU_1
 	
 };
