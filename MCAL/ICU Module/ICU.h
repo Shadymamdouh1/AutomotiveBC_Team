@@ -11,7 +11,7 @@
 #define ICU_H_
 #include "..\..\Microcontroller\Std_types.h"
 #include "..\..\Microcontroller\Platform_Types.h"
-#include "ICU_Cfg.h"
+#include "ICU_LCfg.h"
 #include "..\Gpt Module\Gpt.h"
 
 /*

@@ -1,5 +1,5 @@
 /*
- * Sensing.c
+ * Display.c
  *
  * Created: 13/8/2021 11:15:40 AM
  *  Author: Ahmed Nabil
@@ -7,7 +7,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "Sensing.h"
+#include "Display.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -16,20 +16,20 @@
 /*
  * MACROs to determine the state of the Module
  */
-#define SENSING_STATUS_UNINIT		0U
-#define SENSING_STATUS_INIT			1U
+#define DISPLAY_STATUS_UNINIT		0U
+#define DISPLAY_STATUS_INIT			1U
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 
-/* Holds the status of the Sensing Module */
-Sensing_State_t SensingModuleStatus_gu8 = SENSING_STATUS_UNINIT;
+/* Holds the status of the Display Module */
+Display_State_t DisplayModuleStatus_gu8 = DISPLAY_STATUS_UNINIT;
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: Sensing_init
+* Service Name: Display_init
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): None
@@ -39,60 +39,40 @@ Sensing_State_t SensingModuleStatus_gu8 = SENSING_STATUS_UNINIT;
 * Description: Function to Initialize the Sensing module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to initialize the Sensing module */
-Std_ReturnType Sensing_init(void)
+Std_ReturnType Display_init(uint8_t DisplayID_u8)
 {
-/**************************************************************************************/
-/*								Start of Error Checking								  */
-/**************************************************************************************/
-	/* Check if the module is already initialized */
-	if(SensingModuleStatus_gu8 == SENSING_STATUS_INIT)
-	{
-		return E_OK;
-	}else{/*Nothing to here*/}
-		
-/**************************************************************************************/
-/*								End of Error Checking								  */
-/**************************************************************************************/
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	/* Initialize the Ultrasonic Module */
-	Ultrasonic_Init();
-	
-	/* Change the state of the module to initialized */
-	SensingModuleStatus_gu8 = SENSING_STATUS_INIT;
+	/* Initialize the Display Module */
+	Lcd_init();
 	return E_OK;
 }
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: Sensing_getObstcleDistance
+* Service Name: Display_printString
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
-* Parameters (in): SensorID_u8 - ID for the distance to be read.
+* Parameters (in): DisplayID_u8 - ID for the Display Device to print.
+*				   StringToPrint_pu8 - Pointer to a string to be printed on the screen
 * Parameters (inout): None
-* Parameters (out): Sensor_Value - pointer to a variable to hold the returned distance
+* Parameters (out): None
 * Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
-* Description: Function used to get reading of a sensor with the given ID
+* Description: Function used to display an input from the application on a Display Screen with the given ID
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
+Std_ReturnType Display_printString(uint8_t DisplayID_u8, uint8_t *StringToPrint_pu8)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
-	/* Check if the module is not initialized */
-	if(SensingModuleStatus_gu8 != SENSING_STATUS_INIT)
-	{
-		return E_NOT_OK;
-	}else{/*Nothing to do here*/}
-		
 	/* Check if the pointer variable is NULL */
-	if (NULL_PTR == Sensor_Value)
+	if (NULL_PTR == StringToPrint_pu8)
 	{
 		return E_NOT_OK;
 	}else{/*Nothing to do here*/}
 		
-	if(SensorID_u8 >= SENSORS_USED_NUM)
+	if(DisplayID_u8 >= DISPLAY_ID_INVALID)
 	{
 		return E_NOT_OK;
 	}else{/* Nothing to do here*/}
@@ -103,35 +83,42 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
+	Lcd_sendString((uint8_t*)StringToPrint_pu8);
 	
-	switch(Sensors[SensorID_u8])
+	return E_NOT_OK;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+* Service Name: Display_printInteger
+* Sync/Async: Synchronous
+* Reentrancy: Non reentrant
+* Parameters (in): DisplayID_u8 - ID for the Display Device to print.
+*				   u16_number - Decimal Number to print on the LCD
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
+* Description: Function used to display an input from the application on a Display Screen with the given ID
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+Std_ReturnType Display_printInteger(uint8_t DisplayID_u8, uint16_t u16_number)
+{
+/**************************************************************************************/
+/*								Start of Error Checking								  */
+/**************************************************************************************/
+	if(DisplayID_u8 >= DISPLAY_ID_INVALID)
 	{
-		case US_CHANNEL_FRONT:
-		{
-			uint16_t tempDistance_u16 = 0;
-			/* Read Ultrasonic Distance */
-			if(Ultrasonic_GetDistance(US_CHANNEL_FRONT, &tempDistance_u16) == E_OK)
-			{
-				if(tempDistance_u16 > ULTRASONIC_MAX_DISTANCE_RANGE)
-				{
-					*Sensor_Value = ULTRASONIC_MAX_DISTANCE_RANGE;
-				}
-				else
-				{
-					*Sensor_Value = tempDistance_u16;
-				}
-				return E_OK;
-			}
-			else
-			{
-				return E_NOT_OK;
-			}
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+		return E_NOT_OK;
+	}else{/* Nothing to do here*/}
+/**************************************************************************************/
+/*								End of Error Checking								  */
+/**************************************************************************************/
+
+/**************************************************************************************/
+/*								Function Implementation								  */
+/**************************************************************************************/
+	Lcd_cursorPosition(1, 11);
+	Lcd_sendVariableInt(u16_number, DEC);
+	Lcd_sendString((uint8_t*)" ");
+				
 	return E_NOT_OK;
 }

@@ -5,7 +5,7 @@
  *  Author: Ahmed Nabil
  */ 
 
-#include "Dio_Cfg.h"
+#include "Dio_LCfg.h"
 #include "Dio.h"
 
 strDio_Config_t strDio_pins[DIO_USED_PINS_NUM]=

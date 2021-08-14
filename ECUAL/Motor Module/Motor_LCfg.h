@@ -1,12 +1,12 @@
 /*
- * Motor_Cfg.h
+ * Motor_LCfg.h
  *
  * Created: 7/15/2021 11:13:13 PM
  *  Author: Ahmed Nabil
  */ 
 
-#ifndef MOTOR_CFG_H_
-#define MOTOR_CFG_H_
+#ifndef MOTOR_LCFG_H_
+#define MOTOR_LCFG_H_
 
 /* Number of Motors Used */
 #define MOTORS_USED_NUM				2U //LCfg.h
@@ -27,4 +27,4 @@
 #define MOTOR_RIGHT_ID				0U
 #define MOTOR_LEFT_ID				1U
 
-#endif /* MOTOR_CFG_H_ */
+#endif /* MOTOR_LCFG_H_ */

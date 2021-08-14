@@ -48,13 +48,15 @@ Std_ReturnType ObstacleAvoidance_init(void)
 	EnableGlobalInterrupts();
 	/* Call the Robot Module initializer */
 	if(ROBOT_STATUS_ERROR_OK != RbtSteering_init())
+	{
 		return E_NOT_OK;
-		
-	/* Call the LCD Module initializer */
-// 	Lcd_init();
-// 	Lcd_sendString((uint8_t*)"    Distance");
+	}
+	
 	/* Call the Sensing Module initializer */
-	Sensing_init();
+	if(E_OK != Sensing_init())
+	{
+		return E_NOT_OK;		
+	}
 
 	/* Update ObstclAvd_State to initialized */
 	ObstclAvd_State = OBSTCLE_AVD_MOD_INITIALIZED;
@@ -84,15 +86,17 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
-	Lcd_init();
-	Lcd_sendString((uint8_t*)"Distance: ");
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
+	/* Non Blocking Display initialization */
+	Display_init();
+	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*) "Distance: ");
+
 	uint16_t tempDistance_u16 = 0;
 	
 /* Get the distance to the nearest obstacle */
-	if(Sensing_getDistance(SENSING_FRONT_OBSTACLE_DISTANCE, &tempDistance_u16) == E_OK)
+	if(Sensing_getReading(SENSING_FRONT_OBSTACLE_DISTANCE, &tempDistance_u16) == E_OK)
 	{
 		distance_u16 = tempDistance_u16;
 	}
@@ -128,21 +132,7 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 		/* All cases are covered */
 	}
 	
-// /* Print Distance on LCD */
-// 	integerToString((uint16_t)distance_u16, distance_au8, DEC);
-// 	if(distance_u16 < 10)
-// 	{
-// 		distance_au8[1]=' ';
-// 		distance_au8[2]=' ';
-// 		distance_au8[3]='\0';
-// 	}else if(distance_u16 < 100)
-// 	{
-// 		distance_au8[2]=' ';
-// 		distance_au8[3]='\0';
-// 	}
-	Lcd_cursorPosition(1, 11);
-	Lcd_sendVariableInt(distance_u16, DEC);
-	Lcd_sendString((uint8_t*)" ");
+	Display_printInteger(DISPLAY_LCD_16x2_ID, distance_u16);
 /*******************************************************************************/
 /*******************************************************************************/
 

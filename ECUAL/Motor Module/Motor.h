@@ -11,7 +11,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "Motor_Cfg.h"
+#include "Motor_LCfg.h"
 #include "../../MCAL/Dio Module/Dio.h"
 #include "../../MCAL/SWPwm Module/SWPwm.h"
 
