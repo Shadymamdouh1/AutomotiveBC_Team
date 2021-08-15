@@ -378,7 +378,7 @@ enuLcd_Status_t Lcd_sendString(uint8_t* au8_string)
 		return LCD_STATUS_ERROR_NOK;
 	}
 	/******************** TEMP ********************/
-	if(gu8_oneTimeString_1_Flag == TRUE && stringCmp(gau8_currentString, gau8_oneTimeString_1) == TRUE)
+	if(gu8_oneTimeString_1_Flag == TRUE && stringCmp(au8_string, gau8_oneTimeString_1) == TRUE)
 	{
 		u8_stringIndexCounter = Initial_Value;
 		LCD_SEND_STRING_STATE = IDLE;
