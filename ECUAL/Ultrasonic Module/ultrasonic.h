@@ -13,7 +13,7 @@
 #include "..\..\MCAL\Dio Module\Dio.h"
 #include "..\..\Microcontroller\Platform_Types.h"
 #include "../../Microcontroller/Std_types.h"
-#include "Ultrasonic_Cfg.h"
+#include "Ultrasonic_LCfg.h"
 
 typedef uint8_t US_Channel_t;
 

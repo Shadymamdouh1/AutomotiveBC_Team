@@ -14,7 +14,7 @@
 #include "../Interrupt Driver/ISR.h"
 #include "..\..\Microcontroller\Atmega32 Registers\Gpt_Regs.h"
 
-#include "Gpt_Cfg.h"
+#include "Gpt_LCfg.h"
 //#include "../../MCAL/Interrupt Driver/ISR.h"
 
 /*- CONSTANTS ----------------------------------------------*/

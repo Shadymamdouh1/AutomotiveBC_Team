@@ -6,11 +6,11 @@
  */ 
 
 
-#ifndef SWPWM_CFG_H_
-#define SWPWM_CFG_H_
+#ifndef SWPWM_LCFG_H_
+#define SWPWM_LCFG_H_
 
-#include "..\Gpt Module\Gpt_Cfg.h"
-#include "..\Dio Module\Dio_Cfg.h"
+#include "..\Gpt Module\Gpt_LCfg.h"
+#include "..\Dio Module\Dio_LCfg.h"
 
 /* Number of PWM Channels Used */
 #define SWPWM_CHANNELS_NUM				1U
@@ -25,4 +25,4 @@
 
 
 
-#endif /* SWPWM_CFG_H_ */
+#endif /* SWPWM_LCFG_H_ */

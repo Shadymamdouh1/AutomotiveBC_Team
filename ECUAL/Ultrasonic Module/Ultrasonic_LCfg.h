@@ -7,8 +7,8 @@
 ******************************************************************************/
 
 
-#ifndef ULTRASONIC_CFG_H_
-#define ULTRASONIC_CFG_H_
+#ifndef ULTRASONIC_LCFG_H_
+#define ULTRASONIC_LCFG_H_
 
 #define US_USED_CHANNELS			 1
 
@@ -16,4 +16,4 @@
 
 #define US_CHANNEL_FRONT    (0UL)
 
-#endif /* ULTRASONIC_CFG_H_ */
+#endif /* ULTRASONIC_LCFG_H_ */

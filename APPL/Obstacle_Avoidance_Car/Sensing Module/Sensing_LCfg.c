@@ -8,9 +8,9 @@
 #include "Sensing.h"
 
 /*
- * Array of Structures, 
+ * Array of Sensors 
  */
-const const Sensing_Config_t Sensing_Configuratons =
+const Sensor_list_t Sensors[SENSORS_USED_NUM] =
 {
-	
+	US_CHANNEL_FRONT
 };

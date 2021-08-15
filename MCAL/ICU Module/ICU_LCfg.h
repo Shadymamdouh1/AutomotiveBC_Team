@@ -7,8 +7,8 @@
 * Date: 8/12/2021
 ******************************************************************************/
 
-#ifndef ICU_CFG_H_
-#define ICU_CFG_H_
+#ifndef ICU_LCFG_H_
+#define ICU_LCFG_H_
 
 #define ICU_USED_CHANNELS		1
 
@@ -17,4 +17,4 @@
 #define ICU_CHANNEL_0			0
 
 
-#endif /* ICU_CFG_H_ */
+#endif /* ICU_LCFG_H_ */
