@@ -13,7 +13,6 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "../Obstacle Avoidance Robot/Obstcl_Avd_Rbt.h"
-#include "../../../ECUAL/Lcd Module/Lcd.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
@@ -28,22 +27,10 @@ typedef enum
 {
 	APP_STATUS_ERROR_NOK,
 	APP_STATUS_ERROR_OK,
-	APP_STATUS_ERROR_ID_INVALID,
-	APP_STATUS_ERROR_NULL,
 	APP_STATUS_INITIALIZED,
 	APP_STATUS_UNINITIALIZED
 }enuApp_Status_t;
 
-/*
- * Data Type for Car Action state
- */
-typedef enum
-{
-	ROBOT_ACTION_STOP,
-	ROBOT_ACTION_FRWRD,
-	ROBOT_ACTION_BKWRD,
-	ROBOT_ACTION_RIGHT
-}enuRobotAction_t;
 
 /*******************************************************************************
  *                      Function Prototypes                                    *

@@ -90,7 +90,7 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Non Blocking Display initialization */
-	Display_init();
+	Display_init(DISPLAY_LCD_16x2_ID);
 	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*) "Distance: ");
 
 	uint16_t tempDistance_u16 = 0;

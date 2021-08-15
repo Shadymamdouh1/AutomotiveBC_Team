@@ -9,7 +9,7 @@
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "Dio.h"
 #include "..\..\Microcontroller\Atmega32 Registers\Dio_regs.h"
-#include "Dio_Cfg.h"
+#include "Dio_LCfg.h"
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/

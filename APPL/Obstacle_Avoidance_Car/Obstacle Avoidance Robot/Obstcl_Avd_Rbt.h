@@ -46,6 +46,4 @@ Std_ReturnType ObstacleAvoidance_init(void);
 /* Periodic Function of the Obstacle Avoidance Module */
 Std_ReturnType ObstacleAvoidance_mainFunction(void);
 
-
-
 #endif /* OBSTCL_AVD_RBT_H_ */

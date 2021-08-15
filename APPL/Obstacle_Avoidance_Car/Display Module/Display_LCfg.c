@@ -8,9 +8,9 @@
 #include "Display.h"
 
 /*
- * Array of Structures, 
+ * Array of Displays, 
  */
-const Display_Config_t Display_Configuratons =
+const Displays_List_t Displays[DISPLAY_USED_NUM] =
 {
-	
+	LCD_ID_0
 };	
