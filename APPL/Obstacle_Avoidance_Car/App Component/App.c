@@ -36,9 +36,9 @@ enuApp_Status_t App_start(void)
 	/* Application Super Loop */
 	while (1)
 	{
-		/* Run the Obstacle Avoidance main function */
-		if(App_update() != E_OK)
-			return E_NOT_OK;
+		/* Update the Applications */
+		if(App_update() != APP_STATUS_ERROR_OK)
+			return APP_STATUS_ERROR_NOK;
 	}
 }
 

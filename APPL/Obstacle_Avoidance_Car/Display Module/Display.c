@@ -134,7 +134,7 @@ Std_ReturnType Display_printInteger(uint8_t DisplayID_u8, uint16_t u16_number)
 		{
 			Lcd_cursorPosition(1, 11);
 			Lcd_sendVariableInt(u16_number, DEC);
-			Lcd_sendString((uint8_t*)" ");
+			Lcd_sendString((uint8_t*)"  ");
 		}
 	}
 				
