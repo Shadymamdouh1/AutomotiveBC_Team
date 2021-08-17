@@ -71,7 +71,7 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								Start of Error Checking								  */
 /**************************************************************************************/
-	/* Check if the Module was already initialized */
+	/* Check if the Module is not initialized yet */
 	if (ObstclAvd_State == OBSTCLE_AVD_MOD_UNINITIALIZED)
 	{
 		return E_NOT_OK;
@@ -82,9 +82,6 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	/* Non Blocking Display initialization */
-	Display_init(DISPLAY_LCD_16x2_ID);
-	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*) "Distance: ");
 
 	uint16_t tempDistance_u16 = 0;
 	
@@ -129,15 +126,13 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 			/* Action Setter for Robot Steering Module */
 			RbtSteering_Dir_Spd_Setter(ROBOT_DIR_BKWRD, OB_RBT_BKWRD_SPEED);
 		}
-	}else
+	}
+	else
 	{
 		/* All cases are covered */
 	}
 	
-	
-	
-	/* Integer Setter for Display Module */
-	Display_printInteger(DISPLAY_LCD_16x2_ID, distance_u16);
+	set_DisplayInteger(DISPLAY_LCD_16x2_ID, distance_u16);
 /*******************************************************************************/
 /*******************************************************************************/
 
