@@ -129,6 +129,26 @@ Std_ReturnType RbtSteering_Dir_Spd_Setter(RobotDir_t u8_direction, RobotSpeed_t 
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+* Service Name: RbtSteering_Dir_Spd_Getter
+* Sync/Async: Synchronous
+* Reentrancy: Non reentrant
+* Parameters (in): pu8_speed - pointer to Speed of the robot in %
+*				   pu8_direction - pointer to Direction of the robot (Forward - Backward - Left - Right)
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: Robot_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Description: Function to Get the data of the Robot from the global shared variable.
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+Std_ReturnType RbtSteering_Dir_Spd_Getter(RobotDir_t *pu8_direction, RobotSpeed_t *pu8_speed)
+{
+	*pu8_direction = Robot_Data_Input.RbtDirection;
+	*pu8_speed = Robot_Data_Input.RbtSpeed;
+	
+	return E_OK;
+}
+
+
+/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 * Service Name: RbtSteering_move
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
