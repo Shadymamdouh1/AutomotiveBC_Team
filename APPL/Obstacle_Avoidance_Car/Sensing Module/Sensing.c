@@ -24,7 +24,8 @@
 
 /* Holds the status of the Sensing Module */
 Sensing_State_t SensingModuleStatus_gu8 = SENSING_STATUS_UNINIT;
-
+Sensing_Distance_t distanceBetFrontSensorAndOBstacle = Initial_Value;
+static uint16_t  DistanceValuesPerSensor[SENSORS_USED_NUM]={Initial_Value};
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
@@ -75,6 +76,8 @@ Std_ReturnType Sensing_init(void)
 * Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
 * Description: Function used to get reading of a sensor with the given ID
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
+
 Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 {
 /**************************************************************************************/
@@ -108,30 +111,63 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 	{
 		case US_CHANNEL_FRONT:
 		{
+			*Sensor_Value = DistanceValuesPerSensor[SensorID_u8];
+			
+			break;	
+	    }
+		default:
+		{
+			return E_NOT_OK;
+		}
+	return E_OK ;
+}
+/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+* Service Name: Sensing_mainFunction
+* Sync/Async: Synchronous
+* Reentrancy: Non reentrant
+* Parameters (in): SensorID_u8 - ID for the distance to be read.
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: None
+* Description: It is the sensing module main function that called by APP 
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
+
+
+Std_ReturnType Sensing_mainFunction(void)
+{
+	uint8_t u8_Counter=0;
+	for(u8_Counter=0;u8_Counter<SENSORS_USED_NUM;u8_Counter++)
+	{
+		switch(Sensors[u8_Counter])
+		{
 			uint16_t tempDistance_u16 = 0;
 			/* Read Ultrasonic Distance */
+			case US_CHANNEL_FRONT :
 			if(Ultrasonic_GetDistance(US_CHANNEL_FRONT, &tempDistance_u16) == E_OK)
 			{
 				if(tempDistance_u16 > ULTRASONIC_MAX_DISTANCE_RANGE)
 				{
-					*Sensor_Value = ULTRASONIC_MAX_DISTANCE_RANGE;
+					DistanceValuesPerSensor[u8_Counter] = ULTRASONIC_MAX_DISTANCE_RANGE;
 				}
 				else
 				{
-					*Sensor_Value = tempDistance_u16;
+					DistanceValuesPerSensor[u8_Counter] = tempDistance_u16;
 				}
-				return E_OK;
+				
 			}
 			else
 			{
-				return E_NOT_OK;
+				
 			}
 			break;
+			
+			default:
+			{
+				break;
+			}
 		}
-		default:
-		{
-			break;
-		}
+		
+		
 	}
-	return E_NOT_OK;
 }
