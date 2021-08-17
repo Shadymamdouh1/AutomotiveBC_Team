@@ -24,7 +24,7 @@
 
 /* Holds the status of the Sensing Module */
 Sensing_State_t SensingModuleStatus_gu8 = SENSING_STATUS_UNINIT;
-
+Sensing_Distance_t distanceBetFrontSensorAndOBstacle = Initial_Value;
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
@@ -134,4 +134,10 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 		}
 	}
 	return E_NOT_OK;
+}
+
+
+Std_ReturnType Sensing_mainFunction(void)
+{
+
 }
