@@ -49,7 +49,6 @@ uint8_t gu8_currentlyRunningCommand = LCD_INIT_4BITS_COMMAND_1_ID;
 
 /* one time strings option, to be redesigned later in cfg.c */
 uint8_t gau8_oneTimeString_1[11] = "Distance: ";
-
 uint8_t gu8_oneTimeString_1_Flag = FALSE;
 
 #endif

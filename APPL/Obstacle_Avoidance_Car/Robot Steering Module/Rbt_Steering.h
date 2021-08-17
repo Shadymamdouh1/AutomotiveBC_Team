@@ -24,7 +24,8 @@
 #define ROBOT_DIR_BKWRD				1U
 #define ROBOT_DIR_LEFT				2U
 #define ROBOT_DIR_RIGHT				3U
-#define ROBOT_DIR_INVALID			4U
+#define ROBOT_DIR_NEUTRAL			4U
+#define ROBOT_DIR_INVALID			5U
 
 
 /*******************************************************************************
@@ -45,6 +46,15 @@ typedef uint8_t RobotDir_t;
  * Data Type for Robot Speed
  */
 typedef uint8_t RobotSpeed_t;
+
+/*
+ * Data Type for Module's Input
+ */
+typedef struct
+{
+	RobotDir_t	RbtDirection;
+	RobotSpeed_t  RbtSpeed;
+}Rbt_DataInput_t;
 
 /*
  * Data Type for Robot return status
@@ -74,14 +84,19 @@ typedef struct
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to initialize the Robot module */
-Robot_Status_t RbtSteering_init(void);
+Std_ReturnType RbtSteering_init(void);
 
 /* Function to move the Robot a given direction with given speed in % */
-Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+Std_ReturnType RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 
 /* Function to stop Robot */
-Robot_Status_t RbtSteering_stop(void);
+Std_ReturnType RbtSteering_stop(void);
 
+/* Main function dispatcher for the robot module */
+Std_ReturnType RbtSteering_mainFunction(void);
+
+/* Robot Steering Setter Function */
+Std_ReturnType RbtSteering_Dir_Spd_Setter(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
