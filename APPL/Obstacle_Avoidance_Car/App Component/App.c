@@ -83,6 +83,12 @@ enuApp_Status_t App_init(void)
 	{
 		return E_NOT_OK;
 	}
+	
+	/* Call the Sensing Module initializer */
+	if(E_OK != Sensing_init())
+	{
+		return E_NOT_OK;
+	}
 	/* Update enuCurrentAppStatus to initialized */
 	enuCurrentAppStatus = APP_STATUS_INITIALIZED;
 	return APP_STATUS_ERROR_OK;
@@ -116,16 +122,14 @@ enuApp_Status_t App_update(void)
 /*								Function Implementation								  */
 /**************************************************************************************/
 
-	/* Calling the Main function of the Obstacle Avoidance Application */
-	ObstacleAvoidance_mainFunction();
-	/* Calling the Main function of the Display Module */
-	Display_mainFunction();
+	/* Calling the Main function of the Sensing Module == Dispatcher */
+	Sensing_mainFunction();
 	
 	/* Calling the Main function of the Display Module == Dispatcher */
 	Display_mainFunction();
-	
-	/* Calling the Main function of the Sensing Module == Dispatcher */
-	Sensing_mainFunction();
+		
+	/* Calling the Main function of the Obstacle Avoidance Application */
+	ObstacleAvoidance_mainFunction();
 	
 	/* Calling the Main function of the Robot Module == Dispatcher */
 	RbtSteering_mainFunction();

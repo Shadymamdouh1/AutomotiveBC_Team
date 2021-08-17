@@ -45,11 +45,6 @@ Std_ReturnType ObstacleAvoidance_init(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	/* Call the Sensing Module initializer */
-	if(E_OK != Sensing_init())
-	{
-		return E_NOT_OK;		
-	}
 
 	/* Update ObstclAvd_State to initialized */
 	ObstclAvd_State = OBSTCLE_AVD_MOD_INITIALIZED;
@@ -82,15 +77,28 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-
-	uint16_t tempDistance_u16 = 0;
-	
-	
+	static uint8_t flag=0;
 	/* Distance Getter from Sensing Module */
 /* Get the distance to the nearest obstacle */
-	if(Sensing_getReading(SENSING_FRONT_OBSTACLE_DISTANCE, &tempDistance_u16) == E_OK)
+	//Sensing_getReading(SENSING_FRONT_OBSTACLE_DISTANCE, &distance_u16);
+	
+	
+	if(distance_u16 == 0)
 	{
-		distance_u16 = tempDistance_u16;
+		flag = 0;
+	}
+	else if(distance_u16 == 2000)
+	{
+		flag = 1;
+	}
+	
+	if(flag == 0)
+	{
+		distance_u16++;
+	}
+	else
+	{
+		distance_u16--;
 	}
 	
 /* Take Robot Action */

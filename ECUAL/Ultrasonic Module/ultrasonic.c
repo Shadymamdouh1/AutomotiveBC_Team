@@ -84,7 +84,7 @@ Std_ReturnType Ultrasonic_GetDistance(US_Channel_t US_ChannelID ,  uint16_t *u16
 		if (ICU_GetONPeriod_Counts(US_Configurations[US_ChannelID].ICU_ChannedID ,&US_Counts) == E_OK)
 		{	
 			/* Get distance */
-			u16_DistanceVal =US_CalDistance(US_ChannelID, US_Counts);
+			u16_DistanceVal = US_CalDistance(US_ChannelID, US_Counts);
 						
 			/* return the distance */
 			*u16_Distance = u16_DistanceVal;

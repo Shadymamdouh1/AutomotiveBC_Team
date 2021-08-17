@@ -159,30 +159,29 @@ Std_ReturnType Display_printInteger(uint8_t DisplayID_u8, uint16_t u16_number)
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 Std_ReturnType Display_setCursor(uint8_t DisplayID_u8, uint8_t xAxis, uint8_t yAxis)
 {
-	/**************************************************************************************/
-	/*								Start of Error Checking								  */
-	/**************************************************************************************/
+/**************************************************************************************/
+/*								Start of Error Checking								  */
+/**************************************************************************************/
 	if(DisplayID_u8 >= DISPLAY_ID_INVALID)
 	{
 		return E_NOT_OK;
-		}else{/* Nothing to do here*/}
-		/**************************************************************************************/
-		/*								End of Error Checking								  */
-		/**************************************************************************************/
+	}else{/* Nothing to do here*/}
+/**************************************************************************************/
+/*								End of Error Checking								  */
+/**************************************************************************************/
 
-		/**************************************************************************************/
-		/*								Function Implementation								  */
-		/**************************************************************************************/
-		switch(Displays[DisplayID_u8].DisplayDeviceId)
+/**************************************************************************************/
+/*								Function Implementation								  */
+/**************************************************************************************/
+	switch(Displays[DisplayID_u8].DisplayDeviceId)
+	{
+		case LCD_ID_0:
 		{
-			case LCD_ID_0:
-			{
-				Lcd_cursorPosition(xAxis, yAxis);
-			}
+			Lcd_cursorPosition(xAxis, yAxis);
 		}
-		
-		return E_NOT_OK;
 	}
+	return E_NOT_OK;
+}
 	
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 * Service Name: Display_mainFunction
@@ -204,7 +203,8 @@ Std_ReturnType Display_mainFunction(void)
 	/* set cursor position */
 	Display_setCursor(DISPLAY_LCD_16x2_ID, 1, 1);
 	/* display string */
-	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*)"Display: ");
+	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*)"Display:   ");
+	Display_setCursor(DISPLAY_LCD_16x2_ID, 1, 9);
 	/* display distance */
 	Display_printInteger(DISPLAY_LCD_16x2_ID, Displays[DISPLAY_LCD_16x2_ID].integer_u16);
 
@@ -226,8 +226,7 @@ Std_ReturnType set_DisplayInteger(uint8_t DisplayID_u8, uint16_t integer_u16)
 	/**************************************************************************************/
 	/*								Function Implementation								  */
 	/**************************************************************************************/
-	Displays[DisplayID_u8].integer_u16 = integer_u16;
-	
+	Displays[DisplayID_u8].integer_u16 = integer_u16;	
 
 	return E_OK;
 }
@@ -270,6 +269,5 @@ Std_ReturnType set_DisplayCursorPosition(uint8_t DisplayID_u8, uint8_t xAxis_u8,
 	Displays[DisplayID_u8].xAxis_u8 = xAxis_u8;
 	Displays[DisplayID_u8].yAxis_u8 = yAxis_u8;
 	
-
 	return E_OK;
 }

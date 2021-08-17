@@ -76,8 +76,6 @@ Std_ReturnType Sensing_init(void)
 * Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
 * Description: Function used to get reading of a sensor with the given ID
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-
-
 Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 {
 /**************************************************************************************/
@@ -87,18 +85,21 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 	if(SensingModuleStatus_gu8 != SENSING_STATUS_INIT)
 	{
 		return E_NOT_OK;
-	}else{/*Nothing to do here*/}
+	}
+	else{/*Nothing to do here*/}
 		
 	/* Check if the pointer variable is NULL */
 	if (NULL_PTR == Sensor_Value)
 	{
 		return E_NOT_OK;
-	}else{/*Nothing to do here*/}
+	}
+	else{/*Nothing to do here*/}
 		
 	if(SensorID_u8 >= SENSORS_USED_NUM)
 	{
 		return E_NOT_OK;
-	}else{/* Nothing to do here*/}
+	}
+	else{/* Nothing to do here*/}
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
@@ -112,13 +113,13 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 		case US_CHANNEL_FRONT:
 		{
 			*Sensor_Value = DistanceValuesPerSensor[SensorID_u8];
-			
 			break;	
 	    }
 		default:
 		{
 			return E_NOT_OK;
 		}
+	}
 	return E_OK ;
 }
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -131,9 +132,6 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 * Return value: None
 * Description: It is the sensing module main function that called by APP 
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-
-
-
 Std_ReturnType Sensing_mainFunction(void)
 {
 	uint8_t u8_Counter=0;
@@ -144,30 +142,29 @@ Std_ReturnType Sensing_mainFunction(void)
 			uint16_t tempDistance_u16 = 0;
 			/* Read Ultrasonic Distance */
 			case US_CHANNEL_FRONT :
-			if(Ultrasonic_GetDistance(US_CHANNEL_FRONT, &tempDistance_u16) == E_OK)
 			{
-				if(tempDistance_u16 > ULTRASONIC_MAX_DISTANCE_RANGE)
+				if(Ultrasonic_GetDistance(US_CHANNEL_FRONT, &tempDistance_u16) == E_OK)
 				{
-					DistanceValuesPerSensor[u8_Counter] = ULTRASONIC_MAX_DISTANCE_RANGE;
+					if(tempDistance_u16 > ULTRASONIC_MAX_DISTANCE_RANGE)
+					{
+						DistanceValuesPerSensor[u8_Counter] = ULTRASONIC_MAX_DISTANCE_RANGE;
+					}
+					else
+					{
+						DistanceValuesPerSensor[u8_Counter] = tempDistance_u16;
+					}
 				}
 				else
 				{
-					DistanceValuesPerSensor[u8_Counter] = tempDistance_u16;
+				
 				}
-				
+				break;
 			}
-			else
-			{
-				
-			}
-			break;
-			
 			default:
 			{
 				break;
 			}
 		}
-		
-		
 	}
+	return E_OK;
 }
