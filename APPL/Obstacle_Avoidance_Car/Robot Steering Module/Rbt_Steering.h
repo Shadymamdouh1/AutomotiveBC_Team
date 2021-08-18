@@ -88,9 +88,14 @@ Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 /* Function to stop Robot */
 Robot_Status_t RbtSteering_stop(void);
 
+/* Periodic Function || Dispatcher of the Robot Steering Module */
 Robot_Status_t RbtSteering_mainFunction(void);
 
+/* Robot Steering Module Setter */
 Robot_Status_t RbtSteering_setData(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+
+/* Robot Steering Module Getter */
+Robot_Status_t RbtSteering_getData(RobotDir_t *pu8_direction, RobotSpeed_t *pu8_speed);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/

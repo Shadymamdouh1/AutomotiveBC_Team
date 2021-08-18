@@ -50,7 +50,6 @@ Std_ReturnType Sensing_init(void)
 	{
 		return E_OK;
 	}else{/*Nothing to here*/}
-		
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
@@ -67,14 +66,14 @@ Std_ReturnType Sensing_init(void)
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-* Service Name: Sensing_getObstcleDistance
+* Service Name: Sensing_getReading
 * Sync/Async: Synchronous
 * Reentrancy: Non reentrant
 * Parameters (in): SensorID_u8 - ID for the distance to be read.
 * Parameters (inout): None
 * Parameters (out): Sensor_Value - pointer to a variable to hold the returned distance
 * Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
-* Description: Function used to get reading of a sensor with the given ID
+* Description: Getter function used to get a reading from the Sensing Module
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 {

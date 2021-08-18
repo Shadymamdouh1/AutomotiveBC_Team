@@ -118,10 +118,16 @@ enuApp_Status_t App_update(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
-	/* Calling the Main function of the Obstacle Avoidance Application */
+	/* Calling the Main function of the Sensing Module */
 	Sensing_mainFunction();
+	
+	/* Calling the Main function of the Obstacle Avoidance Application */
 	ObstacleAvoidance_mainFunction();
+	
+	/* Calling the Main function of the Robot Steering Module */
 	RbtSteering_mainFunction();
+	
+	/* Calling the Main function of the Display Module */
 	Display_mainFunction();
 /*******************************************************************************/
 /*******************************************************************************/
