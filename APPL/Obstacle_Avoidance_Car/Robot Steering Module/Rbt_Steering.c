@@ -18,7 +18,8 @@
  */
 #define ROBOT_STOPPED				0U
 #define ROBOT_RUNNING				1U
-
+#define DATA_CHANGED				1U
+#define DATA_NOT_CHANGED			0U
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 /* Holds the current state of the Robot */
@@ -27,6 +28,9 @@ RobotState_t RobotState_gau8 = ROBOT_STOPPED;
 /* Holds the status of the Robot Module */
 uint8_t RobotModuleStatus_gu8 = ROBOT_STATUS_UNINIT;
 
+RbtSteering_Data RobotData = {ROBOT_DIR_FRWRD, 0};
+	
+uint8_t dataChangeFlag = DATA_NOT_CHANGED;
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
@@ -67,6 +71,56 @@ Robot_Status_t RbtSteering_init(void)
 	return ROBOT_STATUS_ERROR_OK;
 }
 
+/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+* Service Name: RbtSteering_move
+* Sync/Async: Synchronous
+* Reentrancy: Non reentrant
+* Parameters (in): u8_speed - Speed of the robot in %
+*				   u8_direction - Direction of the robot (Forward - Backward - Left - Right)
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: Robot_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Description: Function to Move the Robot in the given direction with a given speed in %.
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+/* Function to move the Robot forward with given speed in % */
+Robot_Status_t RbtSteering_setData(RobotDir_t u8_direction, RobotSpeed_t u8_speed)
+{
+	dataChangeFlag = DATA_CHANGED;
+	RobotData.Direction = u8_direction;
+	RobotData.Speed = u8_speed;
+	
+	return ROBOT_STATUS_ERROR_OK;
+}
+/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+* Service Name: RbtSteering_mainFunction
+* Sync/Async: Synchronous
+* Reentrancy: Non reentrant
+* Parameters (in): None
+* Parameters (inout): None
+* Parameters (out): None
+* Return value: Robot_Status_t - return the status of the function ERROR_OK or NOT_OK
+* Description: Periodic Function - Dispatcher.
+*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+Robot_Status_t RbtSteering_mainFunction(void)
+{
+	if(dataChangeFlag == DATA_CHANGED)
+	{
+		if(RobotData.Speed == 0)
+		{
+			RbtSteering_stop();
+		}
+		else
+		{
+			RbtSteering_move(RobotData.Direction, RobotData.Speed);
+		}
+		dataChangeFlag = DATA_NOT_CHANGED;
+	}
+	else
+	{
+		
+	}
+	return ROBOT_STATUS_ERROR_OK;
+}
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 * Service Name: RbtSteering_move

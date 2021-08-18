@@ -46,6 +46,12 @@ typedef uint8_t RobotDir_t;
  */
 typedef uint8_t RobotSpeed_t;
 
+typedef struct
+{
+	RobotDir_t	Direction;
+	RobotSpeed_t Speed;
+}RbtSteering_Data;
+
 /*
  * Data Type for Robot return status
  */
@@ -82,6 +88,9 @@ Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 /* Function to stop Robot */
 Robot_Status_t RbtSteering_stop(void);
 
+Robot_Status_t RbtSteering_mainFunction(void);
+
+Robot_Status_t RbtSteering_setData(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
