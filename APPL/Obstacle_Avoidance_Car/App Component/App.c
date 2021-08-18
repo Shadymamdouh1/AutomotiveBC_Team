@@ -79,7 +79,7 @@ enuApp_Status_t App_init(void)
 	/* Call the Sensing Module initializer */
 	if(E_OK != Sensing_init())
 	{
-		return E_NOT_OK;
+		return APP_STATUS_ERROR_NOK;
 	}
 	
 	/* Call the Robot Module initializer */
@@ -120,9 +120,9 @@ enuApp_Status_t App_update(void)
 /**************************************************************************************/
 	/* Calling the Main function of the Obstacle Avoidance Application */
 	Sensing_mainFunction();
-	Display_mainFunction();
 	ObstacleAvoidance_mainFunction();
 	RbtSteering_mainFunction();
+	Display_mainFunction();
 /*******************************************************************************/
 /*******************************************************************************/
 
