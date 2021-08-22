@@ -24,7 +24,8 @@
 #define ROBOT_DIR_BKWRD				1U
 #define ROBOT_DIR_LEFT				2U
 #define ROBOT_DIR_RIGHT				3U
-#define ROBOT_DIR_INVALID			4U
+#define ROBOT_DIR_NEUTRAL			4U
+#define ROBOT_DIR_INVALID			5U
 
 
 /*******************************************************************************
@@ -51,6 +52,15 @@ typedef struct
 	RobotDir_t	Direction;
 	RobotSpeed_t Speed;
 }RbtSteering_Data;
+
+/*
+ * Data Type for Module's Input
+ */
+typedef struct
+{
+	RobotDir_t	RbtDirection;
+	RobotSpeed_t  RbtSpeed;
+}Rbt_DataInput_t;
 
 /*
  * Data Type for Robot return status

@@ -75,6 +75,8 @@ Std_ReturnType Sensing_init(void)
 * Return value: Std_ReturnType - return the status of the function E_OK or E_NOK
 * Description: Getter function used to get a reading from the Sensing Module
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+
+
 Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 {
 /**************************************************************************************/
@@ -113,7 +115,7 @@ Std_ReturnType Sensing_getReading(uint8_t SensorID_u8, uint16_t *Sensor_Value)
 		{
 			*Sensor_Value = DistanceValuesPerSensor[SensorID_u8];
 			break;	
-	    }
+    }
 		default:
 		{
 			return E_NOT_OK;

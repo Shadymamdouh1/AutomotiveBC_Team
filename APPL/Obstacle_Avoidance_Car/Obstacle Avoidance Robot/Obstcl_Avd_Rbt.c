@@ -45,6 +45,7 @@ Std_ReturnType ObstacleAvoidance_init(void)
 /**************************************************************************************/
 /*								Function Implementation								  */
 /**************************************************************************************/
+
 	/* Update ObstclAvd_State to initialized */
 	ObstclAvd_State = OBSTCLE_AVD_MOD_INITIALIZED;
 	return E_OK;
