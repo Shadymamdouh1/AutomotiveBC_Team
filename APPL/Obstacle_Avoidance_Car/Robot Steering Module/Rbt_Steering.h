@@ -47,6 +47,12 @@ typedef uint8_t RobotDir_t;
  */
 typedef uint8_t RobotSpeed_t;
 
+typedef struct
+{
+	RobotDir_t	Direction;
+	RobotSpeed_t Speed;
+}RbtSteering_Data;
+
 /*
  * Data Type for Module's Input
  */
@@ -84,19 +90,22 @@ typedef struct
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to initialize the Robot module */
-Std_ReturnType RbtSteering_init(void);
+Robot_Status_t RbtSteering_init(void);
 
 /* Function to move the Robot a given direction with given speed in % */
-Std_ReturnType RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 
 /* Function to stop Robot */
-Std_ReturnType RbtSteering_stop(void);
+Robot_Status_t RbtSteering_stop(void);
 
-/* Main function dispatcher for the robot module */
-Std_ReturnType RbtSteering_mainFunction(void);
+/* Periodic Function || Dispatcher of the Robot Steering Module */
+Robot_Status_t RbtSteering_mainFunction(void);
 
-/* Robot Steering Setter Function */
-Std_ReturnType RbtSteering_Dir_Spd_Setter(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+/* Robot Steering Module Setter */
+Robot_Status_t RbtSteering_setData(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+
+/* Robot Steering Module Getter */
+Robot_Status_t RbtSteering_getData(RobotDir_t *pu8_direction, RobotSpeed_t *pu8_speed);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
