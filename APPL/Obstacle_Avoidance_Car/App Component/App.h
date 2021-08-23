@@ -36,13 +36,13 @@ typedef enum
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to Start the application */
-enuApp_Status_t App_start(void);
+Std_ReturnType App_start(void);
 
 /* Function to initialize the Application */
-enuApp_Status_t App_init(void);
+Std_ReturnType App_init(void);
 
 /* Function to update the application */
-enuApp_Status_t App_update(void);
+Std_ReturnType App_update(void);
 
 
 
