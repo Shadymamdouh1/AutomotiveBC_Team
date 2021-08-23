@@ -11,7 +11,7 @@
 
 /*- INCLUDES -----------------------------------------------*/
 #include "..\..\Microcontroller\Platform_Types.h"
-#include "..\Interrupt Driver\ISR.h"
+#include "../Interrupt Driver/ISR.h"
 #include "..\..\Microcontroller\Atmega32 Registers\Gpt_Regs.h"
 
 #include "Gpt_LCfg.h"

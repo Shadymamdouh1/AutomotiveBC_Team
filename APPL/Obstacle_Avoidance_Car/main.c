@@ -10,7 +10,6 @@
 
 int main(void)
 {
-
 	App_start();
 	
     /* Replace with your application code */

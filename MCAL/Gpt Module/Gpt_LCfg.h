@@ -7,14 +7,14 @@
 ******************************************************************************/
 
 
-#ifndef GPT_LCFG_H_
-#define GPT_LCFG_H_
+#ifndef GPT_CFG_H_
+#define GPT_CFG_H_
 
 /* CONSTANTS */
 
 /* user set the number of pins used in the project */
 
-#define GPT_USED_CHANNELS		3
+#define GPT_USED_CHANNELS   3
 #define SYS_CLOCK_FREQUENCY		8000000
 
 
@@ -35,6 +35,4 @@
 #define TIMER_CHANNEL_0_ID	0
 #define TIMER_CHANNEL_1_ID	1
 #define TIMER_CHANNEL_2_ID	2
-
-
-#endif /* GPT_LCFG_H_ */
+#endif /* GPT_CFG_H_ */

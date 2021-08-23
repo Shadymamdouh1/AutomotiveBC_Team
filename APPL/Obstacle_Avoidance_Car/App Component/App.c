@@ -33,6 +33,7 @@ Std_ReturnType App_start(void)
 	if(App_init() != E_OK)
 		return E_NOT_OK;
 	
+
 	/* Application Super Loop */
 	while (1)
 	{
@@ -71,12 +72,12 @@ Std_ReturnType App_init(void)
 /**************************************************************************************/
 
 	EnableGlobalInterrupts();
+	
 	/* Call the Robot Module initializer */
 	if(ROBOT_STATUS_ERROR_OK != RbtSteering_init())
 	{
 		return E_NOT_OK;
 	}
-		
 	/* Call the Sensing Module initializer */
 	if(E_OK != Sensing_init())
 	{

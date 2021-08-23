@@ -48,7 +48,7 @@ uint8_t dataChangeFlag = DATA_NOT_CHANGED;
 * Description: Function to Initialize the Robot module.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /* Function to initialize the Robot module */
-Std_ReturnType RbtSteering_init(void)
+Robot_Status_t RbtSteering_init(void)
 {
 /**************************************************************************************/
 /*								Start of Error Checking								  */
@@ -56,7 +56,7 @@ Std_ReturnType RbtSteering_init(void)
 	/* Check if the Robot module is already initialized */
 	if(RobotModuleStatus_gu8 == ROBOT_STATUS_INIT)
 	{
-		return E_OK;
+		return ROBOT_STATUS_ERROR_OK;
 	}else{/*Nothing to here*/}
 		
 /**************************************************************************************/
@@ -68,12 +68,12 @@ Std_ReturnType RbtSteering_init(void)
 	/* Initialize the ROBOT Module */
 	if(Motor_init() != MOTOR_STATUS_ERROR_OK)
 	{
-		return E_NOT_OK;
+		return ROBOT_STATUS_ERROR_NOK;
 	}
 	
 	/* Change the state of the module to initialized */
 	RobotModuleStatus_gu8 = ROBOT_STATUS_INIT;
-	return E_OK;
+	return ROBOT_STATUS_ERROR_OK;
 }
 
 
