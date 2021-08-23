@@ -47,12 +47,6 @@ typedef uint8_t RobotDir_t;
  */
 typedef uint8_t RobotSpeed_t;
 
-typedef struct
-{
-	RobotDir_t	Direction;
-	RobotSpeed_t Speed;
-}RbtSteering_Data;
-
 /*
  * Data Type for Module's Input
  */

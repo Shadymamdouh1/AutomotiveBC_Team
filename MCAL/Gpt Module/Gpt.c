@@ -9,7 +9,6 @@
 /*- INCLUDES
 ----------------------------------------------*/
 #include "Gpt.h"
-#include "../Interrupts Handling Module/InterruptsHandler_Interface.h"
 #include "../../Microcontroller/Atmega32 Registers/Gpt_Regs.h"
 
 #define GPT_CHANNELS			3
