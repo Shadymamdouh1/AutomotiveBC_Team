@@ -13,9 +13,8 @@
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "..\..\Microcontroller\Platform_Types.h"
 #include "..\Dio Module\Dio.h"
-#include "..\Gpt Module\Gpt.h"
+#include "../Gpt Module/Gpt.h"
 #include "SWPwm_LCfg.h"
-
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
