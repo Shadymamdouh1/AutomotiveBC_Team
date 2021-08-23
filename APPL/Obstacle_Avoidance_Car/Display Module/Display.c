@@ -202,9 +202,9 @@ Std_ReturnType Display_mainFunction(void)
 	/* Non Blocking Display initialization */
 	Display_init(DISPLAY_LCD_16x2_ID);
 	/* display string */
-	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*)"Display:");
+	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*)"Distance:");
 	/* set distance position */
-	Display_setCursor(DISPLAY_LCD_16x2_ID, 1,9);
+	Display_setCursor(DISPLAY_LCD_16x2_ID, 1,10);
 	/* display distance */
 	Display_printInteger(DISPLAY_LCD_16x2_ID, Displays[DISPLAY_LCD_16x2_ID].integer_u16);
 	/* white spaces */
