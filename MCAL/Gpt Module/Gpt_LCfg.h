@@ -7,8 +7,8 @@
 ******************************************************************************/
 
 
-#ifndef GPT_LCFG_H_
-#define GPT_LCFG_H_
+#ifndef GPT_CFG_H_
+#define GPT_CFG_H_
 
 /* CONSTANTS */
 
@@ -35,6 +35,4 @@
 #define TIMER_CHANNEL_0_ID	0
 #define TIMER_CHANNEL_1_ID	1
 #define TIMER_CHANNEL_2_ID	2
-
-
-#endif /* GPT_LCFG_H_ */
+#endif /* GPT_CFG_H_ */
