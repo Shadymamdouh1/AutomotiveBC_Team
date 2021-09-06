@@ -10,9 +10,9 @@
 #define EXT_INT_H_
 
 
-#include "../../Microcontroller/Atmega32 Registers/ISR_Regs.h"
-#include "../../Microcontroller/Std_Types.h"
-#include "../../Libraries/Common_Macros.h"
+#include "ISR_Regs.h"
+#include "Std_Types.h"
+#include "Common_Macros.h"
 
 /*- PRIMITIVE TYPES ----------------------------------------*/
 typedef void (*pfExtINT_CallBack_t)(uint8_t);

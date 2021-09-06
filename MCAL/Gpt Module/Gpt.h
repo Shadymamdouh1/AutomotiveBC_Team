@@ -11,7 +11,7 @@
 
 /*- INCLUDES -----------------------------------------------*/
 #include "Std_Types.h"
-
+#include "Interrupt_Interface.h"
 #include "Gpt_LCfg.h"
 //#include "../../MCAL/Interrupt Driver/ISR.h"
 

@@ -12,12 +12,12 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "../../../MCAL/Gpt Module/Gpt.h"
+#include "Gpt.h"
 #include "DebounceHandler_Cfg.h"
-#include "../../../MCAL/Dio Module/Dio.h"
-#include "../../../Microcontroller/Std_Types.h"
-#include "../../../Microcontroller/Delay Module/Delay.h"
-#include "../../../Libraries/Common_Macros.h"
+#include "Dio.h"
+#include "Std_Types.h"
+#include "Delay.h"
+#include "Common_Macros.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS *-*-*-*-*-*/
 /* handler states */
@@ -28,8 +28,8 @@
 
 /*- Primitive Types
 -------------------------------*/
-typedef void(*callBackFun_t)(void);
 typedef Std_ReturnType(*deviceState_t)(uint8_t, uint8_t*);
+
 /*- STRUCTS AND UNIONS -------------------------------------*/
 typedef struct
 {
@@ -52,10 +52,11 @@ Std_ReturnType debounceHandler_getDeviceState(uint8_t debouncingdeviceId, uint8_
 
 Std_ReturnType debounceHandler_Init(void);
 
-Std_ReturnType debounceHandler_eventReceived(uint8_t debouncingButtonId);
+/* Event Trigger CallBack Function for External Int to installed in APP */
+void eventReceived_Device_CallBack(uint8_t Int_ID);
 
 /* configuration variable */
 extern strDeviceDebounce_Config_t strDeviceDeounce_Config[DEBOUNCE_DEVICES_USED];
-extern callBackFun_t debounceDeviceTimerCallBackFun[DEBOUNCE_DEVICES_USED];
 extern uint8_t au8_debouncingHandlerState[DEBOUNCE_DEVICES_USED];
+
 #endif /* DEBOUNCEHANDLER_H_ */

@@ -12,7 +12,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES (Debouncing Devices used) *-*-*-*-*-*/
 
-#include "../Button Driver/Button.h"
+#include "Button.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
@@ -46,18 +46,11 @@
 #define DEFAULT_DELAY_LOOP_MS					(20U)
 
 /* event change check type */
-#define EXT_INT							(12U)
+#define EXT_INT_0						INT0_IRQ
+#define EXT_INT_1						INT1_IRQ
+#define EXT_INT_2						INT2_IRQ
+
 #define POLLING							(11U)
 
-
-/* you declare here and define in Cfg.c */
-/****************************************/
-/* Event Trigger Call Back Functions for External Int */
-void eventReceived_Device1_CallBack(void);
-void eventReceived_Device2_CallBack(void);
-
-/* Timers Call Back Functions */
-void callBack_Device_1(void);
-void callBack_Device_2(void);
 
 #endif /* DEBOUNCEHANDLER_CFG_H_ */

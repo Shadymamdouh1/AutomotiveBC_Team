@@ -9,7 +9,6 @@
 /*- INCLUDES
 ----------------------------------------------*/
 #include "Gpt.h"
-#include "Interrupt_Interface.h"
 #include "Gpt_Regs.h"
 #include "Common_Macros.h"
 
