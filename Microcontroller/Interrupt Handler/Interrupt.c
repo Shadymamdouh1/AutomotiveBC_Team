@@ -7,9 +7,9 @@
 ******************************************************************************/
 #include "Interrupt.h"
 #include "Interrupt_Interface.h"
-#include "Microcontroller/Std_Types.h"
-#include "Libraries/Common_Macros.h"
-#include "Microcontroller/Atmega32 Registers/ISR_Regs.h"
+#include "Std_Types.h"
+#include "Common_Macros.h"
+#include "ISR_Regs.h"
 
 /*- GLOBAL STATIC VARIABLES
 -------------------------------*/

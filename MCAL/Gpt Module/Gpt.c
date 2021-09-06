@@ -9,9 +9,9 @@
 /*- INCLUDES
 ----------------------------------------------*/
 #include "Gpt.h"
-#include "..\..\Microcontroller\Interrupt Handler\Interrupt_Interface.h"
-#include "../../Microcontroller/Atmega32 Registers/Gpt_Regs.h"
-#include "../../Libraries/Common_Macros.h"
+#include "Interrupt_Interface.h"
+#include "Gpt_Regs.h"
+#include "Common_Macros.h"
 
 #define GPT_CHANNELS			3
 /* it will be used to stop the timer1 if it started and didn't stop till reach this value */
@@ -757,7 +757,6 @@ enuGpt_Status_t GptStart_aSync(uint8_t ChannelId, uint32_t u32_Ticks, pfGpt_Call
 			
 			T0ovfCallback = FunToBeCalledInISR;
 			
-			EnableGlobalInterrupts();
 			if((u32_Ticks <= TIMER_0_MAX_TICKS) && (u32_Ticks != 0))
 			{
 				/* set ticks */

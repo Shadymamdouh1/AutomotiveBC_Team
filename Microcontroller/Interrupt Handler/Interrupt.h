@@ -10,8 +10,8 @@
 #ifndef INTERRUPT_H_
 #define INTERRUPT_H_
 
-#include "../Std_types.h"
-#include "../Platform_Types.h"
+#include "Std_types.h"
+#include "Platform_Types.h"
 
 /*- PRIMITIVE TYPES ----------------------------------------*/
 typedef void (*pf_Vector)(void);

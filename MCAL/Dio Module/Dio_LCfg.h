@@ -9,7 +9,7 @@
 #ifndef DIO_CFG_H_
 #define DIO_CFG_H_
 
-#include "..\..\Microcontroller\Atmega32 Registers\Dio_Regs.h"
+#include "Dio_Regs.h"
 
 #define DIO_USED_PINS_NUM		14
 

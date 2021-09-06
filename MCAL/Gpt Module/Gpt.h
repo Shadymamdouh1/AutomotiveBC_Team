@@ -10,7 +10,7 @@
 #define GPT_H_
 
 /*- INCLUDES -----------------------------------------------*/
-#include "..\..\Microcontroller\Platform_Types.h"
+#include "Std_Types.h"
 
 #include "Gpt_LCfg.h"
 //#include "../../MCAL/Interrupt Driver/ISR.h"
