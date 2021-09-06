@@ -27,7 +27,7 @@ enuSWPwm_State_t genu_SWPwmModStatus = SWPWM_UNINITIALIZED;
 * Return value: None
 * Description: Function to be called inside the timer's ISR.
 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-void waveFunction(void)
+void waveFunction(uint8_t IntVect_Num)
 {
 	/* Toggle the Pin of the PWM Channel */
 	if(Dio_togglePin(SWPwm_Channels[gu8_currentPwmChannel].u8_DioChannelID) != DIO_STATUS_ERROR_OK)
@@ -80,15 +80,14 @@ enuSWPwm_Status_t SWPwm_Init(void)
 	enuGpt_Status_t Gpt_State = GptInit();
 	if((Gpt_State != GPT_STATUS_ERROR_OK) && (Gpt_State != GPT_STATUS_ERROR_ALREADY_INIT)) //GPT_STATUS_ERROR_ALREADY_INIT
 		return SWPWM_STATUS_ERROR_NOK;
-		
+	
 	/* Initialize the DIO Module and check if any error returned */
 	enuDio_Status_t Dio_State = Dio_init(strDio_pins);
 	if((DIO_STATUS_ERROR_OK != Dio_State) && (DIO_STATUS_ALREADY_INIT != Dio_State))
 		return SWPWM_STATUS_ERROR_NOK;
 	
+	EnableGlobalInterrupts();
 		
-
-	
 	/* Change the state of the SWPWM Module to Initialized */
 	genu_SWPwmModStatus = SWPWM_INITIALIZED;
 	return SWPWM_STATUS_ERROR_OK;

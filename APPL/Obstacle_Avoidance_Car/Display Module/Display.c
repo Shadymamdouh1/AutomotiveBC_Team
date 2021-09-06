@@ -8,7 +8,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "Display.h"
-
+#include "../Sensing Module/Sensing.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
@@ -201,6 +201,7 @@ Std_ReturnType Display_mainFunction(void)
 	/**************************************************************************************/
 	/* Non Blocking Display initialization */
 	Display_init(DISPLAY_LCD_16x2_ID);
+	Sensing_getReading(SENSING_FRONT_OBSTACLE_DISTANCE, &(Displays[DISPLAY_LCD_16x2_ID].integer_u16));
 	/* display string */
 	Display_printString(DISPLAY_LCD_16x2_ID, (uint8_t*)"Distance:");
 	/* set distance position */
