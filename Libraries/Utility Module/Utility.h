@@ -38,6 +38,7 @@ void floatToString(float32_t f32_num, uint8_t* string);
 
 void stringConcatenate(uint8_t* destination, uint8_t* source);
 
+void arrayCopy(uint8_t* source, uint8_t* destination, uint16_t size);
 void stringCopy(uint8_t* source, uint8_t* destination);
 uint8_t Max_String_Num(uint8_t* string1, uint8_t* string2);
 void EmptyString(uint8_t *string);
