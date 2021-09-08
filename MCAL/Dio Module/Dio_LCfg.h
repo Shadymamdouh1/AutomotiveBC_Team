@@ -21,12 +21,12 @@
 #define DioConf_ROW_1_PORT_NUM				PORT_C
 #define DioConf_ROW_2_PORT_NUM				PORT_C
 #define DioConf_ROW_3_PORT_NUM				PORT_C
-#define DioConf_ROW_4_PORT_NUM				PORT_C
+//#define DioConf_ROW_4_PORT_NUM				PORT_C
 
 #define DioConf_LED_1_PORT_NUM				PORT_B
 #define DioConf_LED_2_PORT_NUM				PORT_B
 #define DioConf_LED_3_PORT_NUM				PORT_B
-
+#define DioConf_LED_4_PORT_NUM				PORT_B
 
 /* DIO Configured Channel ID's */
 #define DioConf_COL_1_PIN_NUM				PIN_5
@@ -36,12 +36,12 @@
 #define DioConf_ROW_1_PIN_NUM				PIN_2
 #define DioConf_ROW_2_PIN_NUM				PIN_3
 #define DioConf_ROW_3_PIN_NUM				PIN_4
-#define DioConf_ROW_4_PIN_NUM				PIN_1
+//#define DioConf_ROW_4_PIN_NUM				PIN_1
 
 #define DioConf_LED_1_PIN_NUM				PIN_4
 #define DioConf_LED_2_PIN_NUM				PIN_5
 #define DioConf_LED_3_PIN_NUM				PIN_6
-
+#define DioConf_LED_4_PIN_NUM				PIN_7
 
 /* Channel Index in the array of structures in Dio_Cfg.c */
 #define DIO_COL_1_CHANNEL_ID				0
@@ -51,10 +51,11 @@
 #define DIO_ROW_1_CHANNEL_ID				3
 #define DIO_ROW_2_CHANNEL_ID				4
 #define DIO_ROW_3_CHANNEL_ID				5
-#define DIO_ROW_4_CHANNEL_ID				6
+//#define DIO_ROW_4_CHANNEL_ID				6
 
-#define DIO_LED_1_CHANNEL_ID				7
-#define DIO_LED_2_CHANNEL_ID				8
-#define DIO_LED_3_CHANNEL_ID				9
+#define DIO_LED_1_CHANNEL_ID				6
+#define DIO_LED_2_CHANNEL_ID				7
+#define DIO_LED_3_CHANNEL_ID				8
+#define DIO_LED_4_CHANNEL_ID				9
 
 #endif /* DIO_CFG_H_ */
