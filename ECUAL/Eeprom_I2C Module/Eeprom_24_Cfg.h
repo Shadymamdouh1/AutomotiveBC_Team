@@ -15,7 +15,7 @@
 #define AT24C16B		0
 #define AT24C256B		1
 
-#define EEPROM_24_MODEL					AT24C16B
+#define EEPROM_24_MODEL					AT24C256B
 
 #if EEPROM_24_MODEL == AT24C16B
 	/* Number of Words in the Memory */
@@ -44,6 +44,10 @@
 	
 	/* Number of Bytes used to address a location in the memory */
 	#define EEPROM_24_LOC_SIZE				1U
+	
+	#define EEPROM_WRITE_DELAY				10U
+	
+	//#define EEPROM_WRITE_DELAY				0U
 /*******************************************************************************/
 #elif EEPROM_24_MODEL == AT24C256B
 	/* Number of Words in the Memory */
@@ -72,5 +76,7 @@
 	
 	/* Number of Bytes used to address a location in the memory */
 	#define EEPROM_24_LOC_SIZE				2U
+	
+	#define EEPROM_WRITE_DELAY				10U
 #endif
 #endif /* EEPROM_24_CFG_H_ */

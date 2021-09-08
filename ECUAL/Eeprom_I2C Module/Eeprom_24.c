@@ -356,7 +356,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 		u8_dataIndex = length;
 		u16_dataLen = u16_dataLen - length;
 		i=1;
-		Delay_ms(15);
+		Delay_ms(EEPROM_WRITE_DELAY);
 	}
 	
 	sint8_t pages_num = u16_dataLen/EEPROM_24_PAGE_BYTES;
@@ -368,7 +368,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 		i++;
 		u16_dataLen -= EEPROM_24_PAGE_BYTES;
 		u8_dataIndex += EEPROM_24_PAGE_BYTES;
-		Delay_ms(15);
+		Delay_ms(EEPROM_WRITE_DELAY);
 	}
 	
 	if (u16_dataLen > 0)
@@ -378,7 +378,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 			return EEPROM_24_STATUS_ERROR_NOK;
 		if(I2C_MasterSendToLocation(u8_slaveAddr, u8_wordAddr, pu8_data+u8_dataIndex, u16_dataLen) != I2C_STATUS_ERROR_OK)
 			return EEPROM_24_STATUS_ERROR_NOK;
-		Delay_ms(15);
+		Delay_ms(EEPROM_WRITE_DELAY);
 	}
 	
 #elif EEPROM_24_MODEL == AT24C256B
@@ -395,7 +395,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 		{
 			if(I2C_MasterSendGeneral(u8_slaveAddr, u8_wordAddr, EEPROM_24_LOC_SIZE, pu8_data, u16_dataLen) != I2C_STATUS_ERROR_OK)
 				return EEPROM_24_STATUS_ERROR_NOK;
-			Delay_ms(15);
+			Delay_ms(EEPROM_WRITE_DELAY);
 			return EEPROM_24_STATUS_ERROR_OK;
 		}
 		if(I2C_MasterSendGeneral(u8_slaveAddr, u8_wordAddr, EEPROM_24_LOC_SIZE, pu8_data, length) != I2C_STATUS_ERROR_OK)
@@ -403,7 +403,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 		u8_dataIndex = length;
 		u16_dataLen = u16_dataLen - length;
 		i=1;
-		Delay_ms(15);
+		Delay_ms(EEPROM_WRITE_DELAY);
 	}
 	
 	sint8_t pages_num = u16_dataLen/EEPROM_24_PAGE_BYTES;
@@ -415,7 +415,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 		i++;
 		u16_dataLen -= EEPROM_24_PAGE_BYTES;
 		u8_dataIndex += EEPROM_24_PAGE_BYTES;
-		Delay_ms(15);
+		Delay_ms(EEPROM_WRITE_DELAY);
 	}
 	
 	if (u16_dataLen > 0)
@@ -425,7 +425,7 @@ enuEeprom_24_Status_t  Eeprom_24_writePacket(uint16_t u16_location, uint8_t *pu8
 			return EEPROM_24_STATUS_ERROR_NOK;
 		if(I2C_MasterSendGeneral(u8_slaveAddr, u8_wordAddr, EEPROM_24_LOC_SIZE, pu8_data+u8_dataIndex, u16_dataLen) != I2C_STATUS_ERROR_OK)
 			return EEPROM_24_STATUS_ERROR_NOK;
-		Delay_ms(15);
+		Delay_ms(EEPROM_WRITE_DELAY);
 	}#endif
 	return EEPROM_24_STATUS_ERROR_OK;
 }
@@ -528,7 +528,7 @@ enuEeprom_24_Status_t  Eeprom_24_readPacket(uint16_t u16_location, uint8_t *pu8_
 		{
 			if(I2C_MasterReceiveGeneral(u8_slaveAddr, u8_wordAddr, EEPROM_24_LOC_SIZE, pu8_data, u16_dataLen) != I2C_STATUS_ERROR_OK)
 				return EEPROM_24_STATUS_ERROR_NOK;
-			Delay_ms(15);
+			//Delay_ms(EEPROM_WRITE_DELAY);
 			return EEPROM_24_STATUS_ERROR_OK;
 		}
 		if(I2C_MasterReceiveGeneral(u8_slaveAddr, u8_wordAddr, EEPROM_24_LOC_SIZE, pu8_data, length) != I2C_STATUS_ERROR_OK)
