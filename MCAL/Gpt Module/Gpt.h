@@ -63,6 +63,7 @@ enuGpt_Status_t Gpt_StartTimer(uint8_t ChannelId);
 
 enuGpt_Status_t Gpt_EnableNotification_OVF(uint8_t ChannelId, pfGpt_CallBack_t FunToBeCalledInISR);
 enuGpt_Status_t Gpt_setCounterValue(uint8_t ChannelId, uint16_t CounterValue);
+enuGpt_Status_t Gpt_getCounterValue(uint8_t ChannelId, uint16_t *CounterValue);
 enuGpt_Status_t Gpt_Start(uint8_t ChannelId, uint16_t InitialCount);
 
 void setOvfCallback(pfGpt_CallBack_t FunToBeCalledInISR);

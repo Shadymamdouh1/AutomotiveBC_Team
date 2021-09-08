@@ -14,7 +14,7 @@
 /*
  * Output Clock on SCL Pin
  */
-#define I2C_SCL_CLK			25000UL
+#define I2C_SCL_CLK			100000UL
 
 /*
  * Prescaler Value
@@ -23,7 +23,7 @@
  *			 I2C_PRESACLER_16
  *			 I2C_PRESACLER_64
  */
-#define PRESCALER_VALUE		I2C_PRESACLER_16
+#define PRESCALER_VALUE		I2C_PRESACLER_4
 
 /*
  * I2C Mode

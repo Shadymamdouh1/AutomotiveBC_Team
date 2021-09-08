@@ -51,22 +51,22 @@ enuI2C_Status_t I2C_MasterInit(void)
 	switch(PRESCALER_VALUE)
 	{
 		case I2C_PRESACLER_1:
-			I2C_TWSR_REG = 0x00;
+			TWSR_R = 0x00;
 			break;
 		case I2C_PRESACLER_4:
-			I2C_TWSR_REG = 0x01;
+			TWSR_R = 0x01;
 			break;
 		case I2C_PRESACLER_16:
-			I2C_TWSR_REG = 0x02;
+			TWSR_R = 0x02;
 			break;
 		case I2C_PRESACLER_64:
-			I2C_TWSR_REG = 0x03;
+			TWSR_R = 0x03;
 			break;
 		default:
 			return I2C_STATUS_ERROR_NOK;
 	}
 	/* Set the Bitrate of the I2C */
-	I2C_TWBR_REG = I2C_TWBR_VALUE();
+	TWBR_R = I2C_TWBR_VALUE();
 	/* Set the I2C Module State to Initialized*/
 	genuI2C_Status = I2C_STATUS_INIT;
 	return I2C_STATUS_ERROR_OK;
@@ -150,7 +150,7 @@ enuI2C_Status_t I2C_MasterSendSlaveAddress(uint8_t u8_slaveAddress, uint8_t u8_R
 /**************************************************************************************/
 	uint8_t u8_data = (u8_slaveAddress<<1)|u8_R_W;
 	/* Put data in the data register */
-	I2C_TWDR_REG = u8_data;
+	TWDR_R = u8_data;
 	/* Enable TWEN, TWINT Flag */
 	I2C_ENABLE_FLAG;
 	/* Wait for the current operation to finish */
@@ -249,7 +249,7 @@ enuI2C_Status_t I2C_MasterSendSTOP(void)
 	/* Enable TWSTO, TWEN, TWINT Flags*/
 	I2C_STOP_ENABLE_FLAG;
 	/* Wait for the current operation to finish */
-	while(I2C_TWCR_REG & (1<<I2C_TWCR_TWSTO));
+	while(TWCR_R & (1<<I2C_TWCR_TWSTO));
 	return I2C_STATUS_ERROR_OK;
 }
 
@@ -282,7 +282,7 @@ enuI2C_Status_t I2C_MasterSendByte(uint8_t u8_data)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Put data in the data register */
-	I2C_TWDR_REG = u8_data;
+	TWDR_R = u8_data;
 	/* Enable TWEN, TWINT Flags*/
 	I2C_ENABLE_FLAG;
 	/* Wait for the current operation to finish */
@@ -338,7 +338,7 @@ enuI2C_Status_t I2C_MasterReceiveByte_ACK(uint8_t *pu8_data)
 	if(I2C_SYMB_DATA_Rx_ACK != I2C_readSTATUS())
 		return I2C_STATUS_ERROR_NOK;
 	/* Read the data from the data register */
-	*pu8_data = I2C_TWDR_REG;
+	*pu8_data = TWDR_R;
 	return I2C_STATUS_ERROR_OK;
 }
 
@@ -384,7 +384,7 @@ enuI2C_Status_t I2C_MasterReceiveByte_NACK(uint8_t *pu8_data)
 	if(I2C_SYMB_DATA_Rx_NACK != I2C_readSTATUS())
 		return I2C_STATUS_ERROR_NOK;
 	/* Read the data from the data register */
-	*pu8_data = I2C_TWDR_REG;
+	*pu8_data = TWDR_R;
 	return I2C_STATUS_ERROR_OK;
 }
 
