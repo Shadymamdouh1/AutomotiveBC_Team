@@ -67,7 +67,7 @@ STATIC Std_ReturnType keyPadOutput_Clean(void);
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/
 
-Std_ReturnType Keypad_init(void)
+Std_ReturnType Keypad_Init(void)
 {
 
 	keyPadOutput_Clean();
@@ -76,7 +76,7 @@ Std_ReturnType Keypad_init(void)
 
 }
 
-Std_ReturnType KeypadScan(void)
+Std_ReturnType Keypad_Scan(void)
 {
 	STATIC uint8_t u8_loopCounter = Initial_Value;
 	STATIC uint8_t u8_row = Initial_Value;

@@ -35,8 +35,8 @@ typedef struct
 /*- FUNCTION DECLARATIONS ----------------------------------*/
 
 
-Std_ReturnType Keypad_init(void);
-Std_ReturnType KeypadScan(void);
+Std_ReturnType Keypad_Init(void);
+Std_ReturnType Keypad_Scan(void);
 
 /*- GLOBAL EXTERN VARIABLES
 -------------------------------*/
