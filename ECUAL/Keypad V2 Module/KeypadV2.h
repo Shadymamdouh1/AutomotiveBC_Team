@@ -1,7 +1,7 @@
 /*****************************************************************************
-* Module: Keypad Module
-* File Name: Keypad.h
-* Description: Header file for Keypad Module
+* Module: Keypad V2 Module
+* File Name: KeypadV2.h
+* Description: Header file for Keypad V2 Module
 * Author: Mohamed Magdy
 * Date: 24-July-2021
 ******************************************************************************/
@@ -16,7 +16,7 @@
 #include "Std_Types.h"
 #include "Common_Macros.h"
 #include "Dio.h"
-#include "Keypad_Cfg.h"
+#include "KeypadV2_Cfg.h"
 #include "Delay.h"
 
 /* CONSTANTS */

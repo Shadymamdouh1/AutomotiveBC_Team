@@ -1,7 +1,7 @@
 /*****************************************************************************
-* Module: Keypad Module
-* File Name: Keypad_Cfg.h
-* Description: Header file for Keypad Module
+* Module: Keypad V2 Module
+* File Name: KeypadV2_Cfg.h
+* Description: Header file for Keypad V2 Module
 * Author: Mohamed Magdy
 * Date: 24-July-2021
 ******************************************************************************/
@@ -9,7 +9,7 @@
 #ifndef KEYPAD_CFG_H_
 #define KEYPAD_CFG_H_
 
-#include "Keypad.h"
+#include "KeypadV2.h"
 
 #define ROWS_NUM				3
 #define COLS_NUM				3
