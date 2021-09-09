@@ -11,7 +11,7 @@
 
 #include "Dio_Regs.h"
 
-#define DIO_USED_PINS_NUM		16
+#define DIO_USED_PINS_NUM					(17U)
 
 /* DIO Configured Port ID's  */
 #define DioConf_COL_1_PORT_NUM				PORT_C
@@ -21,7 +21,7 @@
 #define DioConf_ROW_1_PORT_NUM				PORT_C
 #define DioConf_ROW_2_PORT_NUM				PORT_C
 #define DioConf_ROW_3_PORT_NUM				PORT_C
-//#define DioConf_ROW_4_PORT_NUM				PORT_C
+#define DioConf_ROW_4_PORT_NUM				PORT_C
 
 #define DioConf_LED_1_PORT_NUM				PORT_B
 #define DioConf_LED_2_PORT_NUM				PORT_B
@@ -43,7 +43,7 @@
 #define DioConf_ROW_1_PIN_NUM				PIN_2
 #define DioConf_ROW_2_PIN_NUM				PIN_3
 #define DioConf_ROW_3_PIN_NUM				PIN_4
-//#define DioConf_ROW_4_PIN_NUM				PIN_1
+#define DioConf_ROW_4_PIN_NUM				PIN_1
 
 #define DioConf_LED_1_PIN_NUM				PIN_4
 #define DioConf_LED_2_PIN_NUM				PIN_5
@@ -65,7 +65,7 @@
 #define DIO_ROW_1_CHANNEL_ID				3
 #define DIO_ROW_2_CHANNEL_ID				4
 #define DIO_ROW_3_CHANNEL_ID				5
-//#define DIO_ROW_4_CHANNEL_ID				6
+
 
 #define DIO_LED_1_CHANNEL_ID				6
 #define DIO_LED_2_CHANNEL_ID				7
@@ -80,4 +80,5 @@
 #define DIO_SEG_1_EN_CHANNEL_ID				14
 #define DIO_SEG_2_EN_CHANNEL_ID				15
 
+#define DIO_ROW_4_CHANNEL_ID				16
 #endif /* DIO_CFG_H_ */

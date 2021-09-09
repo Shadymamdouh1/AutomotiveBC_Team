@@ -20,13 +20,13 @@
 #define Lcd_Rows			2
 #define Lcd_Columns			16
 
-#define RS_DIO_ID			DIO_LCD_RS_CHANNEL_ID	
-#define RW_DIO_ID			DIO_LCD_RW_CHANNEL_ID	
-#define EN_DIO_ID			DIO_LCD_E_CHANNEL_ID
-								
-#define D4_DIO_ID			DIO_LCD_D4_CHANNEL_ID
-#define D5_DIO_ID			DIO_LCD_D5_CHANNEL_ID
-#define D6_DIO_ID			DIO_LCD_D6_CHANNEL_ID
-#define D7_DIO_ID			DIO_LCD_D7_CHANNEL_ID
+#define RS_DIO_ID			1//DIO_LCD_RS_CHANNEL_ID	
+#define RW_DIO_ID			2//DIO_LCD_RW_CHANNEL_ID	
+#define EN_DIO_ID			3//DIO_LCD_E_CHANNEL_ID
+							//	
+#define D4_DIO_ID			5//DIO_LCD_D4_CHANNEL_ID
+#define D5_DIO_ID			6//DIO_LCD_D5_CHANNEL_ID
+#define D6_DIO_ID			7//DIO_LCD_D6_CHANNEL_ID
+#define D7_DIO_ID			8//DIO_LCD_D7_CHANNEL_ID
 
 #endif /* LCD_CFG_H_ */

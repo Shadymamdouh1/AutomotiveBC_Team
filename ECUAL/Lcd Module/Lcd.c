@@ -521,7 +521,7 @@ enuLcd_Status_t Lcd_sendCommand(uint8_t u8_command)
 	return LCD_STATUS_ERROR_OK;
 }
 
-void LcdDelayFinished(void)
+void LcdDelayFinished(uint8_t Id)
 {
 	if(Lcd_Init == LCD_NOT_INITIALIZED)
 	{
@@ -561,7 +561,7 @@ void LcdDelayFinished(void)
 
 }
 
-void LcdPoweringUpFinished(void)
+void LcdPoweringUpFinished(uint8_t Id)
 {
 	Lcd_PoweringUp_Flag = TRUE;
 }

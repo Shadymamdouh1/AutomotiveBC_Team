@@ -73,8 +73,8 @@ enuLcd_Status_t Lcd_sendLowerNibble(uint8_t u8_data);
 enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base); 
 
 #if (AsyncMode == TRUE)
-	void LcdDelayFinished(void);
-	void LcdPoweringUpFinished(void);
+	void LcdDelayFinished(uint8_t Id);
+	void LcdPoweringUpFinished(uint8_t Id);
 #endif
 
 

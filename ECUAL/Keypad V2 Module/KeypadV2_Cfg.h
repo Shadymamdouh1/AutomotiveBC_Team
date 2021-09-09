@@ -11,7 +11,7 @@
 
 #include "KeypadV2.h"
 
-#define ROWS_NUM				3
+#define ROWS_NUM				4
 #define COLS_NUM				3
 
 
@@ -24,7 +24,7 @@
 #define ROW_1_DIO_ID				DIO_ROW_1_CHANNEL_ID
 #define ROW_2_DIO_ID				DIO_ROW_2_CHANNEL_ID
 #define ROW_3_DIO_ID				DIO_ROW_3_CHANNEL_ID
-//#define ROW_4_DIO_ID				DIO_ROW_4_CHANNEL_ID
+#define ROW_4_DIO_ID				DIO_ROW_4_CHANNEL_ID
 
 
 #define COLUMN_1_BUTTON_ID			BUTTON_1_ID

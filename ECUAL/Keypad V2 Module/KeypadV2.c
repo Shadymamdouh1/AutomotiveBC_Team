@@ -14,7 +14,7 @@
 #define ROW_1					0
 #define ROW_2					1
 #define ROW_3					2
-//#define ROW_4					3
+#define ROW_4					3
 
 #define COLUMN_1				0
 #define COLUMN_2				1
@@ -30,8 +30,8 @@ const uint8_t au8_rowsDioIds[ROWS_NUM]=
 {
 	ROW_1_DIO_ID,
 	ROW_2_DIO_ID,
-	ROW_3_DIO_ID
-	//ROW_4_DIO_ID
+	ROW_3_DIO_ID,
+	ROW_4_DIO_ID
 };
 
 const uint8_t au8_columnsDioIds[COLS_NUM]=
@@ -50,19 +50,20 @@ const uint8_t au8_keysLayout[ROWS_NUM][COLS_NUM] =
 {
 	{1, 2, 3},
 	{4, 5, 6},
-	{7, 7, 9}
+	{7, 7, 9},
+	{10, 11, 12}	
 };
 
 uint8_t u8_keyPressedOrNo[ROWS_NUM][COLS_NUM] =
 {
 	{NO_KEY_PRESSED, NO_KEY_PRESSED, NO_KEY_PRESSED},
 	{NO_KEY_PRESSED, NO_KEY_PRESSED, NO_KEY_PRESSED},
-	{NO_KEY_PRESSED, NO_KEY_PRESSED, NO_KEY_PRESSED}
-	//{NO_KEY_PRESSED, NO_KEY_PRESSED, NO_KEY_PRESSED}	
+	{NO_KEY_PRESSED, NO_KEY_PRESSED, NO_KEY_PRESSED},
+	{NO_KEY_PRESSED, NO_KEY_PRESSED, NO_KEY_PRESSED}	
 };
 /*- STATIC FUNCTIONS
 -------------------------------*/
-STATIC Std_ReturnType keyPadOutput_Clean(void);
+STATIC Std_ReturnType keyPad_OutputReset(void);
 
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/
@@ -70,7 +71,7 @@ STATIC Std_ReturnType keyPadOutput_Clean(void);
 Std_ReturnType Keypad_Init(void)
 {
 
-	keyPadOutput_Clean();
+	keyPad_OutputReset();
 	Dio_init(strDio_pins);
 	return E_OK;
 
@@ -97,7 +98,7 @@ Std_ReturnType Keypad_Scan(void)
 					/* change row to i/p which will not be used in this iteration */
 					Dio_changePinDirection(au8_rowsDioIds[ROW_2], DIO_PIN_DIR_INPUT, PIN_PUR);
 					Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_INPUT, PIN_PUR);	
-					//Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_INPUT, PIN_PUR);
+					Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_INPUT, PIN_PUR);
 					
 					Dio_changePinDirection(au8_rowsDioIds[ROW_1], DIO_PIN_DIR_OUTPUT, PIN_LOW);				
 
@@ -108,7 +109,7 @@ Std_ReturnType Keypad_Scan(void)
 					/* change row to i/p which will not be used in this iteration */
 					Dio_changePinDirection(au8_rowsDioIds[ROW_1], DIO_PIN_DIR_INPUT, PIN_PUR);
 					Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_INPUT, PIN_PUR);
-					//Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_INPUT, PIN_PUR);					
+					Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_INPUT, PIN_PUR);					
 
 					Dio_changePinDirection(au8_rowsDioIds[ROW_2], DIO_PIN_DIR_OUTPUT, PIN_LOW);
 
@@ -119,23 +120,23 @@ Std_ReturnType Keypad_Scan(void)
 					/* change row to i/p which will not be used in this iteration */
 					Dio_changePinDirection(au8_rowsDioIds[ROW_1], DIO_PIN_DIR_INPUT, PIN_PUR);
 					Dio_changePinDirection(au8_rowsDioIds[ROW_2], DIO_PIN_DIR_INPUT, PIN_PUR);
-					//Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_INPUT, PIN_PUR);					
+					Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_INPUT, PIN_PUR);					
 
 					Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_OUTPUT, PIN_LOW);
 
 
 					break;
 				}
-// 				case(ROW_4):
-// 				{
+				case(ROW_4):
+				{
 					/* change row to i/p which will not be used in this iteration */
-// 					Dio_changePinDirection(au8_rowsDioIds[ROW_1], DIO_PIN_DIR_INPUT, PIN_PUR);
-// 					Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_INPUT, PIN_PUR);
-// 					Dio_changePinDirection(au8_rowsDioIds[ROW_2], DIO_PIN_DIR_INPUT, PIN_PUR);
-// 
-// 					Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_OUTPUT, PIN_LOW);
-// 					break;
-// 				}			
+					Dio_changePinDirection(au8_rowsDioIds[ROW_1], DIO_PIN_DIR_INPUT, PIN_PUR);
+					Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_INPUT, PIN_PUR);
+					Dio_changePinDirection(au8_rowsDioIds[ROW_2], DIO_PIN_DIR_INPUT, PIN_PUR);
+
+					Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_OUTPUT, PIN_LOW);
+					break;
+				}			
 				default: break;									
 			}
 			//check input for each column
@@ -334,7 +335,8 @@ Std_ReturnType Keypad_Scan(void)
 			//set ROWs initially to no output state
 			Dio_changePinDirection(au8_rowsDioIds[ROW_1], DIO_PIN_DIR_OUTPUT, PIN_HIGH);
 			Dio_changePinDirection(au8_rowsDioIds[ROW_2], DIO_PIN_DIR_OUTPUT, PIN_HIGH);
-			Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_OUTPUT, PIN_HIGH);			
+			Dio_changePinDirection(au8_rowsDioIds[ROW_3], DIO_PIN_DIR_OUTPUT, PIN_HIGH);
+			Dio_changePinDirection(au8_rowsDioIds[ROW_4], DIO_PIN_DIR_OUTPUT, PIN_HIGH);			
 			return E_OK;			
 		}
 	}
@@ -342,7 +344,7 @@ Std_ReturnType Keypad_Scan(void)
 }
 
 
-STATIC Std_ReturnType keyPadOutput_Clean(void)
+STATIC Std_ReturnType keyPad_OutputReset(void)
 {
 	uint8_t u8_rowCounter = Initial_Value;
 	uint8_t u8_colCounter = Initial_Value;
