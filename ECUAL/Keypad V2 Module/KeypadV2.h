@@ -20,7 +20,8 @@
 #include "Delay.h"
 
 /* CONSTANTS */
-#define NO_KEY_PRESSED			(0xFFU)
+#define NO_KEY_PRESSED			(0xAAU)
+#define NO_KEY_PRESSED_CHAR     (0xDAU) 
 #define KEY_PRESSED				(10U)
 
 #define KEYPAD_BUTTONS_NUM		(ROWS_NUM * COLS_NUM)
