@@ -9,8 +9,24 @@
 #ifndef DIO_CFG_H_
 #define DIO_CFG_H_
 
-#include "..\..\Microcontroller\Atmega32 Registers\Dio_Regs.h"
+#include "Microcontroller\Atmega32 Registers\Dio_Regs.h"
 
+#define DIO_USED_PINS_NUM		2
+
+/* DIO Configured Port ID's  */
+#define DioConf_PORTD4_PORT_NUM				PORT_D
+#define DioConf_PORTD5_PORT_NUM				PORT_D
+
+
+/* DIO Configured Channel ID's */
+#define DioConf_PORTD4_PIN_NUM				PIN_4
+#define DioConf_PORTD5_PIN_NUM				PIN_5
+
+/* Channel Index in the array of structures in Dio_Cfg.c */
+#define DIO_PORTD4_CHANNEL_ID				0
+#define DIO_PORTD5_CHANNEL_ID				1
+
+#if 0
 #define DIO_USED_PINS_NUM		14
 
 /* DIO Configured Port ID's  */
@@ -61,4 +77,6 @@
 #define DIO_IN4_CHANNEL_ID					11
 #define DIO_BTN0_CHANNEL_ID					12
 #define DIO_US_TRG_CHANNEL_ID				13
+#endif
+
 #endif /* DIO_CFG_H_ */
