@@ -77,6 +77,10 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base);
 	void LcdPoweringUpFinished(uint8_t Id);
 #endif
 
+#if(AsyncMode == FALSE)
+	enuLcd_Status_t Lcd_pingPongStringR1(uint8_t* au8_string, uint8_t u8_numChars);
+	enuLcd_Status_t Lcd_pingPongStringR2(uint8_t* au8_string, uint8_t u8_numChars);
+#endif	
 
 enuLcd_Status_t Lcd_init_test(void);
 enuLcd_Status_t Lcd_sendCommand_test(uint8_t u8_command);
