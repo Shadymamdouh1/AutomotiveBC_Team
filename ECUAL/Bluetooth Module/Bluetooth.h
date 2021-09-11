@@ -15,7 +15,7 @@
 #include "MCAL\Uart Module\Uart.h"
 #include "MCAL\Dio Module\Dio.h"
 #include "Bluetooth_Cfg.h"
-
+#include "Libraries/Utility Module/Utility.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 
@@ -31,15 +31,23 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*-*-*-*-*- FUNCTIONS PROTOTYPES -*-*-*-*-*-*-*-*-*/
 
+Std_ReturnType Blth_EnableCommandMode(void);
+
+Std_ReturnType Blth_EnableDataMode(void);
+
 Std_ReturnType Blth_init(void);
 
-Std_ReturnType Blth_sendData(uint8_t *DataPtr, uint16_t DataSize);
+Std_ReturnType Blth_sendData(uint8_t *DataPtr);
 
 Std_ReturnType Blth_readData(uint8_t *DataPtr);
 
-Std_ReturnType Blth_sendCommand(uint8_t* CommandPtr, uint16_t CommandSize);
+Std_ReturnType Blth_sendCommand(uint8_t* CommandPtr);
+
+Std_ReturnType Blth_getName(uint8_t *currentName);
 
 Std_ReturnType Blth_RenameDevice(uint8_t *newName);
+
+Std_ReturnType Blth_getRole(uint8_t *currentRole);
 
 Std_ReturnType Blth_setSlave(void);
 
@@ -49,16 +57,19 @@ Std_ReturnType Blth_setBaudRate(uint32_t newBaudRate);
 
 Std_ReturnType Blth_getBaudRate(uint32_t *currentBaudRate);
 
-Std_ReturnType Blth_testDevice(void);
-
 Std_ReturnType Blth_getOwnMacAddress(uint8_t *ownMacAddress);
 
-Std_ReturnType Blth_pairDevice(uint8_t *ownMacAddress);
+Std_ReturnType Blth_InquiryMode(uint8_t DeviceMacAddress[][17], uint8_t devicesNum, uint8_t timeOut);
 
-Std_ReturnType Blth_setPassword(uint8_t *ownPassword);
+Std_ReturnType Blth_getPassword(uint8_t *currentPassword);
 
+Std_ReturnType Blth_setPassword(uint8_t *newPassword);
 
+Std_ReturnType Blth_checkOK(void);
 
+Std_ReturnType Blth_testDevice(void);
+
+Std_ReturnType Blth_restoreDefault(void);
 
 
 
