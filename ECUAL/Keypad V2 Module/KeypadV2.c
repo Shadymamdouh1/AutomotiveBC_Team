@@ -8,18 +8,8 @@
 /*- INCLUDES
 ----------------------------------------------*/
 #include "KeypadV2.h"
-
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
-#define ROW_1					0
-#define ROW_2					1
-#define ROW_3					2
-#define ROW_4					3
-
-#define COLUMN_1				0
-#define COLUMN_2				1
-#define COLUMN_3				2
-
 #define DELAY_IDLE				(0xABU)
 #define DELAY_RUN				(0xAAU)
 #define DELAY_DONE				(0xACU)
@@ -44,7 +34,7 @@ const uint8_t au8_columnsDioIds[COLS_NUM]=
 uint8_t u8_delayState = DELAY_IDLE;
 /*- GLOBAL EXTERN VARIABLES
 -------------------------------*/
-strKeypadOutput_t keyPadOutput;
+strKeypadOutput_t Keypad_keyPadOutput;
 
 const uint8_t au8_keysLayout[ROWS_NUM][COLS_NUM] =
 {
@@ -54,7 +44,7 @@ const uint8_t au8_keysLayout[ROWS_NUM][COLS_NUM] =
 	{10, 11, 12}	
 };
 
-uint8_t u8_keyPressedOrNo[ROWS_NUM][COLS_NUM] =
+Keypad_keyCurrentState_t Keypad_keyPressedOrNo[ROWS_NUM][COLS_NUM] =
 {
 	{KEYPAD_NO_KEY_PRESSED, KEYPAD_NO_KEY_PRESSED, KEYPAD_NO_KEY_PRESSED},
 	{KEYPAD_NO_KEY_PRESSED, KEYPAD_NO_KEY_PRESSED, KEYPAD_NO_KEY_PRESSED},
@@ -166,45 +156,45 @@ Std_ReturnType Keypad_Scan(void)
 						
 						
 						if(u8_columnAsInputValue == PIN_HIGH && u8_rowAsInputValue == PIN_HIGH 
-						   && u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
+						   && Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 0)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_HIGH && u8_rowAsInputValue == PIN_HIGH
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
 						{
-							u8_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
 							/* update keyPadOutput with this row and associated row */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
-							keyPadOutput.u8_numberOfPressedKeys--;							
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPadOutput.u8_numberOfPressedKeys--;							
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 1)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 1)
 						{
-							u8_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_KEY_PRESSED;
+							Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_KEY_PRESSED;
 							/* confirmed press */
 							/* update keyPadOutput with this row and associated row */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = au8_keysLayout[u8_row][u8_columnsCounter];
-							keyPadOutput.u8_numberOfPressedKeys++;							
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = au8_keysLayout[u8_row][u8_columnsCounter];
+							Keypad_keyPadOutput.u8_numberOfPressedKeys++;							
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}						
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-							    && u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
+							    && Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
 						{
 							/* key is already pressed */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
 						}						
 						else
 						{
@@ -233,45 +223,45 @@ Std_ReturnType Keypad_Scan(void)
 						Dio_changePinDirection(au8_rowsDioIds[u8_row], DIO_PIN_DIR_OUTPUT, PIN_LOW);
 				
 						if(u8_columnAsInputValue == PIN_HIGH && u8_rowAsInputValue == PIN_HIGH
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 0)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_HIGH && u8_rowAsInputValue == PIN_HIGH
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
 						{
-							u8_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
 							/* update keyPadOutput with this row and associated row */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
-							keyPadOutput.u8_numberOfPressedKeys--;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPadOutput.u8_numberOfPressedKeys--;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 1)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 1)
 						{
-							u8_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_KEY_PRESSED;
+							Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_KEY_PRESSED;
 							/* confirmed press */
 							/* update keyPadOutput with this row and associated row */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = au8_keysLayout[u8_row][u8_columnsCounter];
-							keyPadOutput.u8_numberOfPressedKeys++;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = au8_keysLayout[u8_row][u8_columnsCounter];
+							Keypad_keyPadOutput.u8_numberOfPressedKeys++;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
 						{
 							/* key is already pressed */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
 						}						
 						else
 						{
@@ -301,45 +291,45 @@ Std_ReturnType Keypad_Scan(void)
 						Dio_changePinDirection(au8_rowsDioIds[u8_row], DIO_PIN_DIR_OUTPUT, PIN_LOW);
 												
 						if(u8_columnAsInputValue == PIN_HIGH && u8_rowAsInputValue == PIN_HIGH
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 0)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_HIGH && u8_rowAsInputValue == PIN_HIGH
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
 						{
-							u8_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
 							/* update keyPadOutput with this row and associated row */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
-							keyPadOutput.u8_numberOfPressedKeys--;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPadOutput.u8_numberOfPressedKeys--;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-						&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 1)
+						&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_NO_KEY_PRESSED && u8_loopCounter == 1)
 						{
-							u8_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_KEY_PRESSED;
+							Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] = KEYPAD_KEY_PRESSED;
 							/* confirmed press */
 							/* update keyPadOutput with this row and associated row */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = au8_keysLayout[u8_row][u8_columnsCounter];
-							keyPadOutput.u8_numberOfPressedKeys++;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = au8_keysLayout[u8_row][u8_columnsCounter];
+							Keypad_keyPadOutput.u8_numberOfPressedKeys++;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 0)
 						{
 							/* set delay flag to RUN */
 							u8_delayState = DELAY_RUN;
 						}
 						else if(u8_columnAsInputValue == PIN_LOW && u8_rowAsInputValue == PIN_LOW
-								&& u8_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
+								&& Keypad_keyPressedOrNo[u8_row][u8_columnsCounter] == KEYPAD_KEY_PRESSED && u8_loopCounter == 1)
 						{
 							/* key is already pressed */
-							keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
+							Keypad_keyPadOutput.au8_keysPressed[u8_row][u8_columnsCounter] = KEYPAD_NO_KEY_PRESSED;
 						}						
 						else
 						{
@@ -356,7 +346,8 @@ Std_ReturnType Keypad_Scan(void)
 		if(u8_delayState == DELAY_RUN && u8_loopCounter == 0)
 		{
 			/* delay fun */
-			Delay_ms(DEBOUNCE_DELAY_MS);
+			//Delay_ms(DEBOUNCE_DELAY_MS);
+			vTaskDelay(DEBOUNCE_DELAY_MS);
 			u8_delayState = DELAY_IDLE;
 		}
 		else
@@ -389,11 +380,11 @@ STATIC Std_ReturnType keyPad_OutputReset(void)
 	{
 		for(u8_colCounter = Initial_Value; u8_colCounter < COLS_NUM; u8_colCounter++)
 		{
-			keyPadOutput.au8_keysPressed[u8_rowCounter][u8_colCounter] = KEYPAD_NO_KEY_PRESSED;
+			Keypad_keyPadOutput.au8_keysPressed[u8_rowCounter][u8_colCounter] = KEYPAD_NO_KEY_PRESSED;
 		}
 		
 	}
-	keyPadOutput.u8_numberOfPressedKeys = Initial_Value;
+	Keypad_keyPadOutput.u8_numberOfPressedKeys = Initial_Value;
 	
 	return E_OK;
 }

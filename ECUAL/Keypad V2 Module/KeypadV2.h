@@ -26,6 +26,17 @@
 
 #define KEYPAD_BUTTONS_NUM		(ROWS_NUM * COLS_NUM)
 
+
+#define ROW_1					0
+#define ROW_2					1
+#define ROW_3					2
+#define ROW_4					3
+
+#define COLUMN_1				0
+#define COLUMN_2				1
+#define COLUMN_3				2
+/*- TYPEDEFS --------------------------------------------------*/
+typedef uint8_t Keypad_keyCurrentState_t;
 /*- STRUCTS --------------------------------------------------*/
 typedef struct
 {
@@ -41,6 +52,6 @@ Std_ReturnType Keypad_Scan(void);
 
 /*- GLOBAL EXTERN VARIABLES
 -------------------------------*/
-extern strKeypadOutput_t keyPadOutput;
-
+extern strKeypadOutput_t Keypad_keyPadOutput;
+extern Keypad_keyCurrentState_t Keypad_keyPressedOrNo[ROWS_NUM][COLS_NUM];
 #endif /* KEYPAD_H_ */
