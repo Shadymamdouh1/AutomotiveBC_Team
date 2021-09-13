@@ -32,6 +32,15 @@ static uint32_t power(uint8_t base, uint8_t power_val)
 	return result;
 }
 
+void String_split(uint8_t *source, uint8_t *destination, uint8_t startIndex, uint8_t endIndex)
+{
+	uint8_t i=0;
+	for (i=startIndex; i<endIndex; i++)
+	{
+		destination[i-startIndex] = source[i];
+	}
+}
+
 uint16_t String_3ByteHexAddress_ToDecimal(uint8_t* u8_tempAddress)
 {
 	sint8_t u8_loopCounter = Initial_Value;
