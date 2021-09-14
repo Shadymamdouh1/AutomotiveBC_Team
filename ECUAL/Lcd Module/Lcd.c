@@ -21,6 +21,9 @@
 enuLcd_Status_t Lcd_Status = LCD_STATUS_ERROR_OK;
 enuLcd_initStatus_t Lcd_Init = LCD_NOT_INITIALIZED;
 
+/* ping pong R1 variables */
+uint8_t gau8_pingPongR1String[16] = "SYS LOADING";
+uint8_t gu8_pingPongR1NumChars = 11;
 
 
 /* states */
@@ -178,6 +181,7 @@ enuLcd_Status_t Lcd_pingPongStringR1(uint8_t* au8_string, uint8_t u8_numChars)
 		if(stringCmp(au8_string, gau8_currentStringR1) == FALSE)
 		{
 			/* reset fun parameters */
+		   EmptyString(gau8_currentStringR1);
 		   stringCopy(au8_string, gau8_currentStringR1);
 		   columnPosition_R = 1;
 		   columnPosition_L = 1;
@@ -195,20 +199,20 @@ enuLcd_Status_t Lcd_pingPongStringR1(uint8_t* au8_string, uint8_t u8_numChars)
 		Lcd_cursorPosition(1, columnPosition_R-1);
 		Lcd_sendCharacter(' ');
 		Lcd_cursorPosition(1, columnPosition_R);
-		Lcd_sendString(au8_string);
+		Lcd_sendString(gau8_currentStringR1);
 		if(columnPosition_R == (Lcd_Columns-u8_numChars)+1)
 		{
 			columnPosition_L = (Lcd_Columns-u8_numChars);
 			u8_RightLeftShiftFlag = LEFT;	
 		}
 		columnPosition_R++;
-		Delay_ms(R1_PINGPONG_MS);		
+		//Delay_ms(R1_PINGPONG_MS);		
 	}
 	else if(u8_RightLeftShiftFlag == LEFT)
 	{
 
 		Lcd_cursorPosition(1, columnPosition_L);
-		Lcd_sendString(au8_string);
+		Lcd_sendString(gau8_currentStringR1);
 		Lcd_sendCharacter(' ');
 		if(columnPosition_L == 1)
 		{
@@ -216,7 +220,7 @@ enuLcd_Status_t Lcd_pingPongStringR1(uint8_t* au8_string, uint8_t u8_numChars)
 			u8_RightLeftShiftFlag = RIGHT;	
 		}
 		columnPosition_L--;
-		Delay_ms(R1_PINGPONG_MS);		
+		//Delay_ms(R1_PINGPONG_MS);		
 	}
 	return LCD_STATUS_ERROR_OK;
 }
@@ -236,6 +240,7 @@ enuLcd_Status_t Lcd_pingPongStringR2(uint8_t* au8_string, uint8_t u8_numChars)
 		if(stringCmp(au8_string, gau8_currentStringR2) == FALSE)
 		{
 			/* reset fun parameters */
+			EmptyString(gau8_currentStringR2);
 			stringCopy(au8_string, gau8_currentStringR2);
 			columnPosition_R = 1;
 			columnPosition_L = 1;
@@ -253,7 +258,7 @@ enuLcd_Status_t Lcd_pingPongStringR2(uint8_t* au8_string, uint8_t u8_numChars)
 		Lcd_cursorPosition(2, columnPosition_R-1);
 		Lcd_sendCharacter(' ');
 		Lcd_cursorPosition(2, columnPosition_R);
-		Lcd_sendString(au8_string);
+		Lcd_sendString(gau8_currentStringR2);
 		if(columnPosition_R == (Lcd_Columns-u8_numChars)+1)
 		{
 			columnPosition_L = (Lcd_Columns-u8_numChars);
@@ -266,7 +271,7 @@ enuLcd_Status_t Lcd_pingPongStringR2(uint8_t* au8_string, uint8_t u8_numChars)
 	{
 
 		Lcd_cursorPosition(2, columnPosition_L);
-		Lcd_sendString(au8_string);
+		Lcd_sendString(gau8_currentStringR2);
 		Lcd_sendCharacter(' ');
 		if(columnPosition_L == 1)
 		{
@@ -802,6 +807,22 @@ enuLcd_Status_t Lcd_sendHigherNibble(uint8_t u8_data)
 	return LCD_STATUS_ERROR_OK;
 }
 
+Std_ReturnType Lcd_setPingPongR1Info(uint8_t* au8_string, uint8_t u8_numChars)
+{
+	gu8_pingPongR1NumChars = u8_numChars;
+	EmptyString(gau8_pingPongR1String);
+	stringCopy(au8_string, gau8_pingPongR1String);
+	return E_OK;
+}
+
+void Lcd_pingPongStringR1_mainFunction(void *pvParameters)
+{
+	while(TRUE)
+	{
+		Lcd_pingPongStringR1(gau8_pingPongR1String, gu8_pingPongR1NumChars);
+		vTaskDelay(R1_PINGPONG_MS);		
+	}
+}
 
 
 

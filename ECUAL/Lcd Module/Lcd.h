@@ -80,6 +80,8 @@ enuLcd_Status_t Lcd_sendVariableInt(uint16_t u16_number, uint8_t u8_base);
 #if(AsyncMode == FALSE)
 	enuLcd_Status_t Lcd_pingPongStringR1(uint8_t* au8_string, uint8_t u8_numChars);
 	enuLcd_Status_t Lcd_pingPongStringR2(uint8_t* au8_string, uint8_t u8_numChars);
+	Std_ReturnType Lcd_setPingPongR1Info(uint8_t* au8_string, uint8_t u8_numChars);
+	void Lcd_pingPongStringR1_mainFunction(void *pvParameters);		
 #endif	
 
 enuLcd_Status_t Lcd_init_test(void);
