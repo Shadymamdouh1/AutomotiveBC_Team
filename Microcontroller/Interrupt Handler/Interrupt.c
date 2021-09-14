@@ -63,17 +63,17 @@ void IntDefaultHandler(uint8_t Int_ID)
 * Return value: None
 * Description: interrupt service routine for external interrupt 2 ISR
 ******************************************************************************************/
-ISR(INT0)
+ISR(INT0_INT)
 {
     old_Vectors[INT0_IRQ](INT0_IRQ);
 }
 
-ISR(INT1)
+ISR(INT1_INT)
 {
     old_Vectors[INT1_IRQ](INT1_IRQ);
 }
 
-ISR(INT2)
+ISR(INT2_INT)
 {
     old_Vectors[INT2_IRQ](INT2_IRQ);
 }
@@ -93,11 +93,12 @@ ISR(TIMER1_CAPT)
     old_Vectors[TIMER1_CAPT_IRQ](TIMER1_CAPT_IRQ);
 }
 
+#if NOT_USING_FREE_RTOS
 ISR(TIMER1_COMPA)
 {
     old_Vectors[TIMER1_COMPA_IRQ](TIMER1_COMPA_IRQ);
 }
-
+#endif
 ISR(TIMER1_COMPB)
 {
     old_Vectors[TIMER1_COMPB_IRQ](TIMER1_COMPB_IRQ);
@@ -138,7 +139,7 @@ ISR(USART_TXC)
     old_Vectors[USART_TXC_IRQ](USART_TXC_IRQ);
 }
 
-ISR(ADC)
+ISR(ADC_INT)
 {
     old_Vectors[ADC_IRQ](ADC_IRQ);
 }

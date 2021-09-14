@@ -20,7 +20,7 @@
 #define BACK_SPACE	  '\b'
 
 uint16_t String_3ByteHexAddress_ToDecimal(uint8_t* u8_tempAddress);
-
+void String_split(uint8_t *source, uint8_t *destination, uint8_t startIndex, uint8_t endIndex);
 void integerToString(uint16_t u16_Num, uint8_t *pu8_String, uint8_t u8_base);
 void stringToInteger(uint8_t* au8_string, uint32_t* u32_integer);
 

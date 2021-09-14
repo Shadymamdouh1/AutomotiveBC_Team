@@ -8,6 +8,17 @@
 #include "Dio_LCfg.h"
 #include "Dio.h"
 
+
+
+
+strDio_Config_t strDio_pins[DIO_USED_PINS_NUM]=
+{
+	{DioConf_PORTD4_PORT_NUM, DioConf_PORTD4_PIN_NUM, DIO_PIN_DIR_OUTPUT, PIN_LOW},
+		{DioConf_PORTD5_PORT_NUM, DioConf_PORTD5_PIN_NUM, DIO_PIN_DIR_OUTPUT, PIN_LOW}
+};
+
+
+#if 0
 strDio_Config_t strDio_pins[DIO_USED_PINS_NUM]=
 {
 	{DioConf_LCD_RS_PORT_NUM, DioConf_LCD_RS_PIN_NUM, DIO_PIN_DIR_OUTPUT, PIN_LOW},
@@ -25,4 +36,4 @@ strDio_Config_t strDio_pins[DIO_USED_PINS_NUM]=
 	{DioConf_BTN0_C4_PORT_NUM, DioConf_BTN0_C4_PIN_NUM, DIO_PIN_DIR_INPUT, PIN_PDR},
 	{DioConf_US_TRG_PORT_NUM, DioConf_US_TRG_PIN_NUM, DIO_PIN_DIR_OUTPUT, PIN_LOW}
 };
-
+#endif
