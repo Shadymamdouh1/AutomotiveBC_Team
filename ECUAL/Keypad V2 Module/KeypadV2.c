@@ -40,7 +40,7 @@ const uint8_t au8_keysLayout[ROWS_NUM][COLS_NUM] =
 {
 	{1, 2, 3},
 	{4, 5, 6},
-	{7, 7, 9},
+	{7, 8, 9},
 	{10, 11, 12}	
 };
 
