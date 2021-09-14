@@ -15,6 +15,8 @@
 
 /*- GLOBAL EXTERN VARIABLES -------------------------------------*/
 
+MemM_BlockLocation_t MemM_BlocksAddresses[MEMM_MAX_BLOCKS_NUM];
+uint8_t BlocksCounter=0;
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/
 /************************************************************************************
@@ -26,6 +28,9 @@
 Std_ReturnType MemM_init(void)
 {
 	Eeprom_24_init();
+	
+	MemM_BlocksAddresses[0].Block_ID = 0;
+	MemM_BlocksAddresses[0].Block_Address = 0x00;
 	return E_OK;
 }
 
@@ -38,7 +43,7 @@ Std_ReturnType MemM_init(void)
 
 Std_ReturnType MemM_writeBlock(MemM_BlockInfo_t *block_ptr)
 {
-	if(EEPROM_24_STATUS_ERROR_NOK == Eeprom_24_writePacket(block_ptr->Address_Offset, block_ptr->Data, block_ptr->Data_Size))
+	if(EEPROM_24_STATUS_ERROR_NOK == Eeprom_24_writePacket(MemM_BlocksAddresses[block_ptr->Block_ID].Block_Address , block_ptr->Data, block_ptr->Data_Size))
 	{
 		return E_NOT_OK;
 	}
@@ -55,7 +60,7 @@ Std_ReturnType MemM_writeBlock(MemM_BlockInfo_t *block_ptr)
 ************************************************************************************/
 Std_ReturnType MemM_readBlock(MemM_BlockInfo_t *block_ptr)
 {
-	if(EEPROM_24_STATUS_ERROR_NOK == Eeprom_24_readPacket(block_ptr->Address_Offset, block_ptr->Data, block_ptr->Data_Size))
+	if(EEPROM_24_STATUS_ERROR_NOK == Eeprom_24_readPacket(MemM_BlocksAddresses[block_ptr->Block_ID].Block_Address , block_ptr->Data, block_ptr->Data_Size))
 	{
 		return E_NOT_OK;
 	}
@@ -79,26 +84,20 @@ Std_ReturnType MemM_eraseBlock(MemM_BlockID_t blockID)
 * Return value: Std_ReturnType
 * Description: update state of a given device.
 ************************************************************************************/
-#if 0
-Std_ReturnType MemM_createBlock(MemM_BlockInfo_t *block_ptr)
+Std_ReturnType MemM_createBlock(MemM_BlockInfo_t *block_ptr, uint8_t maxBlock_Size, MemM_BlockAddress_t Block_StartAddress)
 {
-	if(block_ptr == NULL_PTR)
+	if((block_ptr == NULL_PTR) || (BlocksCounter == MEMM_MAX_BLOCKS_NUM-1) || (maxBlock_Size > MEMM_MAX_DATA_SIZE))
 	{
 		return E_NOT_OK;
 	}
-	if(MemM_BlocksCounter == (MEMM_MAX_BLOCKS_NUM-1))
-	{
-		return E_NOT_OK;
-	}
-	else
-	{
-		
-		MemM_UserBlocks[MemM_BlocksCounter].Block_ID = MemM_BlocksCounter;
-		MemM_BlocksCounter++;
-	}
+	
+	block_ptr->Block_ID = BlocksCounter;
+	block_ptr->Data_Size = maxBlock_Size;
+	BlocksCounter++;
+	MemM_BlocksAddresses[BlocksCounter].Block_Address = Block_StartAddress;
+	MemM_BlocksAddresses[BlocksCounter].Block_ID = BlocksCounter;
 	return E_OK;
 }
-#endif
 
 /************************************************************************************
 * Parameters (in): None

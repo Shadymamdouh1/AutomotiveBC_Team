@@ -51,6 +51,8 @@ Std_ReturnType Blth_Disconnect(void);
 
 Std_ReturnType Blth_sendData(uint8_t *DataPtr);
 
+Std_ReturnType Blth_isDataAvailable(void);
+
 Std_ReturnType Blth_readData(uint8_t *DataPtr);
 
 Std_ReturnType Blth_readDataAsync(uint8_t *DataPtr);

@@ -1,12 +1,12 @@
 /*
- * WrlsCom.c
+ * SlvWrlsCom.c
  *
  * Created: 9/8/2021 1:58:23 PM
  *  Author: Ahmed Nabil
  */ 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "WrlsCom.h"
+#include "SlvWrlsCom.h"
 #include "APPL/Mac_Mac_Comm/MemM Module/MemM.h"
 #include "Microcontroller/Delay Module/Delay.h"
 #include "Microcontroller/Atmega32 Registers/Dio_regs.h"
@@ -36,7 +36,7 @@ MemM_BlockInfo_t WrlsCom_ConnectedDeviceName;
 MemM_BlockInfo_t WrlsCom_ValidDevFlag;
 uint8_t AvailableDevices[WRLS_COM_MAX_DEVICES_TO_INQUIRE][WRLS_COM_CONNECTED_DEVICE_MAC_SIZE] = {0};
 WrlsCom_Data_t Data_Info;
-uint8_t WrlsCom_DeviceDataPacket[23] = {0};
+uint8_t RX_DataBuffer[WRLS_COM_MAX_DATA_SIZE] = {0};
 /*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*/
 /*-*-*-*-*- FUNCTIONS LIKE MACROS -*-*-*-*-*-*/
 
@@ -68,12 +68,10 @@ static Std_ReturnType WrlsCom_checkBluetoothConfiguaration(void)
 	if(DeviceRole != WrlsCom_BlthDevice_constConfig.Device_Role)
 	{
 		Blth_setRole(WrlsCom_BlthDevice_constConfig.Device_Role);
-		DIO_PORTB_DATA |= 1<<4;
 	}
 	else
 	{
 		/* Successful */
-		DIO_PORTB_DATA |= 1<<0;
 	}
 	
 	/* Check the name of the device */
@@ -83,7 +81,6 @@ static Std_ReturnType WrlsCom_checkBluetoothConfiguaration(void)
 	}
 	if(stringCmp(currentName, (uint8_t*)WrlsCom_BlthDevice_constConfig.Device_Name) == FALSE)
 	{
-		DIO_PORTB_DATA |= 1<<5;
 		/* If the name is not equal */
 		/* Set the device with the new name */
 		Blth_RenameDevice((uint8_t*)WrlsCom_BlthDevice_constConfig.Device_Name);
@@ -91,7 +88,6 @@ static Std_ReturnType WrlsCom_checkBluetoothConfiguaration(void)
 	else
 	{
 		/* Successful */
-		DIO_PORTB_DATA |= 1<<1;
 	}
 	
 	/* Check the name of the device */
@@ -101,7 +97,6 @@ static Std_ReturnType WrlsCom_checkBluetoothConfiguaration(void)
 	}
 	if(stringCmp(currentPass, (uint8_t*)WrlsCom_BlthDevice_constConfig.Device_Pswrd) == FALSE)
 	{
-		//DIO_PORTB_DATA |= 1<<6;
 		/* If the password is not equal */
 		/* Set the device with the new password */
 		Blth_setPassword((uint8_t*)WrlsCom_BlthDevice_constConfig.Device_Pswrd);
@@ -109,7 +104,6 @@ static Std_ReturnType WrlsCom_checkBluetoothConfiguaration(void)
 	else
 	{
 		/* Successful */
-		DIO_PORTB_DATA |= 1<<2;
 	}
 	return E_OK;
 }
@@ -161,16 +155,10 @@ Std_ReturnType WrlsCom_init(void)
 	/* Check the device's latest configurations */
 	WrlsCom_checkBluetoothConfiguaration();
 	
-	uint8_t DeviceOwnMacAddr[13]={0};
-	Blth_getOwnMacAddress(DeviceOwnMacAddr);
-	WrlsCom_DeviceDataPacket[0] = 0xAA;
-	WrlsCom_DeviceDataPacket[1] = 0x02;
-	WrlsCom_DeviceDataPacket[2] = 0x13;
-	stringConcatenate(WrlsCom_DeviceDataPacket, WrlsCom_BlthDevice_constConfig.Device_Name);
-	stringConcatenate(WrlsCom_DeviceDataPacket,DeviceOwnMacAddr);
 	/* Initialize the Connected Device block in the Memory */
 	WrlsCom_initializeMemoryBlocks();
 	
+	Blth_EnableDataMode();
 	/* Set Animation LED to Device Search Pattern */
 	
 	WrlsCom_State = WRLSCOM_STATE_DEVICE_SEARCH;
@@ -225,8 +213,8 @@ static Std_ReturnType WrlsCom_deviceSearchSequence(void)
 
 void WrlsCom_mainFunction(void)
 {
-	uint8_t verifyState = HANDSHAKE_SEND;
-	uint8_t deviceDataState = DEVICE_DATA_SEND;
+	uint8_t verifyState = HANDSHAKE_RCV;
+	uint8_t deviceDataState = DEVICE_DATA_RCV;
 	uint8_t receivedData[10] = {0};
 	//uint8_t handshakeTrials = 0, deviceDataTrials = 0;
 	//TickType_t entryTick=0, currentTick=0;
@@ -236,30 +224,7 @@ void WrlsCom_mainFunction(void)
 		{
 			case WRLSCOM_STATE_DEVICE_SEARCH:
 			{
-				WrlsCom_deviceSearchSequence();
-				break;
-			}
-			/************************************************************************************
-			 ------------------------------------------------------------------------------------
-			 ************************************************************************************/
-			case WRLSCOM_STATE_SENDING:
-			{
-				if(E_OK == Blth_sendData((uint8_t*)Data_Info.DataToBeSent))
-				{
-					Data_Info.Transmitting_State = WRLS_COM_DATA_SENT;
-				}
-				else
-				{
-					Data_Info.Transmitting_State = WRLS_COM_DATA_FAIL;
-				}
-				WrlsCom_State = WRLSCOM_STATE_IDLE;	
-				break;
-			}
-			/************************************************************************************
-			 ------------------------------------------------------------------------------------
-			 ************************************************************************************/
-			case WRLSCOM_STATE_LINKING:
-			{
+				//WrlsCom_deviceSearchSequence();
 				if(Blth_isConnected() == E_OK)
 				{
 					Blth_Data();
@@ -267,7 +232,25 @@ void WrlsCom_mainFunction(void)
 				}
 				else
 				{
+					
 				}
+				break;
+			}
+			/************************************************************************************
+			 ------------------------------------------------------------------------------------
+			 ************************************************************************************/
+			case WRLSCOM_STATE_RECEIVING:
+			{
+				Blth_readData(RX_DataBuffer);
+				WrlsCom_State = WRLSCOM_STATE_DATA_READY;
+				break;
+			}
+			/************************************************************************************
+			 ------------------------------------------------------------------------------------
+			 ************************************************************************************/
+			case WRLSCOM_STATE_DATA_READY:
+			{
+				
 				break;
 			}
 			/************************************************************************************
@@ -279,27 +262,6 @@ void WrlsCom_mainFunction(void)
 				if(Blth_isDataAvailable() == E_OK)
 				{
 					WrlsCom_State = WRLSCOM_STATE_RECEIVING;
-				}
-				break;
-				break;
-			}
-			/************************************************************************************
-			 ------------------------------------------------------------------------------------
-			 ************************************************************************************/
-			case WRLSCOM_STATE_ADVERTISING:
-			{
-				/* Enable the inquiry mode to get the available devices */
-				if(Blth_InquiryMode(AvailableDevices, WRLS_COM_MAX_DEVICES_TO_INQUIRE, 4) == E_OK)
-				{
-					/* Connect with the device */
-					Blth_LinkWithDevice((uint8_t*)AvailableDevices[0]);
-					
-					/* Linking State */
-					WrlsCom_State = WRLSCOM_STATE_LINKING;
-				}
-				else
-				{
-					
 				}
 				break;
 			}
@@ -314,7 +276,7 @@ void WrlsCom_mainFunction(void)
 			/************************************************************************************
 			 ------------------------------------------------------------------------------------
 			 ************************************************************************************/
-			case WRLSCOM_STATE_CONNECTED:
+/*--*/		case WRLSCOM_STATE_CONNECTED:
 			{
 				/* Send Device Data Packet */
 				switch(deviceDataState)
@@ -323,9 +285,7 @@ void WrlsCom_mainFunction(void)
 					{
 						Blth_Data();
 						Blth_sendData((uint8_t*)WrlsCom_DeviceDataPacket);
-						deviceDataState = DEVICE_DATA_RCV;
-						/* Get Tick Count */
-						//entryTick = xTaskGetTickCount();
+						WrlsCom_State = WRLSCOM_STATE_IDLE;
 					}
 					case DEVICE_DATA_RCV:
 					{
@@ -339,26 +299,7 @@ void WrlsCom_mainFunction(void)
 						}
 						else
 						{
-							/* Get Tick Count */
-							currentTick = xTaskGetTickCount();
-							if((currentTick - entryTick) >= 200)
-							{
-								deviceDataTrials++;
-								if(deviceDataTrials == WRLS_COM_MAX_DEVICE_DATA_TRIALS)
-								{
-									Blth_Cmd();
-									Blth_Disconnect();
-									Blth_Data();
-								}
-								else
-								{
-									deviceDataState = DEVICE_DATA_SEND;
-								}
-							}
-							else
-							{
-
-							}
+							
 						}
 					}
 					default:
@@ -381,9 +322,7 @@ void WrlsCom_mainFunction(void)
 					{
 						Blth_Data();
 						Blth_sendData((uint8_t*)WrlsCom_BlthDevice_Handshake_Packet);
-						verifyState = HANDSHAKE_RCV;
-						/* Get Tick Count */
-						//entryTick = xTaskGetTickCount();
+						WrlsCom_State = WRLSCOM_STATE_CONNECTED;
 					}
 					case HANDSHAKE_RCV:
 					{
@@ -391,37 +330,16 @@ void WrlsCom_mainFunction(void)
 						{
 							if(stringCmp(receivedData, (uint8_t*)WrlsCom_BlthDevice_Handshake_Packet) == TRUE)
 							{
-								WrlsCom_State = WRLSCOM_STATE_IDLE;
+								verifyState = HANDSHAKE_RCV;
 								EmptyString(receivedData);
 							}
 						}
 						else
 						{
-							/* Get Tick Count */
-							currentTick = xTaskGetTickCount();
-							if((currentTick - entryTick) >= 200)
-							{
-								handshakeTrials++;
-								if(handshakeTrials == WRLS_COM_MAX_HANDSHAKE_TRIALS)
-								{
-									Blth_Cmd();
-									Blth_Disconnect();
-									Blth_Data();
-								}
-								else
-								{
-									verifyState = HANDSHAKE_SEND;
-								}
-							}
-							else
-							{
-								
-							}
 						}
 					}
 					default:
 					{
-						
 					}
 				}
 				
@@ -472,6 +390,16 @@ Std_ReturnType WrlsCom_TransmitData(uint8_t *Data_Ptr, uint8_t Data_Size)
 	return E_OK;
 }
 
+Std_ReturnType WrlsCom_ReceiveData(uint8_t *Data_Ptr, uint8_t *Data_Size)
+{
+	WrlsCom_State = WRLSCOM_STATE_IDLE;
+	*Data_Size = stringLength(RX_DataBuffer);
+	stringCopy(RX_DataBuffer, Data_Ptr);
+	EmptyString(RX_DataBuffer);
+	
+	return E_OK;
+}
+
 Std_ReturnType WrlsCom_GetDataState(uint8_t *transmissionState)
 {
 	*transmissionState = Data_Info.Transmitting_State;
@@ -481,16 +409,6 @@ Std_ReturnType WrlsCom_GetDataState(uint8_t *transmissionState)
 Std_ReturnType WrlsCom_getState(uint8_t *DeviceState)
 {
 	*DeviceState = WrlsCom_State;
-	
-	return E_OK;
-}
-
-Std_ReturnType WrlsCom_ReceiveData(uint8_t *Data_Ptr, uint8_t *Data_Size)
-{
-	WrlsCom_State = WRLSCOM_STATE_IDLE;
-	*Data_Size = stringLength(RX_DataBuffer);
-	stringCopy(RX_DataBuffer, Data_Ptr);
-	EmptyString(RX_DataBuffer);
 	
 	return E_OK;
 }

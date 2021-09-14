@@ -1,13 +1,13 @@
 /*
- * WrlsCom_LCfg.h
+ * SlvWrlsCom_LCfg.h
  *
  * Created: 9/8/2021 1:58:48 PM
  *  Author: Ahmed Nabil
  */ 
 
 
-#ifndef WRLSCOM_LCFG_H_
-#define WRLSCOM_LCFG_H_
+#ifndef SLVWRLSCOM_LCFG_H_
+#define SLVWRLSCOM_LCFG_H_
 
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -22,6 +22,4 @@
 
 #define WRLS_COM_MAX_HANDSHAKE_TRIALS		5U
 
-#define WRLS_COM_MAX_DEVICE_DATA_TRIALS		5U
-
-#endif /* WRLSCOM_LCFG_H_ */
+#endif /* SLVWRLSCOM_LCFG_H_ */

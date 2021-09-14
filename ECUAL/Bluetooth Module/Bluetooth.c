@@ -121,6 +121,20 @@ Std_ReturnType Blth_sendData(uint8_t *DataPtr)
 	return E_OK;
 }
 
+Std_ReturnType Blth_isDataAvailable(void)
+{
+	/*- Check if the data not received -*/
+	if(Blth_RX_Flag != DATA_RECEIVED)
+	{
+		return E_NOT_OK;
+	}
+	else
+	{
+		return E_OK;
+	}
+	return E_NOT_OK;
+}
+
 Std_ReturnType Blth_readData(uint8_t *DataPtr)
 {
 	/*- Wait for the data to be received -*/
