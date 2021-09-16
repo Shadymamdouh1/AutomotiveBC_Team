@@ -9,7 +9,7 @@
 #ifndef UTILITY_H_
 #define UTILITY_H_
 
-#include "../../Microcontroller/Std_Types.h"
+#include "Std_Types.h"
 
 #define DEC		0
 #define HEX		1	

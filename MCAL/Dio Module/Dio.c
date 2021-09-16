@@ -8,7 +8,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "Dio.h"
-#include "..\..\Microcontroller\Atmega32 Registers\Dio_regs.h"
+#include "Dio_regs.h"
 #include "Dio_LCfg.h"
 
 
@@ -220,8 +220,6 @@ enuDio_Status_t Dio_readPin(uint8_t u8_pinID, uint8_t *pu8_pinValue)
 	}
 	return DIO_STATUS_ERROR_OK;
 }
-
-
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 * Service Name: Dio_changePinDirection

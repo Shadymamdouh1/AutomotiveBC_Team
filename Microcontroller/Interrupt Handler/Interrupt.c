@@ -7,9 +7,9 @@
 ******************************************************************************/
 #include "Interrupt.h"
 #include "Interrupt_Interface.h"
-#include "Microcontroller/Std_Types.h"
-#include "Libraries/Common_Macros.h"
-#include "Microcontroller/Atmega32 Registers/ISR_Regs.h"
+#include "Std_Types.h"
+#include "Common_Macros.h"
+#include "ISR_Regs.h"
 
 /*- GLOBAL STATIC VARIABLES
 -------------------------------*/
@@ -93,12 +93,14 @@ ISR(TIMER1_CAPT)
     old_Vectors[TIMER1_CAPT_IRQ](TIMER1_CAPT_IRQ);
 }
 
-#if NOT_USING_FREE_RTOS
+#if USING_FREE_RTOS
+#else
 ISR(TIMER1_COMPA)
 {
     old_Vectors[TIMER1_COMPA_IRQ](TIMER1_COMPA_IRQ);
 }
 #endif
+
 ISR(TIMER1_COMPB)
 {
     old_Vectors[TIMER1_COMPB_IRQ](TIMER1_COMPB_IRQ);
