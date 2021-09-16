@@ -9,9 +9,8 @@
 /*- INCLUDES
 ----------------------------------------------*/
 #include "Gpt.h"
-#include "..\..\Microcontroller\Interrupt Handler\Interrupt_Interface.h"
-#include "../../Microcontroller/Atmega32 Registers/Gpt_Regs.h"
-#include "../../Libraries/Common_Macros.h"
+#include "Gpt_Regs.h"
+#include "Common_Macros.h"
 
 #define GPT_CHANNELS			3
 /* it will be used to stop the timer1 if it started and didn't stop till reach this value */
@@ -757,7 +756,6 @@ enuGpt_Status_t GptStart_aSync(uint8_t ChannelId, uint32_t u32_Ticks, pfGpt_Call
 			
 			T0ovfCallback = FunToBeCalledInISR;
 			
-			EnableGlobalInterrupts();
 			if((u32_Ticks <= TIMER_0_MAX_TICKS) && (u32_Ticks != 0))
 			{
 				/* set ticks */
@@ -1442,6 +1440,42 @@ enuGpt_Status_t Gpt_setCounterValue(uint8_t ChannelId, uint16_t CounterValue)
 		{
 			/* set ticks */
 			TCNT2_R = CounterValue;
+			break;
+		}
+		default:
+		{
+			return GPT_STATUS_ERROR_NOK;
+		}
+	}
+	return GPT_STATUS_ERROR_OK;
+}
+
+/*****************************************************************************************
+* Parameters (in): Channel Id
+* Parameters (out): Error Status
+* Return value: enuGpt_Status_t
+* Description: get the counter value of the timer
+******************************************************************************************/
+enuGpt_Status_t Gpt_getCounterValue(uint8_t ChannelId, uint16_t *CounterValue)
+{
+	switch(strGpt_Channels[ChannelId].u8_TimerNumber)
+	{
+		case(TIMER_0):
+		{
+			/* set ticks */
+			*CounterValue = TCNT0_R;
+			break;
+		}
+		case(TIMER_1):
+		{
+			/* set ticks */
+			*CounterValue = TCNT1_R;
+			break;
+		}
+		case(TIMER_2):
+		{
+			/* set ticks */
+			*CounterValue = TCNT2_R;
 			break;
 		}
 		default:
