@@ -205,7 +205,7 @@ void WrlsCom_mainFunction(void)
 	uint8_t deviceDataState = DEVICE_DATA_RCV;
 	uint8_t receivedData[10] = {0};
 	uint8_t handshakeTrials = 0, deviceDataTrials = 0;
-	TickType_t entryTick=0, currentTick=0;
+	//TickType_t entryTick=0, currentTick=0;
 	while (1)
 	{
 		switch(WrlsCom_State)
