@@ -63,6 +63,7 @@ Std_ReturnType Blth_EnableDataMode(void)
 
 Std_ReturnType Blth_init(void)
 {
+	Uart_init();
 	Uart_EnableNotification_RXC(BLTH_UART_CHANNEL);
 	EnableGlobalInterrupts();
 	Interrupt_install(USART_RXC_IRQ, Blth_receiveCallBack);
