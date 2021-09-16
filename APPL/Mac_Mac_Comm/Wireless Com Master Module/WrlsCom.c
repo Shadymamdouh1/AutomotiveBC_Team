@@ -13,30 +13,26 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 #define MAX_POSSIBLE_BR							5U
-#define WRLS_COM_VALID_DEVICE_FLAG_LOC			0x00U
-#define WRLS_COM_VALID_DEVICE_FLAG_SIZE			1U
-#define WRLS_COM_VALID_DEVICE_FLAG_VALUE		0xAAU
-#define WRLS_COM_CONNECTED_DEVICE_NAME_LOC		0x02U
-#define WRLS_COM_CONNECTED_DEVICE_NAME_SIZE		7U
-#define WRLS_COM_CONNECTED_DEVICE_MAC_LOC		0x0AU
-#define WRLS_COM_CONNECTED_DEVICE_MAC_SIZE		12U
+#define WRLS_COM_VALID_DEVICE_FLAG_VALUE		0xDDU
+#define WRLS_COM_UNIQUE_PACKET_ID				0xAAU
+#define WRLS_COM_DEVICE_DATA_REQ_TYPE			0x02U
+#define WRLS_COM_CONNECTED_DEVICE_MAC_SIZE		12
 #define WRLS_COM_MAX_DEVICES_TO_INQUIRE			2U
 #define HANDSHAKE_SEND							0U
 #define HANDSHAKE_RCV							1U
 #define HANDSHAKE_FAIL							2U
 #define DEVICE_DATA_SEND						0U
 #define DEVICE_DATA_RCV							1U
-typedef uint8_t Array_t[WRLS_COM_CONNECTED_DEVICE_MAC_SIZE];
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
+uint8_t DeviceMACAddress[WRLS_COM_CONNECTED_DEVICE_MAC_SIZE];
+uint8_t WrlsCom_ValidDevFlag = 0;
 static uint32_t WrlsCom_PossibleBaudRates[MAX_POSSIBLE_BR] = {38400, 9600, 19200, 57600, 115200};
 static uint8_t WrlsCom_State = WRLSCOM_STATE_UNINIT;
-MemM_BlockInfo_t WrlsCom_ConnectedDeviceMAC;
-MemM_BlockInfo_t WrlsCom_ConnectedDeviceName;
-MemM_BlockInfo_t WrlsCom_ValidDevFlag;
 uint8_t AvailableDevices[WRLS_COM_MAX_DEVICES_TO_INQUIRE][WRLS_COM_CONNECTED_DEVICE_MAC_SIZE] = {0};
 WrlsCom_Data_t Data_Info;
 uint8_t WrlsCom_DeviceDataPacket[23] = {0};
+	
 /*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*/
 /*-*-*-*-*- FUNCTIONS LIKE MACROS -*-*-*-*-*-*/
 
@@ -44,19 +40,6 @@ uint8_t WrlsCom_DeviceDataPacket[23] = {0};
 /*--*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- STATIC FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
-static Std_ReturnType WrlsCom_initializeMemoryBlocks(void)
-{
-	/* Block to indicate if there is a connected device saved */
-	MemM_createBlock(&WrlsCom_ValidDevFlag, WRLS_COM_VALID_DEVICE_FLAG_SIZE, WRLS_COM_VALID_DEVICE_FLAG_LOC);
-	/* Device Name Block */
-	MemM_createBlock(&WrlsCom_ConnectedDeviceName, WRLS_COM_CONNECTED_DEVICE_NAME_SIZE, WRLS_COM_CONNECTED_DEVICE_NAME_LOC);
-	/* Device MAC Address Block */
-	MemM_createBlock(&WrlsCom_ConnectedDeviceMAC, WRLS_COM_CONNECTED_DEVICE_MAC_SIZE, WRLS_COM_CONNECTED_DEVICE_MAC_LOC);
-	/* Change the state to DEVICE SEARCH State */
-	WrlsCom_State = WRLSCOM_STATE_DEVICE_SEARCH;
-	
-	return E_OK;
-}
 
 static Std_ReturnType WrlsCom_checkBluetoothConfiguaration(void)
 {
@@ -163,13 +146,11 @@ Std_ReturnType WrlsCom_init(void)
 	
 	uint8_t DeviceOwnMacAddr[13]={0};
 	Blth_getOwnMacAddress(DeviceOwnMacAddr);
-	WrlsCom_DeviceDataPacket[0] = 0xAA;
-	WrlsCom_DeviceDataPacket[1] = 0x02;
+	WrlsCom_DeviceDataPacket[0] = WRLS_COM_UNIQUE_PACKET_ID;
+	WrlsCom_DeviceDataPacket[1] = WRLS_COM_DEVICE_DATA_REQ_TYPE;
 	WrlsCom_DeviceDataPacket[2] = 0x13;
 	stringConcatenate(WrlsCom_DeviceDataPacket, WrlsCom_BlthDevice_constConfig.Device_Name);
 	stringConcatenate(WrlsCom_DeviceDataPacket,DeviceOwnMacAddr);
-	/* Initialize the Connected Device block in the Memory */
-	WrlsCom_initializeMemoryBlocks();
 	
 	/* Set Animation LED to Device Search Pattern */
 	
@@ -181,26 +162,26 @@ Std_ReturnType WrlsCom_init(void)
 static Std_ReturnType WrlsCom_deviceSearchSequence(void)
 {
 	/* Search for MAC Address in EEPROM */
-	if(E_NOT_OK == MemM_readBlock(&WrlsCom_ValidDevFlag))
+	if(E_NOT_OK == MemM_readBlock(MEMM_VALID_DEVICE_FLAG_ID, &WrlsCom_ValidDevFlag))
 	{
 		/* In case reading with error or CRC checking failed */
 		/* Act as there is no device */
-		WrlsCom_ValidDevFlag.Data[0] = 0xFF;
-		MemM_writeBlock(&WrlsCom_ValidDevFlag);
+		WrlsCom_ValidDevFlag = 0xFF;
+		MemM_writeBlock(MEMM_VALID_DEVICE_FLAG_ID, &WrlsCom_ValidDevFlag, 1);
 		/* Advertising Mode */
 		WrlsCom_State = WRLSCOM_STATE_ADVERTISING;
 	}
 	else
 	{
 		/* If there a device saved */
-		if(WrlsCom_ValidDevFlag.Data[0] == WRLS_COM_VALID_DEVICE_FLAG_VALUE)
+		if(WrlsCom_ValidDevFlag == WRLS_COM_VALID_DEVICE_FLAG_VALUE)
 		{
-			if(E_NOT_OK == MemM_readBlock(&WrlsCom_ConnectedDeviceMAC))
+			if(E_NOT_OK == MemM_readBlock(MEMM_CONNECTED_DEVICE_MAC_ID, DeviceMACAddress))
 			{
 				/* CRC Failed */
 				/* Act as there is no device */
-				WrlsCom_ValidDevFlag.Data[0] = 0xFF;
-				MemM_writeBlock(&WrlsCom_ValidDevFlag);
+				WrlsCom_ValidDevFlag = 0xFF;
+				MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, &WrlsCom_ValidDevFlag, 1);
 				/* Advertising Mode */
 				WrlsCom_State = WRLSCOM_STATE_ADVERTISING;
 			}
@@ -208,7 +189,7 @@ static Std_ReturnType WrlsCom_deviceSearchSequence(void)
 			{
 				/* Mac address read successfuly */
 				/* Connect with the device */
-				Blth_LinkWithDevice((uint8_t*)WrlsCom_ConnectedDeviceMAC.Data);
+				Blth_LinkWithDevice(DeviceMACAddress);
 				
 				/* Linking State */
 				WrlsCom_State = WRLSCOM_STATE_LINKING;
@@ -228,8 +209,8 @@ void WrlsCom_mainFunction(void)
 	uint8_t verifyState = HANDSHAKE_SEND;
 	uint8_t deviceDataState = DEVICE_DATA_SEND;
 	uint8_t receivedData[10] = {0};
-	//uint8_t handshakeTrials = 0, deviceDataTrials = 0;
-	//TickType_t entryTick=0, currentTick=0;
+	uint8_t handshakeTrials = 0, deviceDataTrials = 0;
+	TickType_t entryTick=0, currentTick=0;
 	while (1)
 	{
 		switch(WrlsCom_State)
@@ -331,11 +312,26 @@ void WrlsCom_mainFunction(void)
 					{
 						if(Blth_readDataAsync(receivedData) == E_OK)
 						{
-							if(stringCmp(receivedData, (uint8_t*)WrlsCom_DeviceDataPacket) == TRUE)
+							if((receivedData[0] = WRLS_COM_UNIQUE_PACKET_ID) && (receivedData[1] = WRLS_COM_DEVICE_DATA_REQ_TYPE))
 							{
+								MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, receivedData, MEMM_CONNECTED_DEVICE_MAC_SIZE);
 								WrlsCom_State = WRLSCOM_STATE_IDLE;
-								EmptyString(receivedData);
 							}
+							else
+							{
+								deviceDataTrials++;
+								if(deviceDataTrials == WRLS_COM_MAX_DEVICE_DATA_TRIALS)
+								{
+									Blth_Cmd();
+									Blth_Disconnect();
+									Blth_Data();
+								}
+								else
+								{
+									deviceDataState = DEVICE_DATA_SEND;
+								}
+							}
+							EmptyString(receivedData);
 						}
 						else
 						{
