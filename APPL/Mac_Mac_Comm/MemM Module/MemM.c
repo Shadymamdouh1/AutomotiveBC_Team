@@ -15,8 +15,6 @@
 
 /*- GLOBAL EXTERN VARIABLES -------------------------------------*/
 
-MemM_BlockLocation_t MemM_BlocksAddresses[MEMM_MAX_BLOCKS_NUM];
-uint8_t BlocksCounter=0;
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/
 /************************************************************************************
@@ -27,10 +25,8 @@ uint8_t BlocksCounter=0;
 ************************************************************************************/
 Std_ReturnType MemM_init(void)
 {
-	Eeprom_24_init();
+	MemIF_init();
 	
-	MemM_BlocksAddresses[0].Block_ID = 0;
-	MemM_BlocksAddresses[0].Block_Address = 0x00;
 	return E_OK;
 }
 
@@ -41,16 +37,11 @@ Std_ReturnType MemM_init(void)
 * Description: ask BCM to get any received data from a certain com. channel
 ************************************************************************************/
 
-Std_ReturnType MemM_writeBlock(MemM_BlockInfo_t *block_ptr)
+Std_ReturnType MemM_writeBlock(MemM_BlockID_t BlockID, uint8_t *Data_Ptr, uint16_t dataLength)
 {
-	if(EEPROM_24_STATUS_ERROR_NOK == Eeprom_24_writePacket(MemM_BlocksAddresses[block_ptr->Block_ID].Block_Address , block_ptr->Data, block_ptr->Data_Size))
-	{
-		return E_NOT_OK;
-	}
+	MemIF_writePacket(MemM_BlocksConfig[BlockID].Block_Address , Data_Ptr, dataLength);
 	return E_OK;
 }
-
-
 
 /************************************************************************************
 * Parameters (in): None
@@ -58,12 +49,9 @@ Std_ReturnType MemM_writeBlock(MemM_BlockInfo_t *block_ptr)
 * Return value: Std_ReturnType
 * Description: update state BCM Rx.
 ************************************************************************************/
-Std_ReturnType MemM_readBlock(MemM_BlockInfo_t *block_ptr)
+Std_ReturnType MemM_readBlock(MemM_BlockID_t BlockID, uint8_t *Data_Ptr)
 {
-	if(EEPROM_24_STATUS_ERROR_NOK == Eeprom_24_readPacket(MemM_BlocksAddresses[block_ptr->Block_ID].Block_Address , block_ptr->Data, block_ptr->Data_Size))
-	{
-		return E_NOT_OK;
-	}
+	MemIF_readPacket(MemM_BlocksConfig[BlockID].Block_Address , Data_Ptr, MemM_BlocksConfig[BlockID].Data_Size);
 	return E_OK;
 }
 
@@ -84,6 +72,7 @@ Std_ReturnType MemM_eraseBlock(MemM_BlockID_t blockID)
 * Return value: Std_ReturnType
 * Description: update state of a given device.
 ************************************************************************************/
+#if 0
 Std_ReturnType MemM_createBlock(MemM_BlockInfo_t *block_ptr, uint8_t maxBlock_Size, MemM_BlockAddress_t Block_StartAddress)
 {
 	if((block_ptr == NULL_PTR) || (BlocksCounter == MEMM_MAX_BLOCKS_NUM-1) || (maxBlock_Size > MEMM_MAX_DATA_SIZE))
@@ -98,7 +87,7 @@ Std_ReturnType MemM_createBlock(MemM_BlockInfo_t *block_ptr, uint8_t maxBlock_Si
 	MemM_BlocksAddresses[BlocksCounter].Block_ID = BlocksCounter;
 	return E_OK;
 }
-
+#endif 
 /************************************************************************************
 * Parameters (in): None
 * Parameters (out): Error Status
