@@ -103,6 +103,8 @@ Std_ReturnType WrlsCom_init(void)
 {
 	uint32_t currentBaudRate = 0;
 	uint8_t BR_index=0;
+	
+	/* Bluetooth Initialization */
 	Blth_init();
 	/* Enable Command Mode */
 	Blth_EnableCommandMode();

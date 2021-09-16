@@ -57,6 +57,7 @@ Std_ReturnType Blth_EnableDataMode(void)
 	Delay_ms(1);
 	Blth_powerON();
 	Blth_CurrentState = BLTH_DATA_MODE;
+	Delay_ms(1000);
 	
 	return E_OK;
 }
