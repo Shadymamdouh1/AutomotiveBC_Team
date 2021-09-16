@@ -21,11 +21,6 @@
 enuLcd_Status_t Lcd_Status = LCD_STATUS_ERROR_OK;
 enuLcd_initStatus_t Lcd_Init = LCD_NOT_INITIALIZED;
 
-/* ping pong R1 variables */
-uint8_t gau8_pingPongR1String[16] = "SYS LOADING";
-uint8_t gu8_pingPongR1NumChars = 11;
-
-
 /* states */
 #if (AsyncMode == TRUE)
 uint8_t LCD_NEXT_STATE = IDLE;
@@ -805,23 +800,6 @@ enuLcd_Status_t Lcd_sendHigherNibble(uint8_t u8_data)
 	}
 	
 	return LCD_STATUS_ERROR_OK;
-}
-
-Std_ReturnType Lcd_setPingPongR1Info(uint8_t* au8_string, uint8_t u8_numChars)
-{
-	gu8_pingPongR1NumChars = u8_numChars;
-	EmptyString(gau8_pingPongR1String);
-	stringCopy(au8_string, gau8_pingPongR1String);
-	return E_OK;
-}
-
-void Lcd_pingPongStringR1_mainFunction(void *pvParameters)
-{
-	while(TRUE)
-	{
-		Lcd_pingPongStringR1(gau8_pingPongR1String, gu8_pingPongR1NumChars);
-		vTaskDelay(R1_PINGPONG_MS);		
-	}
 }
 
 

@@ -48,10 +48,6 @@ Std_ReturnType SS_sendNumber_One7Seg(uint8_t segId, uint8_t u8_num);
 /* sent to double */
 Std_ReturnType SS_sendNumber_Two7Seg(uint8_t firstSegId, uint8_t secondSegId, uint8_t u8_num, uint8_t u8_swapDelay_ms);
 
-/* RTOS main function */
-void SS_7Seg_mainFunction(void *pvParameters);
-/* dual 7Seg number setter */
-Std_ReturnType SS_set7SegInfo(uint8_t u8_num);
 
 /*******************************************************************************
  *                       External Variables                                    *

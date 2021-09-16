@@ -16,7 +16,7 @@
 #define MIN_NUM					(0U)
 /*- GLOBAL EXTERN VARIABLES
 -------------------------------*/
-uint8_t gu8_dual_7SegNum;
+
 
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/
@@ -181,21 +181,4 @@ Std_ReturnType SS_sendNumber_Two7Seg(uint8_t firstSegId, uint8_t secondSegId, ui
 		//Delay_ms(u8_swapDelay_ms);		
 	}
 	return E_OK;	
-}
-
-
-Std_ReturnType SS_set7SegInfo(uint8_t u8_num)
-{
-	gu8_dual_7SegNum = u8_num;
-	
-	return E_OK;
-}
-
-void SS_7Seg_mainFunction(void *pvParameters)
-{
-	while(TRUE)
-	{
-		SS_sendNumber_Two7Seg(SEG_1_ID, SEG_2_ID, gu8_dual_7SegNum, DUAL_7SEG_SWAP_DELAY);
-		vTaskDelay(DUAL_7SEG_SWAP_DELAY);
-	}
 }
