@@ -1454,6 +1454,42 @@ enuGpt_Status_t Gpt_setCounterValue(uint8_t ChannelId, uint16_t CounterValue)
 * Parameters (in): Channel Id
 * Parameters (out): Error Status
 * Return value: enuGpt_Status_t
+* Description: get the counter value of the timer
+******************************************************************************************/
+enuGpt_Status_t Gpt_getCounterValue(uint8_t ChannelId, uint16_t *CounterValue)
+{
+	switch(strGpt_Channels[ChannelId].u8_TimerNumber)
+	{
+		case(TIMER_0):
+		{
+			/* set ticks */
+			*CounterValue = TCNT0_R;
+			break;
+		}
+		case(TIMER_1):
+		{
+			/* set ticks */
+			*CounterValue = TCNT1_R;
+			break;
+		}
+		case(TIMER_2):
+		{
+			/* set ticks */
+			*CounterValue = TCNT2_R;
+			break;
+		}
+		default:
+		{
+			return GPT_STATUS_ERROR_NOK;
+		}
+	}
+	return GPT_STATUS_ERROR_OK;
+}
+
+/*****************************************************************************************
+* Parameters (in): Channel Id
+* Parameters (out): Error Status
+* Return value: enuGpt_Status_t
 * Description: Starts a given timer from an initial count
 ******************************************************************************************/
 enuGpt_Status_t Gpt_Start(uint8_t ChannelId, uint16_t InitialCount)
