@@ -57,12 +57,14 @@ Std_ReturnType Blth_EnableDataMode(void)
 	Delay_ms(1);
 	Blth_powerON();
 	Blth_CurrentState = BLTH_DATA_MODE;
+	Delay_ms(1000);
 	
 	return E_OK;
 }
 
 Std_ReturnType Blth_init(void)
 {
+	Uart_init();
 	Uart_EnableNotification_RXC(BLTH_UART_CHANNEL);
 	EnableGlobalInterrupts();
 	Interrupt_install(USART_RXC_IRQ, Blth_receiveCallBack);

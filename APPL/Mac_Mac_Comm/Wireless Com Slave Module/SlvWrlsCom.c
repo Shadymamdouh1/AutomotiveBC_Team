@@ -375,7 +375,8 @@ void WrlsCom_mainFunction(void)
 			{
 				/* Erase */
 				/* Act as there is no device */
-				WrlsCom_ValidDevFlag = 0xFF;MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, &WrlsCom_ValidDevFlag, 1);
+				WrlsCom_ValidDevFlag = 0xFF;
+				MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, &WrlsCom_ValidDevFlag, 1);
 				/* Advertising Mode */
 				WrlsCom_State = WRLSCOM_STATE_IDLE;
 				break;
