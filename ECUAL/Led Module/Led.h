@@ -1,51 +1,59 @@
 /*****************************************************************************
 * Module: Led Module
 * File Name: Led.h
-* Description: Header file for Led Module
-* Author: Mohamed Magdy
-* Date: 20-July-2021
-******************************************************************************/ 
+* Description:Header file for Led Module
+* Author: Shady Mamdouh
+* Date: 6/9/2021
+******************************************************************************/
+
 
 #ifndef LED_H_
 #define LED_H_
+/*************************************INCLUDES*************************************/
+#include "..\..\Microcontroller\Platform_Types.h"
+#include "..\..\Microcontroller\Std_types.h"
+#include "LED_LCfg.h"
+/*************************************Type Definitons**********************************/
+typedef uint8_t LEDId_t ;
+typedef uint8_t LEDType_t ;
+typedef uint8_t LED_Ch_t ;
 
-/*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-/*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "Led_Cfg.h"
-#include "Dio.h"
-#include "Std_Types.h"
-#include "Common_Macros.h"
-
-/*******************************************************************************
- *                          Module Data Types                                  *
- *******************************************************************************/
-/*
- * Data Type for Button return status
- */
-typedef enum
+typedef struct LEDConfig_t
 {
-	LED_STATUS_ERROR_NOK,
-	LED_STATUS_ERROR_OK,
-	LED_STATUS_ERROR_INVALID
-}enuLed_Status_t;
-
-/*- STRUCTS AND UNIONS -------------------------------------*/
-typedef struct
+	LEDId_t   LEDId ;
+	LEDType_t LEDMode;
+	LED_Ch_t  LEDChannel ;
+	
+	
+}LEDConfig_t;
+/*************************************************************************************/
+typedef enum LEDReturn_t
 {
-	uint8_t u8_LedDioId;
-}strLed_Config_t;
+	LEDModuleIntialized,
+    LED_E_OK,
+	LED_E_NOK,
+	LED_InvlidLEDId,
+	LED_InvalidMode
+	
+	
+	
+}LEDReturn_t;
+/**************************************************************************************/
+/* LEDtype Options */
 
-/*******************************************************************************
- *                      Function Prototypes                                    *
- *******************************************************************************/
-enuLed_Status_t Led_init(void);
+#define ORDINARY_LED   0
+#define ANIMATED_LED   1
+/**************************************************************************************
+										APIs
+**************************************************************************************/
+LEDReturn_t LED_Init(void);
+LEDReturn_t LED_ON(LEDId_t LEDId);
+LEDReturn_t LED_OFF(LEDId_t LEDId);
+LEDReturn_t LED_Toggle(LEDId_t LEDId);
+LEDReturn_t LED_AnimationStrat(LEDId_t LEDId,uint32_t u32_Freq, uint8_t u8_DutyCycle);
+LEDReturn_t LED_AnimationStop(LEDId_t LEDId);
+/************************************************************************************/
+extern LEDConfig_t LEDConfigArr[NUM_OF_LEDS_USED];
 
-enuLed_Status_t LedOn(uint8_t u8_LedId);
 
-enuLed_Status_t LedOff(uint8_t u8_LedId);
-
-enuLed_Status_t LedToggle(uint8_t u8_LedId);
-
-/* configuration variable */
-extern strLed_Config_t strLed_Config[USED_LEDS];
 #endif /* LED_H_ */

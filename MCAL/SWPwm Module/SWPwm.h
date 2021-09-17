@@ -11,10 +11,11 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "Microcontroller\Platform_Types.h"
-#include "Microcontroller\Interrupt Handler\Interrupt_Interface.h"
-#include "MCAL\Dio Module\Dio.h"
-#include "MCAL/Gpt Module/Gpt.h"
+#include "..\..\Microcontroller\Platform_Types.h"
+//#include "..\..\Microcontroller\Interrupt Handler\Interrupt_Interface.h"
+#include "E:\Sprints\hardware peripherals\atmel directory\Sprint 6\Project\WirelessCom\WirelessCom\Microcontroller\Interrupt Handler\Interrupt_Interface.h"
+#include "..\Dio Module\Dio.h"
+#include "..\Gpt Module/Gpt.h"
 #include "SWPwm_LCfg.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/

@@ -11,7 +11,7 @@
 
 #include "Dio_Regs.h"
 
-#define DIO_USED_PINS_NUM					(22U)
+#define DIO_USED_PINS_NUM					(23U)
 
 
 /* DIO Configured Port ID's  */
@@ -43,6 +43,7 @@
 #define DioConf_PORTD4_PORT_NUM				PORT_D
 #define DioConf_PORTD5_PORT_NUM				PORT_D
 
+#define DioConf_PWM_B5_PORT_NUM				PORT_B
 /* DIO Configured Channel ID's */
 #define DioConf_COL_1_PIN_NUM				PIN_5
 #define DioConf_COL_2_PIN_NUM				PIN_6
@@ -72,7 +73,7 @@
 
 #define DioConf_PORTD4_PIN_NUM				PIN_4
 #define DioConf_PORTD5_PIN_NUM				PIN_5
-
+#define DioConf_PWM_B5_PIN_NUM				PIN_5
 /* Channel Index in the array of structures in Dio_Cfg.c */
 
 #define DIO_COL_1_CHANNEL_ID				0
@@ -106,4 +107,5 @@
 
 #define DIO_PORTD4_CHANNEL_ID				20
 #define DIO_PORTD5_CHANNEL_ID				21
+#define DIO_PWM_CHANNEL_ID					22
 #endif /* DIO_CFG_H_ */
