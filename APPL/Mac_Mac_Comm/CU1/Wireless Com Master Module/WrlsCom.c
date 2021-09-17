@@ -390,7 +390,7 @@ void WrlsCom_mainFunction(void)
 						{
 							if(stringCmp(receivedData, (uint8_t*)WrlsCom_BlthDevice_Handshake_Packet) == TRUE)
 							{
-								WrlsCom_State = WRLSCOM_STATE_IDLE;
+								WrlsCom_State = WRLSCOM_STATE_CONNECTED;
 								EmptyString(receivedData);
 							}
 						}
