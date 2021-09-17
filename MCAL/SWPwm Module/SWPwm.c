@@ -125,10 +125,10 @@ enuSWPwm_Status_t SWPwm_Start(u8SWPwm_Channel_t u8_ChannelID, uint32_t u32_Freq,
 	{
 		return SWPWM_STATUS_DC_OUTRANGE;
 	}
-	if(gstr_ChannelsData[u8_ChannelID].enuChannelState == SWPWM_RUNNING)
+	/*if(gstr_ChannelsData[u8_ChannelID].enuChannelState == SWPWM_RUNNING)
 	{
 		return SWPWM_STATUS_RUNNING;
-	}
+	}*/
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
@@ -202,10 +202,10 @@ enuSWPwm_Status_t SWPwm_Stop(u8SWPwm_Channel_t u8_ChannelID)
 		return SWPWM_STATUS_PWM_ID_INVALID;
 	}
 	/* Check if the duty cycle given is out of range */
-	if(gstr_ChannelsData[u8_ChannelID].enuChannelState != SWPWM_RUNNING)
+	/*if(gstr_ChannelsData[u8_ChannelID].enuChannelState != SWPWM_RUNNING)
 	{
 		return SWPWM_STATUS_RUNNING;
-	}
+	}*/
 /**************************************************************************************/
 /*								End of Error Checking								  */
 /**************************************************************************************/
