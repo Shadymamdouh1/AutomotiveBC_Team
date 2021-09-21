@@ -6,23 +6,16 @@
 * Date: 12/9/2021
 ******************************************************************************/
 /**************************************INCLUDES*********************************************/
-#include "..\..\..\Microcontroller\Platform_Types.h"
-#include "..\..\..\Microcontroller\Std_types.h"
-#include "..\Animation Module\Animation.h"
-#include "..\Kpd_Input Module\KpdInput.h"
+#include "Microcontroller\Platform_Types.h"
+#include "Microcontroller\Std_types.h"
+#include "APPL\Mac_Mac_Comm\CU1\Animation Module\Animation.h"
+#include "APPL\Mac_Mac_Comm\CU1\Kpd_Input Module\KpdInput.h"
+#include "ServiceL\FreeRTOS\Source\include\FreeRTOS.h"
+#include "ServiceL\FreeRTOS\Source\include\task.h"
+#include "APPL\Mac_Mac_Comm\CU1\Wireless Com Master Module\WrlsCom.h"
+
 /******************************************************************************************/
-/************************************Global variables****************************************/
-/* wireless Communication module states */
-#define WRLSCOM_STATE_UNINIT				0U
-#define WRLSCOM_STATE_MALFUNCTION			1U
-#define WRLSCOM_STATE_DEVICE_SEARCH			2U
-#define WRLSCOM_STATE_IDLE					3U
-#define WRLSCOM_STATE_VERIFICATION			4U
-#define WRLSCOM_STATE_CONNECTED			    5U
-#define WRLSCOM_STATE_DATA_READY			6U
-#define WRLSCOM_STATE_DEVICE_ERASE          7U
-
-
+/************************************CONSTANTS****************************************/
 #define FIXED_PACKET_HEADER				0xAA
 #define KEYPAD_DATA_REQ_TYPE			0x03
 #define KEYPAD_DATA_LENGTH				0x01
@@ -33,9 +26,8 @@
 #define KEYPAD_PASS_CHANGE_PACKET_SIZE  0x03
 
 
-
-
-
+/******************************************************************************************/
+/************************************Global variables****************************************/
 
 uint8_t WrlsCom_OldState ;
 uint8_t WrlsCom_CurrentState ;
@@ -49,11 +41,10 @@ KpdInput_strInputModuleDataInfo_t *KeyPadDataInfo ;
 uint8_t OldState ;
 uint8_t CurrentState ;
 /***************************************************************************************/
-void GetState(void)
+static void GetState(void)
 {
 	/* Get wireless comm state */
 	uint8_t State;
-	uint8_t *KeypadData ;
 	WrlsCom_getState(&State);
 	WrlsCom_CurrentState =State;
 	
@@ -61,7 +52,51 @@ void GetState(void)
 	KeypadInputModule_getDataInfo(KeyPadDataInfo);
 	
 }
-void UpdateState(void)
+/**********************************************************************************************************
+* Parameters (in): DataType
+* Parameters (out): None
+* Return value: LEDReturn_t
+* Description: This function used to transmit packet using wireless comm
+***********************************************************************************************************/
+static void DataTransmit(uint8_t DataType)
+{
+	switch(DataType)
+	{
+		case KPDINPUT_DATA :
+		{
+			/* Data frame*/
+			
+			/*Fixed Packet Header */
+			PacketBuffer[0] = FIXED_PACKET_HEADER;
+			/*Request type */
+			PacketBuffer[1] = KEYPAD_DATA_REQ_TYPE;
+			/*Request length */
+			PacketBuffer[2] = KEYPAD_DATA_LENGTH;
+			/*Data */
+			PacketBuffer[3]= KeyPadDataInfo->InputModuleData;
+			
+			/* Set data to be transmitted */
+			WrlsCom_TransmitData(PacketBuffer,KEYPAD_DATA_PACKET_SIZE);
+			break;
+		}
+		case KPDINPUT_PASS_RESET :
+		{
+			/* Data framming */
+			
+			/*Fixed Packet Header */
+			PacketBuffer[0] = FIXED_PACKET_HEADER;
+			/*Request type */
+			PacketBuffer[1] = KEYPAD_PASS_CHANGE_REQ_TYPE;
+			/*Request length */
+			PacketBuffer[2] = KEYPAD_PASS_CHANGE_LENGTH;
+			/* Set data to be transmitted */
+			WrlsCom_TransmitData(PacketBuffer,KEYPAD_PASS_CHANGE_PACKET_SIZE);
+			
+			break;
+		}
+	}
+}
+static void UpdateState(void)
 {
 	switch(WrlsCom_CurrentState)
 	{
@@ -172,50 +207,6 @@ void UpdateState(void)
 		
 	}
 }
-/**********************************************************************************************************
-* Parameters (in): DataType
-* Parameters (out): None
-* Return value: LEDReturn_t
-* Description: This function used to transmit packet using wireless comm
-***********************************************************************************************************/
-void DataTransmit(uint8_t DataType)
-{
-	switch(DataType)
-	{
-		case KPDINPUT_DATA :
-		{
-			/* Data frame*/
-			
-			/*Fixed Packet Header */
-			PacketBuffer[0] = FIXED_PACKET_HEADER;
-			/*Request type */
-			PacketBuffer[1] = KEYPAD_DATA_REQ_TYPE;
-			/*Request length */
-			PacketBuffer[2] = KEYPAD_DATA_LENGTH;
-			/*Data */
-			PacketBuffer[3]= KeyPadDataInfo->InputModuleData;
-			
-			/* Set data to be transmitted */
-			WrlsCom_TransmitData(PacketBuffer,KEYPAD_DATA_PACKET_SIZE);
-			break;
-		}
-		case KPDINPUT_PASS_RESET :
-		{
-			/* Data framming */
-			
-			/*Fixed Packet Header */
-			PacketBuffer[0] = FIXED_PACKET_HEADER;
-			/*Request type */
-			PacketBuffer[1] = KEYPAD_PASS_CHANGE_REQ_TYPE;
-			/*Request length */
-			PacketBuffer[2] = KEYPAD_PASS_CHANGE_LENGTH;
-			/* Set data to be transmitted */
-			WrlsCom_TransmitData(PacketBuffer,KEYPAD_PASS_CHANGE_PACKET_SIZE);
-			
-			break;
-		}
-	}
-}
 
 /**********************************************************************************************************
 * Parameters (in): None
@@ -223,8 +214,12 @@ void DataTransmit(uint8_t DataType)
 * Return value: LEDReturn_t
 * Description: This function is the module main function 
 ***********************************************************************************************************/
-void DataMangerMainFunction(void)
+void DataMngr_mainFunction(void* pvParam)
 {
-	GetState();
-	UpdateState();
+	while (1)
+	{
+		GetState();
+		UpdateState();
+		vTaskDelay(100);
+	}
 }

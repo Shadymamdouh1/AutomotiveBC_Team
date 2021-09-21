@@ -8,8 +8,8 @@
 #ifndef ANIMATION_H_
 #define ANIMATION_H_
 /****************************INCLUDES****************************************/
-#include "..\..\..\Microcontroller\Platform_Types.h"
-#include "..\..\..\Microcontroller\Std_types.h"
+#include "Microcontroller\Platform_Types.h"
+#include "Microcontroller\Std_types.h"
 #include "AnimationLCfg.h"
 /****************************************************************************/
 /* maximum number of serving animation per device */
@@ -47,6 +47,6 @@ extern uint8_t ANIDeviceArr[NUM_OF_DEVICES_USED] ;
 ANReturn_t ANI_Init(void);
 ANReturn_t ANI_Start(uint8_t DeviceId , uint8_t SubId, uint8_t AnimationPattern);
 ANReturn_t ANI_Stop(uint8_t DeviceId , uint8_t SubId);
-void ANI_MainFunction(void);
+void ANI_MainFunction(void* pvParam);
 /***************************************************************************************/
 #endif /* ANIMATION_H_ */

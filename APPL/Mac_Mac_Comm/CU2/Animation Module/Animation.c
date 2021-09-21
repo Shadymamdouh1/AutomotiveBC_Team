@@ -6,21 +6,21 @@
 * Date: 6/9/2021
 ******************************************************************************/
 /******************************INCLUDES***************************************/
-#include "..\..\..\Microcontroller\Platform_Types.h"
-#include "..\..\..\Microcontroller\Std_types.h"
+#include "Microcontroller\Platform_Types.h"
+#include "Microcontroller\Std_types.h"
 #include "Animation.h"
-#include "..\..\..\ECUAL\LED Module\LED.h"
-#include "..\..\..\Microcontroller/Atmega32 Registers/Dio_regs.h"
-/*****************TEST**********************************************/
-extern uint32_t systickss ;
+#include "ECUAL\LED Module\LED.h"
+#include "ServiceL\FreeRTOS\Source\include\FreeRTOS.h"
+#include "ServiceL\FreeRTOS\Source\include\task.h"
+
 /*****************************************************************************/
 /* Module initialization states */
 #define ANI_INITIALIZED         1U
 #define ANI_NOT_INITIALIZED     0U
 uint8_t ANIInitState = ANI_NOT_INITIALIZED ;
 /********************************************GLOBAL VAR***************************************************/
-uint32_t CurrentSysTick =0;
-uint32_t OldSysTick =0;
+TickType_t CurrentSysTick =0;
+TickType_t OldSysTick =0;
 /* States */
 #define IDLE_STATE       0U
 #define LOW_STATE        1U
@@ -51,10 +51,12 @@ ServingDevice_t CurrentServBuffer[NUM_OF_DEVICES_USED][MAX_SERVING_NUM];
 uint8_t CurrentServCounter[NUM_OF_DEVICES_USED];
 /********************************************************************************************************/
 /*****************TEST********************/
+#if 0
 void GetSystick(uint32_t *ticks)
 {
 	*ticks =systickss;
 }
+#endif
 /**********************************************************************************************************
 * Parameters (in): None
 * Parameters (out): None
@@ -90,7 +92,7 @@ ANReturn_t ANI_Init(void)
 * Parameters (in): DeviceId,SubId,AnimationPattern
 * Parameters (out): None
 * Return value: LEDReturn_t
-* Description: This function used to Start animation for a device 
+* Description: This function used to Start animation for a device
 ************************************************************************************************************************/
 ANReturn_t ANI_Start(uint8_t DeviceId , uint8_t SubId, uint8_t AnimationPattern)
 {
@@ -198,12 +200,10 @@ void IncrementCounters(void)
 {
 	uint8_t DeviceConter ;
 	uint8_t CurrentCounter ;
-	/* Get Current sys tick teeeeeeeeeeeeest */
-	/************************/
 	
-	GetSystick(&CurrentSysTick);
-	/**********************
-	**********************/
+	CurrentCounter = xTaskGetTickCount();
+	
+	//GetSystick(&CurrentSysTick);
 	
 	/* Means that Systick counter over flow */
 	if (OldSysTick > CurrentSysTick)
@@ -211,18 +211,18 @@ void IncrementCounters(void)
 		
 		for(DeviceConter=0;DeviceConter<NUM_OF_DEVICES_USED;DeviceConter++)
 		{
-				for(CurrentCounter=0; CurrentCounter<CurrentServCounter[DeviceConter] ; CurrentCounter++)
-				{
-					CurrentServBuffer[DeviceConter][CurrentCounter].Counter=0;
-					CurrentServBuffer[DeviceConter][CurrentCounter].CurrentSate=IDLE_STATE;
+			for(CurrentCounter=0; CurrentCounter<CurrentServCounter[DeviceConter] ; CurrentCounter++)
+			{
+				CurrentServBuffer[DeviceConter][CurrentCounter].Counter=0;
+				CurrentServBuffer[DeviceConter][CurrentCounter].CurrentSate=IDLE_STATE;
 				
-				}
+			}
 		}
 		OldSysTick =0;
 	}
-	else 
+	else
 	{
-		uint32_t Temp = CurrentSysTick - OldSysTick;
+		TickType_t Temp = CurrentSysTick - OldSysTick;
 		/* Increment serving devices counters */
 		
 		for(DeviceConter=0;DeviceConter<NUM_OF_DEVICES_USED;DeviceConter++)
@@ -244,7 +244,7 @@ void IncrementCounters(void)
 * Parameters (in): None
 * Parameters (out): None
 * Return value: None
-* Description: This function used to Get New Device state according to counters calculations 
+* Description: This function used to Get New Device state according to counters calculations
 ************************************************************************************************************************/
 void ANI_GetState(void)
 {
@@ -254,7 +254,6 @@ void ANI_GetState(void)
 	uint16_t LowPeriod;
 	uint16_t RisingPeriod;
 	uint16_t HighPeriod;
-	uint16_t FallingPeriod;
 	uint16_t StepPeriod;
 	for(DeviceCounter=0;DeviceCounter<NUM_OF_DEVICES_USED;DeviceCounter++)
 	{
@@ -266,7 +265,6 @@ void ANI_GetState(void)
 				LowPeriod = ANIPatternsArr[PatternId].LOWPeriod;
 				RisingPeriod = ANIPatternsArr[PatternId].RisingPeriod;
 				HighPeriod   = ANIPatternsArr[PatternId].HighPeriod;
-				FallingPeriod = ANIPatternsArr[PatternId].FallingPeriod;
 				StepPeriod    = ANIPatternsArr[PatternId].IncreaseStepPeriod;
 				
 				if (CurrentServBuffer[DeviceCounter][CurrentCounter].CurrentSate == IDLE_STATE)
@@ -338,7 +336,7 @@ void ANI_GetState(void)
 * Parameters (in): None
 * Parameters (out): None
 * Return value: None
-* Description: This function used to Take actions acoording to Device State 
+* Description: This function used to Take actions acoording to Device State
 ************************************************************************************************************************/
 uint16_t DutyCycle ;
 void ANI_UpdateState(void)
@@ -445,9 +443,9 @@ void ANI_UpdateState(void)
 				
 			}
 			
-		    
+			
 		}
-	
+		
 	}
 }
 
@@ -457,14 +455,19 @@ void ANI_UpdateState(void)
 * Return value: None
 * Description: This function Is the main dispatcher of the Animation module
 ************************************************************************************************************************/
-void ANI_MainFunction(void)
+void ANI_MainFunction(void* pvParam)
 {
-	/* Increment counters */
-	IncrementCounters();
-	/* Get devices state */
-	ANI_GetState();
-	/* Update Devices States */
-	ANI_UpdateState();
+	while(1)
+	{
+		/* Increment counters */
+		IncrementCounters();
+		/* Get devices state */
+		ANI_GetState();
+		/* Update Devices States */
+		ANI_UpdateState();
+		
+		vTaskDelay(10);
+	}
 }
 
 

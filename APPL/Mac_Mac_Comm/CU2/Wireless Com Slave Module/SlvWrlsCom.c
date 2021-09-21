@@ -9,7 +9,9 @@
 #include "SlvWrlsCom.h"
 #include "APPL/Mac_Mac_Comm/MemM Module/MemM.h"
 #include "Microcontroller/Delay Module/Delay.h"
-#include "Microcontroller/Atmega32 Registers/Dio_regs.h"
+#include "ServiceL/FreeRTOS/Source/include/FreeRTOS.h"
+#include "ServiceL\FreeRTOS\Source\include\task.h"
+
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 #define MAX_POSSIBLE_BR							5U
@@ -18,6 +20,7 @@
 #define WRLS_COM_DEVICE_DATA_REQ_TYPE			0x02U
 #define WRLS_COM_CONNECTED_DEVICE_MAC_SIZE		12
 #define WRLS_COM_MAX_DEVICES_TO_INQUIRE			2U
+#define WRLS_COM_MAX_DEVICE_DATA_TRIALS			5U
 #define HANDSHAKE_SEND							0U
 #define HANDSHAKE_RCV							1U
 #define HANDSHAKE_FAIL							2U
@@ -154,65 +157,17 @@ Std_ReturnType WrlsCom_init(void)
 	return E_OK;
 }
 
-static Std_ReturnType WrlsCom_deviceSearchSequence(void)
-{
-	/* Search for MAC Address in EEPROM */
-	if(E_NOT_OK == MemM_readBlock(MEMM_VALID_DEVICE_FLAG_ID, &WrlsCom_ValidDevFlag))
-	{
-		/* In case reading with error or CRC checking failed */
-		/* Act as there is no device */
-		WrlsCom_ValidDevFlag = 0xFF;
-		MemM_writeBlock(MEMM_VALID_DEVICE_FLAG_ID, &WrlsCom_ValidDevFlag, 1);
-		/* Advertising Mode */
-		WrlsCom_State = WRLSCOM_STATE_ADVERTISING;
-	}
-	else
-	{
-		/* If there a device saved */
-		if(WrlsCom_ValidDevFlag == WRLS_COM_VALID_DEVICE_FLAG_VALUE)
-		{
-			if(E_NOT_OK == MemM_readBlock(MEMM_CONNECTED_DEVICE_MAC_ID, DeviceMACAddress))
-			{
-				/* CRC Failed */
-				/* Act as there is no device */
-				WrlsCom_ValidDevFlag = 0xFF;
-				MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, &WrlsCom_ValidDevFlag, 1);
-				/* Advertising Mode */
-				WrlsCom_State = WRLSCOM_STATE_ADVERTISING;
-			}
-			else
-			{
-				/* Mac address read successfuly */
-				/* Connect with the device */
-				Blth_LinkWithDevice(DeviceMACAddress);
-				
-				/* Linking State */
-				WrlsCom_State = WRLSCOM_STATE_LINKING;
-			}
-		}
-		else
-		{
-			/* Advertising Mode */
-			WrlsCom_State = WRLSCOM_STATE_ADVERTISING;
-		}
-	}
-	return E_OK;
-}
-
-void WrlsCom_mainFunction(void)
+void WrlsCom_mainFunction(void *pvParam)
 {
 	uint8_t verifyState = HANDSHAKE_RCV;
 	uint8_t deviceDataState = DEVICE_DATA_RCV;
 	uint8_t receivedData[10] = {0};
-	uint8_t handshakeTrials = 0, deviceDataTrials = 0;
-	//TickType_t entryTick=0, currentTick=0;
 	while (1)
 	{
 		switch(WrlsCom_State)
 		{
 			case WRLSCOM_STATE_DEVICE_SEARCH:
 			{
-				//WrlsCom_deviceSearchSequence();
 				if(Blth_isConnected() == E_OK)
 				{
 					Blth_Data();
@@ -220,7 +175,6 @@ void WrlsCom_mainFunction(void)
 				}
 				else
 				{
-					
 				}
 				break;
 			}
@@ -273,11 +227,11 @@ void WrlsCom_mainFunction(void)
 					{
 						Blth_Data();
 						Blth_sendData((uint8_t*)WrlsCom_DeviceDataPacket);
-						MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, receivedData, MEMM_CONNECTED_DEVICE_MAC_SIZE);
+						MemM_writeBlock(MEMM_CONNECTED_DEVICE_DATA_PACK_ID, receivedData, MEMM_CONNECTED_DEVICE_DATA_PACK_SIZE);
 						WrlsCom_State = WRLSCOM_STATE_IDLE;
 						EmptyString(receivedData);
 						/* Get Tick Count */
-						//entryTick = xTaskGetTickCount();
+						entryTick = xTaskGetTickCount();
 					}
 					case DEVICE_DATA_RCV:
 					{
@@ -289,45 +243,15 @@ void WrlsCom_mainFunction(void)
 							}
 							else
 							{
-								deviceDataTrials++;
-								if(deviceDataTrials == WRLS_COM_MAX_DEVICE_DATA_TRIALS)
-								{
-									Blth_Cmd();
-									Blth_Disconnect();
-									Blth_Data();
-								}
-								else
-								{
-								}
 							}
 						}
 						else
 						{
-							/* Get Tick Count */
-							currentTick = xTaskGetTickCount();
-							if((currentTick - entryTick) >= 200)
-							{
-								deviceDataTrials++;
-								if(deviceDataTrials == WRLS_COM_MAX_DEVICE_DATA_TRIALS)
-								{
-									Blth_Cmd();
-									Blth_Disconnect();
-									Blth_Data();
-								}
-								else
-								{
-									deviceDataState = DEVICE_DATA_SEND;
-								}
-							}
-							else
-							{
-
-							}
 						}
 					}
 					default:
 					{
-						
+						break;
 					}
 				}
 				
@@ -376,7 +300,7 @@ void WrlsCom_mainFunction(void)
 				/* Erase */
 				/* Act as there is no device */
 				WrlsCom_ValidDevFlag = 0xFF;
-				MemM_writeBlock(MEMM_CONNECTED_DEVICE_MAC_ID, &WrlsCom_ValidDevFlag, 1);
+				MemM_writeBlock(MEMM_VALID_DEVICE_FLAG_ID, &WrlsCom_ValidDevFlag, MEMM_VALID_DEVICE_FLAG_SIZE);
 				/* Advertising Mode */
 				WrlsCom_State = WRLSCOM_STATE_IDLE;
 				break;
@@ -398,8 +322,7 @@ void WrlsCom_mainFunction(void)
 		}
 		
 		/* FreeRTOS vTaskDelay Function */
-		//vTaskDelay(50);
-		Delay_ms(100);
+		vTaskDelay(50);
 	}
 }
 

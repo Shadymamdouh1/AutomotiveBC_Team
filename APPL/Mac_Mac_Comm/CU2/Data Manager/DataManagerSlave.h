@@ -11,6 +11,7 @@
 
 
 
+void DataMngr_mainFunction(void* pvParam);
 
 
 #endif /* DATAMANAGERSLAVE_H_ */

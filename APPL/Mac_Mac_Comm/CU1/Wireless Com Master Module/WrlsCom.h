@@ -28,6 +28,7 @@
 #define WRLSCOM_STATE_DEVICE_ERASE			7U
 #define WRLSCOM_STATE_LINKING				8U
 #define WRLSCOM_STATE_SENDING				9U
+#define WRLSCOM_STATE_RECEIVING				10U
 
 #define WRLS_COM_MAX_DATA_SIZE				30U
 #define WRLS_COM_DATA_SENDING				0U
@@ -57,7 +58,7 @@ typedef struct
 
 Std_ReturnType WrlsCom_init(void);
 
-void WrlsCom_mainFunction(void);
+void WrlsCom_mainFunction(void* pvParam);
 
 Std_ReturnType WrlsCom_getState(uint8_t *DeviceState);
 
@@ -70,5 +71,5 @@ Std_ReturnType WrlsCom_TransmitData(uint8_t *Data_Ptr, uint8_t Data_Size);
 /*--*-*-*-*-*-*-*-*- Extern Variables -*-*-*-*-*-*-*-*-*-*/
 extern const WrlsCom_Config WrlsCom_BlthDevice_constConfig;
 
-extern const uint8_t WrlsCom_BlthDevice_Handshake_Packet[6];
+extern const uint8_t WrlsCom_BlthDevice_Handshake_Packet[7];
 #endif /* WRLSCOM_H_ */

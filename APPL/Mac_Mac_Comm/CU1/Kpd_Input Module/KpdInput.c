@@ -8,7 +8,8 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "KpdInput.h"
-#include "FreeRTOS.h"
+#include "ServiceL/FreeRTOS/Source/include/FreeRTOS.h"
+#include "ServiceL\FreeRTOS\Source\include\task.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTATNS *-*-*-*-*-*/
 #define KEYPAD_KEYS_NUM		(KEYPAD_ROWS_NUM * KEYPAD_COLS_NUM)

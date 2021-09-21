@@ -9,7 +9,7 @@
 #define DATAMANAGER_H_
 
 
-
+void DataMngr_mainFunction(void* pvParam);
 
 
 #endif /* DATAMANAGER_H_ */

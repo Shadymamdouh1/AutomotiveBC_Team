@@ -27,6 +27,7 @@
 #define WRLSCOM_STATE_DATA_READY			6U
 #define WRLSCOM_STATE_DEVICE_ERASE			7U
 #define WRLSCOM_STATE_RECEIVING				9U
+#define WRLSCOM_STATE_SENDING				10U
 
 #define WRLS_COM_MAX_DATA_SIZE				30U
 #define WRLS_COM_DATA_SENDING				0U
@@ -56,7 +57,7 @@ typedef struct
 
 Std_ReturnType WrlsCom_init(void);
 
-void WrlsCom_mainFunction(void);
+void WrlsCom_mainFunction(void *pvParam);
 
 Std_ReturnType WrlsCom_getState(uint8_t *DeviceState);
 
