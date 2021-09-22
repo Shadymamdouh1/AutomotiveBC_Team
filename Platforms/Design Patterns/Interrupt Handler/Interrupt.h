@@ -1,22 +1,22 @@
 /*****************************************************************************
-* Module: Interrupt Module
-* File Name: ISR.h
-* Description: Header file for Interrupt Module
-* Author: Mohamed Magdy
-* Date: 14-July-2021
+* Module: Interrupt Handler Module
+* File Name: Interrupt.h
+* Description: Header file for Interrupt Handler
+* Author: Ahnmed Nabil
+* Date: 19-August-2021
 ******************************************************************************/
 
 
-#ifndef ISR_H_
-#define ISR_H_
+#ifndef INTERRUPT_H_
+#define INTERRUPT_H_
 
-#include "../../Microcontroller/Atmega32 Registers/ISR_Regs.h"
-#include "../../Microcontroller/Std_Types.h"
-#include "../../Libraries/Common_Macros.h"
+#include "../Std_types.h"
+#include "../Platform_Types.h"
 
 /*- PRIMITIVE TYPES ----------------------------------------*/
-typedef void (*pfINT0_CallBack_t)(void);
-typedef void (*pfINT2_CallBack_t)(void);
+typedef void (*pf_Vector)(void);
+
+#define VECTORS_NUM     20U
 
 /*- Vector Table
 -------------------------------*/
@@ -46,29 +46,9 @@ void vector (void) __attribute__ ((signal,used)) __VA_ARGS__; \
 void vector (void)
 
 
-/* CONSTANTS */
-
-#define LOW_LEVEL			0			//The low level of INT0 generates an interrupt request.
-#define LOGIC_CHANGE		1			//Any logical change on INT0 generates an interrupt request.
-#define FALLING_EDGE		2			//The falling edge of INT0 generates an interrupt request.
-#define RISING_EDGE			3			//The rising edge of INT0 generates an interrupt request.
-/*************************************************************************************/
-
-#define EXT_INT0			0U
-#define EXT_INT1			1U
-#define EXT_INT2			2U
-/*************************************************************************************/
 /*- Function Declarations
 -------------------------------*/
-void EnableGlobalInterrupts(void);
-void DisableGlobalInterrupts(void);
+void IntDefaultHandler(void);
 
-void DisableExternalInterrupts_INT0();
-void EnableExternalInterrupts_INT0(uint8_t senseControl);
-void setExtINT0Callback(pfINT0_CallBack_t FunToBeCalledInISR);
-
-void DisableExternalInterrupts_INT2();
-void EnableExternalInterrupts_INT2(uint8_t senseControl);
-void setExtINT2Callback(pfINT2_CallBack_t FunToBeCalledInISR);
-
-#endif /* ISR_H_ */
+extern pf_Vector old_Vectors[VECTORS_NUM];
+#endif /* INTERRUPT_H_ */
