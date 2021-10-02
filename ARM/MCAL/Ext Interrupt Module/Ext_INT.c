@@ -5,8 +5,8 @@
  *  Author: Ahmed Nabil
  */ 
 #include "Ext_INT.h"
-#include "../../Microcontroller/Interrupt Handler/Interrupt_Interface.h"
-
+#include "IntCtrl.h"
+#include "Port.h"
 /*- GLOBAL STATIC VARIABLES
 -------------------------------*/
 
@@ -14,130 +14,58 @@
 
 /*- Function Definitions
 -------------------------------*/
-void EnableExtINT(uint8_t ExtINT_ID, uint8_t senseControl)
+Std_ReturnType ExtINT_Enable(uint8_t ExtINT_ID, uint8_t senseControl)
 {
-	switch(senseControl)
-	{
-		case(LOW_LEVEL):
-		{
-			if(ExtINT_ID == EXT_INT0)
-			{
-				CLEAR_BIT(MCUCR_R, ISC00_B);
-				CLEAR_BIT(MCUCR_R, ISC01_B);
-				SET_BIT(GICR_R, INT0_B);
-			}
-			else if (ExtINT_ID == EXT_INT1)
-			{
-				CLEAR_BIT(MCUCR_R, ISC10_B);
-				CLEAR_BIT(MCUCR_R, ISC11_B);
-				SET_BIT(GICR_R, INT1_B);
-			}
-			else
-			{
-				
-			}
-			break;
-		}
-		case(LOGIC_CHANGE):
-		{
-			if(ExtINT_ID == EXT_INT0)
-			{
-				SET_BIT(MCUCR_R, ISC00_B);
-				CLEAR_BIT(MCUCR_R, ISC01_B);
-				
-				SET_BIT(GICR_R, INT0_B);
-			}
-			else if (ExtINT_ID == EXT_INT1)
-			{
-				SET_BIT(MCUCR_R, ISC10_B);
-				CLEAR_BIT(MCUCR_R, ISC11_B);
-				SET_BIT(GICR_R, INT1_B);
-			}
-			else
-			{
-				
-			}
-			break;
-		}
-		case(FALLING_EDGE):
-		{
-			if(ExtINT_ID == EXT_INT0)
-			{
-				SET_BIT(MCUCR_R, ISC00_B);
-				CLEAR_BIT(MCUCR_R, ISC01_B);
-				SET_BIT(GICR_R, INT0_B);
-			}
-			else if (ExtINT_ID == EXT_INT1)
-			{
-				SET_BIT(MCUCR_R, ISC10_B);
-				CLEAR_BIT(MCUCR_R, ISC11_B);
-				SET_BIT(GICR_R, INT1_B);
-			}
-			else if (ExtINT_ID == EXT_INT2)
-			{
-				CLEAR_BIT(MCUCSR_R, ISC2_B);
-				SET_BIT(GICR_R, INT2_B);
-			}
-			else
-			{
-				
-			}
-			break;
-		}
-		case(RISING_EDGE):
-		{
-			if(ExtINT_ID == EXT_INT0)
-			{
-				SET_BIT(MCUCR_R, ISC00_B);
-				SET_BIT(MCUCR_R, ISC01_B);
-				SET_BIT(GICR_R, INT0_B);
-			}
-			else if (ExtINT_ID == EXT_INT1)
-			{
-				SET_BIT(MCUCR_R, ISC10_B);
-				SET_BIT(MCUCR_R, ISC11_B);
-				SET_BIT(GICR_R, INT1_B);
-			}
-			else if (ExtINT_ID == EXT_INT2)
-			{
-				SET_BIT(MCUCSR_R, ISC2_B);
-				SET_BIT(GICR_R, INT2_B);
-			}
-			else
-			{
-				
-			}
-			break;
-		}
-		default: break;
-	}
-	EnableGlobalInterrupts();
+    uint8 portNum = ExtINT_ID/10;
+    uint8 pinNum = ExtINT_ID%10;
+
+    switch(senseControl)
+    {
+        case LOW_LEVEL:
+        {
+            PORT(portNum)->IS  |=  (1<<pinNum);
+            PORT(portNum)->IEV &= ~(1<<pinNum);
+            break;
+        }
+        case HIGH_LEVEL:
+        {
+            PORT(portNum)->IS  |= (1<<pinNum);
+            PORT(portNum)->IEV |= (1<<pinNum);
+            break;
+        }
+        case FALLING_EDGE:
+        {
+            PORT(portNum)->IS  &= ~(1<<pinNum);
+            PORT(portNum)->IEV &= ~(1<<pinNum);
+            break;
+        }
+        case RISING_EDGE:
+        {
+            PORT(portNum)->IS  &= ~(1<<pinNum);
+            PORT(portNum)->IEV |= (1<<pinNum);
+            break;
+        }
+        case LOGIC_CHANGE:
+        {
+            PORT(portNum)->IS  &= ~(1<<pinNum);
+            PORT(portNum)->IBE |=  (1<<pinNum);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+    PORT(portNum)->IM |= 1<<0;
+    return E_OK;
 }
 
-void DisableExtINT(uint8_t ExtINT_ID)
+Std_ReturnType ExtINT_Disable(uint8_t ExtINT_ID)
 {
-	switch(ExtINT_ID)
-	{
-		case EXT_INT0:
-		{
-			CLEAR_BIT(GICR_R, INT0_B);
-			break;
-		}
-		case EXT_INT1:
-		{
-			CLEAR_BIT(GICR_R, INT1_B);
-			break;
-		}
-		case EXT_INT2:
-		{
-			CLEAR_BIT(GICR_R, INT2_B);
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+    uint8 portNum = ExtINT_ID/10;
+    uint8 pinNum = ExtINT_ID%10;
+    PORT(portNum)->IM &= ~(1<<pinNum);
+    return E_OK;
 }
 
 /*****************************************************************************************
@@ -146,28 +74,46 @@ void DisableExtINT(uint8_t ExtINT_ID)
 * Return value: None
 * Description: sets the function to be called by external interrupt 0 ISR
 ******************************************************************************************/
-void setExtINTCallback(uint8_t ExtINT_ID, pfExtINT_CallBack_t FunToBeCalledInISR)
+Std_ReturnType ExtINT_setCallback(uint8_t ExtINT_ID, pfExtINT_CallBack_t FunToBeCalledInISR)
 {
-	switch(ExtINT_ID)
-	{
-		case EXT_INT0:
-		{
-			Interrupt_install(INT0_IRQ, FunToBeCalledInISR);
-			break;
-		}
-		case EXT_INT1:
-		{
-			Interrupt_install(INT1_IRQ, FunToBeCalledInISR);
-		    break;
-		}
-		case EXT_INT2:
-		{
-			Interrupt_install(INT2_IRQ, FunToBeCalledInISR);
-			break;
-		}
-		default:
-		{
-			break;
-		}
-	}
+    uint8 portNum = ExtINT_ID/10;
+    uint8 pinNum = ExtINT_ID%10;
+
+    switch(portNum)
+    {
+        case PORT_A_ID:
+        {
+            Interrupt_install(GPIOA_vecID, FunToBeCalledInISR);
+            break;
+        }
+        case PORT_B_ID:
+        {
+            Interrupt_install(GPIOB_vecID, FunToBeCalledInISR);
+            break;
+        }
+        case PORT_C_ID:
+        {
+            Interrupt_install(GPIOC_vecID, FunToBeCalledInISR);
+            break;
+        }
+        case PORT_D_ID:
+        {
+            Interrupt_install(GPIOD_vecID, FunToBeCalledInISR);
+            break;
+        }
+        case PORT_E_ID:
+        {
+            Interrupt_install(GPIOE_vecID, FunToBeCalledInISR);
+            break;
+        }
+        case PORT_F_ID:
+        {
+            Interrupt_install(GPIOF_vecID, FunToBeCalledInISR);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
