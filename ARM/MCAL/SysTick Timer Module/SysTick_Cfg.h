@@ -17,7 +17,7 @@
 /* These are SysTick Timer clock options to be chosen from */
 #define SYSTICK_PIOSC_DIV4              (0x00U)
 #define SYSTIC_SYS_CLK                  (0x01U)
-
+#define SYS_CLOCK_FREQUENCY             16000000UL
 /************************************************************************/
 /* This macro will be filled with the clock source option */
 #define SYSTICK_CLK_SRC                 SYSTIC_SYS_CLK

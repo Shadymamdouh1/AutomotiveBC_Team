@@ -33,13 +33,22 @@ Std_ReturnType App_start(void)
 	if(App_init() != E_OK)
 		return E_NOT_OK;
 	
-
+	
+	OS_TaskId_t ObstclTask_ID=0;
+	OS_TaskId_t SensingTask_ID=0;
+	OS_TaskId_t Robot_ID=0;
+	
+	OS_TaskCreate(&SensingTask_ID,	2,	5,	Sensing_mainFunction,			NULL_PTR);
+	OS_TaskCreate(&ObstclTask_ID,	1,	7,	ObstacleAvoidance_mainFunction, NULL_PTR);
+	OS_TaskCreate(&Robot_ID,		0,	10,	RbtSteering_mainFunction,		NULL_PTR);
+	
+	OS_Start();
 	/* Application Super Loop */
 	while (1)
 	{
 		/* Update the Applications */
-		if(App_update() != E_OK)
-			return E_NOT_OK;
+// 		if(App_update() != E_OK)
+// 			return E_NOT_OK;
 	}
 }
 
@@ -71,10 +80,10 @@ Std_ReturnType App_init(void)
 /*								Function Implementation								  */
 /**************************************************************************************/
 
-	EnableGlobalInterrupts();
+	//EnableGlobalInterrupts();
 	
 	/* Call the Robot Module initializer */
-	if(ROBOT_STATUS_ERROR_OK != RbtSteering_init())
+	if(E_OK != RbtSteering_init())
 	{
 		return E_NOT_OK;
 	}
@@ -89,7 +98,8 @@ Std_ReturnType App_init(void)
 	{
 		return E_NOT_OK;
 	}
-		
+	
+	OS_Init();
 	/* Update enuCurrentAppStatus to initialized */
 	enuCurrentAppStatus = APP_STATUS_INITIALIZED;
 	return E_OK;
@@ -123,16 +133,14 @@ Std_ReturnType App_update(void)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Calling the Main function of the Sensing Module */
-	Sensing_mainFunction();
+	//Sensing_mainFunction(NULL_PTR);
 	
 	/* Calling the Main function of the Obstacle Avoidance Application */
-	ObstacleAvoidance_mainFunction();
+	//ObstacleAvoidance_mainFunction(NULL_PTR);
 	
 	/* Calling the Main function of the Robot Steering Module */
-	RbtSteering_mainFunction();
+	//RbtSteering_mainFunction(NULL_PTR);
 	
-	/* Calling the Main function of the Display Module */
-	Display_mainFunction();
 /*******************************************************************************/
 /*******************************************************************************/
 

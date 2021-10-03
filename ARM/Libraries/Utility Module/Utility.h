@@ -19,29 +19,29 @@
 #define NEW_LINE	  '\r'
 #define BACK_SPACE	  '\b'
 
-uint16_t String_3ByteHexAddress_ToDecimal(uint8_t* u8_tempAddress);
+uint16 String_3ByteHexAddress_ToDecimal(uint8* u8_tempAddress);
 
-void integerToString(uint16_t u16_Num, uint8_t *pu8_String, uint8_t u8_base);
-void stringToInteger(uint8_t* au8_string, uint32_t* u32_integer);
+void integerToString(uint16 u16_Num, uint8 *pu8_String, uint8 u8_base);
+void stringToInteger(uint8* au8_string, uint32* u32_integer);
 
-uint32_t nPowerM(uint32_t n, uint32_t m);
+uint32 nPowerM(uint32 n, uint32 m);
 
-uint8_t stringCmp(uint8_t * str1, uint8_t * str2);
+uint8 stringCmp(uint8 * str1, uint8 * str2);
 
-void separateInteger(uint8_t* pau8_floatString, uint8_t* pau8_integerString, uint16_t u16_lengthToStop);
-void separateDecimal(uint8_t* pau8_floatString, uint8_t* pau8_decimalString, uint16_t u16_lengthToStart,  uint16_t u16_floatArraySize);
+void separateInteger(uint8* pau8_floatString, uint8* pau8_integerString, uint16 u16_lengthToStop);
+void separateDecimal(uint8* pau8_floatString, uint8* pau8_decimalString, uint16 u16_lengthToStart,  uint16 u16_floatArraySize);
 
-uint8_t stringLength(uint8_t* string);
-float32_t stringToFloat(uint8_t* string);
-void floatToString(float32_t f32_num, uint8_t* string);
+uint8 stringLength(uint8* string);
+float32 stringToFloat(uint8* string);
+void floatToString(float32 f32_num, uint8* string);
 
 
-void stringConcatenate(uint8_t* destination, uint8_t* source);
+void stringConcatenate(uint8* destination, uint8* source);
 
-void stringCopy(uint8_t* source, uint8_t* destination);
-uint8_t Max_String_Num(uint8_t* string1, uint8_t* string2);
-void EmptyString(uint8_t *string);
-void stringHexToNum(uint8_t *pu8_String, uint16_t *pu16_Num);
+void stringCopy(uint8* source, uint8* destination);
+uint8 Max_String_Num(uint8* string1, uint8* string2);
+void EmptyString(uint8 *string);
+void stringHexToNum(uint8 *pu8_String, uint16 *pu16_Num);
 
 
 #endif /* UTILITY_H_ */

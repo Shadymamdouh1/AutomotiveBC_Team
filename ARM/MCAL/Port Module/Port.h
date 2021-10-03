@@ -68,6 +68,7 @@
 /* Including non AutoSAR files */
 #include "Common_Macros.h"
 #include "Port_Symbols.h"
+#include "Port_Regs.h"
 
 #define PORT_NUM		(6U)
 #define PORT_PIN_NUM	(8U)

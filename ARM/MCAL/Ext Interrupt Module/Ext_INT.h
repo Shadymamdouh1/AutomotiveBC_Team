@@ -18,12 +18,6 @@
 /*- PRIMITIVE TYPES ----------------------------------------*/
 typedef void (*pfExtINT_CallBack_t)(void);
 
-typedef struct
-{
-    uint8 portID;
-    uint8 pinID;
-    uint8 senseCtrl;
-}Ext_INT_Config_t;
 
 /* CONSTANTS */
 

@@ -7,19 +7,19 @@
 #include "Delay.h"
 
 
-void Delay_us(uint64_t u64_time_us)
+void Delay_us(uint64 u64_time_us)
 {
 
 }
-void Delay_ms(uint64_t u64_time_ms)
+void Delay_ms(uint64 u64_time_ms)
 {
-	uint64_t i,j;
+	uint64 i,j;
 	for (i=0;i<u64_time_ms;i++) // this is For(); loop delay used to define delay value in Embedded C
 	{
 		for (j=0;j<DELAY_MS_ITERATION;j++);
 	}
 }
-void Delay_s(uint32_t u32_time_s)
+void Delay_s(uint32 u32_time_s)
 {
-	
 }
+

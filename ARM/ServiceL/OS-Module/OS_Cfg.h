@@ -12,17 +12,17 @@
 
  /*- Constants
  -------------------------------*/
- #define OS_BASE_SYSTICKS_TIMERTICKS	(125U) /* N ticks for 8Mhz 8 bits timer is 1ms */
+ #define OS_BASE_SYSTICKS_TIMERTICKS	(16000U) /* N ticks for 16Mhz 24 bits timer is 1ms */
  
  #define MAX_NUM_TASKS					(3U)
 
  #define MAX_PRIOIRTY					(255U)  /* 0 is least priority */
  
  /* timer ID of GPT driver */
- #define TIMER_ID						TIMER_CHANNEL_0_ID
+ #define TIMER_ID						0
  
  /* low power mode */
- #define CPU_SLEEP_MODE						IDLE_MODE
+#define CPU_SLEEP_MODE					IDLE_MODE
  
  /* CPU load calc. part, not activated */
  #if 0
@@ -35,3 +35,4 @@
 #endif
 
 #endif /* OS_CFG_H_ */
+

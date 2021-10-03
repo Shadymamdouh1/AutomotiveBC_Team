@@ -12,9 +12,9 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "../Robot Steering Module/Rbt_Steering.h"
-#include "../Sensing Module/Sensing.h"
-#include "../Display Module/Display.h"
+#include "Rbt_Steering.h"
+#include "Sensing.h"
+#include "Display.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
@@ -34,7 +34,7 @@
 /*
 * Data Type for App return status
 */
-typedef uint8_t ModuleState_t;
+typedef uint8 ModuleState_t;
 
 
 /*******************************************************************************

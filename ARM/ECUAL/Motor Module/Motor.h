@@ -12,8 +12,8 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "Motor_LCfg.h"
-#include "../../MCAL/Dio Module/Dio.h"
-#include "../../MCAL/SWPwm Module/SWPwm.h"
+#include "Dio.h"
+#include "SWPwm.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
@@ -29,22 +29,22 @@
 /*
  * Data Type for Motor state
  */
-typedef uint8_t MotorState_t;
+typedef uint8 MotorState_t;
 
 /*
  * Data Type for Motor Channel ID
  */
-typedef uint8_t MotorChannel_t;
+typedef uint8 MotorChannel_t;
 
 /*
  * Data Type for Motor Speed
  */
-typedef uint8_t MotorSpeed_t;
+typedef uint8 MotorSpeed_t;
 
 /*
  * Data Type for Motor Direction
  */
-typedef uint8_t MotorDir_t;
+typedef uint8 MotorDir_t;
 
 /*
  * Data Type for Motor return status
@@ -66,10 +66,10 @@ typedef enum
  */
 typedef struct  
 {
-	uint8_t u8_MotorPwmChannel;
-	uint8_t u8_MotorDirPin1;
-	uint8_t u8_MotorDirPin2;
-	uint16_t u16_Frequency;
+	uint8 u8_MotorPwmChannel;
+	uint8 u8_MotorDirPin1;
+	uint8 u8_MotorDirPin2;
+	uint16 u16_Frequency;
 }Motor_Config_t;
 /*******************************************************************************
  *                      Function Prototypes                                    *
@@ -81,7 +81,7 @@ Motor_Status_t Motor_init(void);
 Motor_Status_t Motor_run(MotorChannel_t u8_motorID, MotorSpeed_t u8_speed, MotorDir_t u8_direction);
 
 /* Function to move the motor backward with given speed in % */
-//enuMotor_Status_t Motor_moveBackward(uint8_t u8_motorID, uint8_t u8_speed);
+//enuMotor_Status_t Motor_moveBackward(uint8 u8_motorID, uint8 u8_speed);
 
 /* Function to stop motor */
 Motor_Status_t Motor_stop(MotorChannel_t u8_motorID);
@@ -92,3 +92,4 @@ Motor_Status_t Motor_stop(MotorChannel_t u8_motorID);
 extern const Motor_Config_t MotorsConfigurations_str[MOTORS_USED_NUM];
 
 #endif /* MOTOR_H_ */
+

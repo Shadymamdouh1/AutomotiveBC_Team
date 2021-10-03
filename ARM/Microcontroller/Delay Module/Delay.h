@@ -9,7 +9,7 @@
 #define DELAY_H_
 
 #include "Delay_Cfg.h"
-#include "../Std_Types.h"
+#include "Std_Types.h"
 
 #if F_DELAY_OSC == 1000000
 #define DELAY_MS_ITERATION		13
@@ -17,8 +17,8 @@
 #define DELAY_MS_ITERATION		140
 #endif
 
-void Delay_us(uint64_t u64_time_us);
-void Delay_ms(uint64_t u64_time_ms);
-void Delay_s(uint32_t u32_time_s);
+void Delay_us(uint64 u64_time_us);
+void Delay_ms(uint64 u64_time_ms);
+void Delay_s(uint32 u32_time_s);
 
 #endif /* DELAY_H_ */
