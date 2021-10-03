@@ -12,7 +12,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
 #include "Platform_Types.h"
-#include "Interrupt_Interface.h"
+#include "IntCtrl.h"
 #include "Dio.h"
 #include "SysTick.h"
 #include "SWPwm_LCfg.h"
@@ -21,6 +21,8 @@
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 #define SWPWM_MAX_DUTYCYCLE			100U
 #define SWPWM_MIN_DUTYCYCLE			0U
+#define SWPWM_TIMER_METHOD_OS				0xFFU
+#define SWPWM_TIMER_METHOD_TIMER			0x00U
 
 /*******************************************************************************
  *                          Module Data Types                                  *

@@ -77,7 +77,6 @@ Std_ReturnType ExtINT_Disable(uint8_t ExtINT_ID)
 Std_ReturnType ExtINT_setCallback(uint8_t ExtINT_ID, pfExtINT_CallBack_t FunToBeCalledInISR)
 {
     uint8 portNum = ExtINT_ID/10;
-    uint8 pinNum = ExtINT_ID%10;
 
     switch(portNum)
     {
@@ -113,7 +112,8 @@ Std_ReturnType ExtINT_setCallback(uint8_t ExtINT_ID, pfExtINT_CallBack_t FunToBe
         }
         default:
         {
-            break;
+            return E_NOT_OK;
         }
     }
+    return E_OK;
 }

@@ -12,8 +12,8 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "../Obstacle Avoidance Robot/Obstcl_Avd_Rbt.h"
-
+#include "Obstcl_Avd_Rbt.h"
+#include "OS.h"
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- CONSTANTS -*-*-*-*-*-*/
 

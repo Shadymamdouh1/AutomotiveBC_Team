@@ -10,5 +10,5 @@
 /* Array of Structures holds the DIO Channel and Timer Channel Conntected to each PWM Channel */
 const strSWPwm_ChannelConfig_t SWPwm_Channels[SWPWM_CHANNELS_NUM] = 
 {
-	{SWPWM_CHANNEL_0_DIO, SWPWM_CHANNEL_0_TIMER}
+	{SWPWM_CHANNEL_0_DIO, SWPWM_TIMER_METHOD_OS}
 };

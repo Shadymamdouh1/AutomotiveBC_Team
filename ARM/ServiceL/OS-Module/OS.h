@@ -12,27 +12,28 @@
 
 #include "Std_Types.h"
 #include "Common_Macros.h"
-#include "Gpt.h"
+#include "SysTick.h"
 #include "OS_Cfg.h"
-#include "PowerModes.h"
+
 /*- Primitive Types
 -------------------------------*/
 /* void pointer to parameters to be passed to the task */
 typedef void*    OS_TaskParameters_t;
 /* task unique id */
-typedef uint8_t  OS_TaskId_t;
+typedef uint8  OS_TaskId_t;
 /* task unique priority */
-typedef uint8_t  OS_TaskPriority_t;
+typedef uint8  OS_TaskPriority_t;
 /* task periodicity in sys ticks */
-typedef uint16_t OS_TaskPeriodicityTicks_t;
+typedef uint32 OS_TaskPeriodicityTicks_t;
 /* master sys tick monitor like a clock */
 typedef volatile uint32_t OS_SysTicks_t;
 /* index for tasks array */
-typedef uint8_t OS_TaskIndex_t;
+typedef uint8 OS_TaskIndex_t;
 /* pointer to function representing the task which can take input parameter */
 typedef Std_ReturnType (*ptrTask_t) (OS_TaskParameters_t);
+typedef void (*OS_CallBackPtr_t)(void);
 /* current number of tasks created in system */
-typedef uint8_t OS_CreatedTasksCount_t;
+typedef uint8 OS_CreatedTasksCount_t;
 /* OS tick flag */
 typedef volatile boolean OS_NewTickFlag_t;
 
@@ -71,6 +72,11 @@ typedef struct
 	
 }strTasksCreationData_t;
 
+typedef struct
+{
+    OS_SysTicks_t NotifyTime;
+    OS_CallBackPtr_t FunctionPtr;
+}OS_NotifyRqst_t;
   /*- Structs
  -------------------------------*/
 typedef enum
@@ -102,6 +108,9 @@ Std_ReturnType OS_Init(void);
 Std_ReturnType OS_getCurrentSysTick(OS_SysTicks_t* Sys_CurrentTime);
 /* check if any task is currently running */
 boolean OS_checkIfTaskRunning(void);
+
+Std_ReturnType OS_NotifyOnCount(OS_SysTicks_t TicksToCount, OS_CallBackPtr_t OS_CallbackFunction);
+
 
 #if 0
 /* get cpu load */

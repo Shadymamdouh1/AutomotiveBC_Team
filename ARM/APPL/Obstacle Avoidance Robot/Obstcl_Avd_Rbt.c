@@ -12,8 +12,8 @@
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 
 ModuleState_t ObstclAvd_State = OBSTCLE_AVD_MOD_UNINITIALIZED;
-uint16_t distance_u16 = 0;
-uint8_t distance_au8[4] = {0};
+uint16 distance_u16 = 0;
+uint8 distance_au8[4] = {0};
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
@@ -120,9 +120,6 @@ Std_ReturnType ObstacleAvoidance_mainFunction(void)
 	{
 		/* All cases are covered */
 	}
-	
-	
-	
 
 /*******************************************************************************/
 /*******************************************************************************/

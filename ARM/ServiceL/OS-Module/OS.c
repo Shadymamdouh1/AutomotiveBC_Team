@@ -8,7 +8,7 @@
 /*- INCLUDES
 ----------------------------------------------*/
 #include "OS.h"
-
+#define Initial_Value   0U
 /*- GLOBAL EXTERN VARIABLES
 -------------------------------*/
 /* array of that saves the tasks data when created */
@@ -54,10 +54,13 @@ OS_IdleTaskDuration_t OS_IdleTaskDuration;
 /* counter for priority handler for loop */
 OS_CreatedTasksCount_t tasksPrioLoopCounter = Initial_Value;
 
+OS_NotifyRqst_t OS_NotifyRequest;
+
+uint8 OS_NotifyRqstFlag = 0;
 /*- STATIC FUNCTION DECLARATIONS
 --------------------------------*/
 /* scheduler start */
-STATIC Std_ReturnType OS_Scheduler(void);
+STATIC void OS_Scheduler(void);
 /* check if any task is currently ready */
 STATIC boolean OS_checkIfTaskReady(void);
 /* set tasks' index */
@@ -108,15 +111,12 @@ Std_ReturnType OS_Init(void)
 	else
 	{
 		/* initialize tasks states to suspended until they are created */
-		uint8_t u8_loopCounter = Initial_Value;
+		uint8 u8_loopCounter = Initial_Value;
 		
 		for(u8_loopCounter = Initial_Value; u8_loopCounter < MAX_NUM_TASKS; u8_loopCounter++)
 		{
 			TasksCurrentState[u8_loopCounter] = SUSPENDED;
 		}
-		
-		/* activate global interrupts */
-		EnableGlobalInterrupts();
 		
 		/* set init flag */
 		OS_InitializedFlag = TRUE;
@@ -132,11 +132,11 @@ Std_ReturnType OS_Init(void)
 * Return value: Std_ReturnType
 * Description: starts the OS scheduler
 ******************************************************************************************/
-STATIC Std_ReturnType OS_Scheduler(void)
+STATIC void OS_Scheduler(void)
 {
 	
 	/* start timer for first time */
-	GptStart_aSync(TIMER_ID, OS_BASE_SYSTICKS_TIMERTICKS, OS_CallBack);
+    SysTick_AsyncStart(OS_BASE_SYSTICKS_TIMERTICKS, OS_CallBack, SYSTICK_CONTINOUS);
 	
 	while(TRUE)
 	{
@@ -159,8 +159,8 @@ STATIC Std_ReturnType OS_Scheduler(void)
 		/* no tasks need to run, so idle task will run till the new tick comes */
 		OS_IdleTask();	
 	}
-	return E_OK;
 }
+
 /*****************************************************************************************
 * Parameters (in): None
 * Parameters (out): None
@@ -170,11 +170,27 @@ STATIC Std_ReturnType OS_Scheduler(void)
 STATIC void OS_CallBack(void)
 {
 	/* turn off low power mode */
-	LPM_DisableLowPowerMode();
+	//LPM_DisableLowPowerMode();
 	
 	/* update sys tick */
 	Sys_CurrentTime++;
 	
+	if(OS_NotifyRqstFlag == 1)
+	{
+	    if(OS_NotifyRequest.NotifyTime == Sys_CurrentTime)
+	    {
+            OS_NotifyRqstFlag = 0;
+	        OS_NotifyRequest.FunctionPtr();
+	    }
+	    else
+	    {
+
+	    }
+	}
+	else
+	{
+
+	}
 	/* update new tick flag */
 	OS_NewTickFlag = TRUE;
 	
@@ -191,9 +207,17 @@ STATIC void OS_CallBack(void)
 	}		
 
 	/* restart the timer */
-	GptStart_aSync(TIMER_ID, OS_BASE_SYSTICKS_TIMERTICKS, OS_CallBack);
+	//GptStart_aSync(TIMER_ID, OS_BASE_SYSTICKS_TIMERTICKS, OS_CallBack);
 }
 
+Std_ReturnType OS_NotifyOnCount(OS_SysTicks_t TicksToCount, OS_CallBackPtr_t OS_CallbackFunction)
+{
+    OS_NotifyRequest.NotifyTime = TicksToCount + Sys_CurrentTime;
+    OS_NotifyRequest.FunctionPtr = OS_CallbackFunction;
+    OS_NotifyRqstFlag = 1;
+
+    return E_OK;
+}
 /*****************************************************************************************
 * Parameters (in): None
 * Parameters (out): Error Status
@@ -294,7 +318,7 @@ STATIC Std_ReturnType OS_IdleTask(void)
 	OS_IdleTaskDuration++; 
 	#endif
 	
-	LPM_EnterLowPowerMode(CPU_SLEEP_MODE);
+	//LPM_EnterLowPowerMode(CPU_SLEEP_MODE);
 	
 	while(OS_NewTickFlag == FALSE)
 	{
@@ -454,7 +478,7 @@ Std_ReturnType OS_getCurrentSysTick(OS_SysTicks_t* Sys_CurrentTick)
 STATIC Std_ReturnType OS_CalcCpuLoadAvg(void)
 {
 	/* take the average of all calculated cpu loads */
-	uint8_t u8_loopCounter = Initial_Value;
+	uint8 u8_loopCounter = Initial_Value;
 	OS_CpuLoad_t tempCurrentCpuLoad = Initial_Value;
 	for(u8_loopCounter = Initial_Value; u8_loopCounter < CPU_LOAD_CALC_CYCLES; u8_loopCounter++)
 	{

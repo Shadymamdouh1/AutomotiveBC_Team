@@ -12,7 +12,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- GLOBAL STATIC VARIABLES *-*-*-*-*-*/
 MotorState_t MotorsState_gau8[MOTORS_USED_NUM] = {MOTOR_STOPPED};
-uint8_t MotorModuleStatus_gau8 = MOTOR_STATUS_UNINIT;
+uint8 MotorModuleStatus_gau8 = MOTOR_STATUS_UNINIT;
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*--*-*-*- FUNCTIONS IMPLEMENTATION -*-*-*-*-*-*/
 
@@ -114,12 +114,12 @@ Motor_Status_t Motor_run(MotorChannel_t u8_motorID, MotorSpeed_t u8_speed, Motor
 	}
 	if(u8_direction == MOTOR_DIR_CLK_WISE) /* Activate the Motor in the Clock Wise Direction */
 	{
-		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, PIN_HIGH);
-		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, PIN_LOW);
+		Dio_WriteChannel(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, STD_HIGH);
+		Dio_WriteChannel(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, STD_LOW);
 	}else if(u8_direction == MOTOR_DIR_ANTI_CLK_WISE) /* Activate the Motor in the Anti Clock Wise Direction */
 	{
-		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, PIN_LOW);
-		Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, PIN_HIGH);
+	    Dio_WriteChannel(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, STD_LOW);
+	    Dio_WriteChannel(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, STD_HIGH);
 	}
 	
 	/* Change the state of the Motor to Running */
@@ -132,7 +132,7 @@ Motor_Status_t Motor_run(MotorChannel_t u8_motorID, MotorSpeed_t u8_speed, Motor
 }
 
 /* Function to move the motor backward with given speed in % */
-//enuMotor_Status_t Motor_moveBackward(uint8_t u8_motorID, uint8_t u8_speed);
+//enuMotor_Status_t Motor_moveBackward(uint8 u8_motorID, uint8 u8_speed);
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 * Service Name: Motor_stop
@@ -164,10 +164,10 @@ Motor_Status_t Motor_stop(MotorChannel_t u8_motorID)
 /*								Function Implementation								  */
 /**************************************************************************************/
 	/* Stop the Motor by driving the pins to LOW */
-	Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, PIN_LOW);
-	Dio_writePin(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, PIN_LOW);
+	Dio_WriteChannel(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin1, STD_LOW);
+	Dio_WriteChannel(MotorsConfigurations_str[u8_motorID].u8_MotorDirPin2, STD_LOW);
 	
-	uint8_t u8_loopIndex = 0;
+	uint8 u8_loopIndex = 0;
 	
 	/*
 	 * Check if there is another motor that uses the same PWM Channel

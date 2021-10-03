@@ -19,10 +19,10 @@
 #define Initial_Value		0x00U
 /*- LOCAL FUNCTIONS IMPLEMENTATION
 ------------------------*/ 
-static uint32_t power(uint8_t base, uint8_t power_val)
+static uint32 power(uint8 base, uint8 power_val)
 {
-	uint8_t i;
-	uint32_t result=1;
+	uint8 i;
+	uint32 result=1;
 	if(power_val == 0) return 1;
 	if(base == 0) return 0;
 	for (i=0;i<power_val;i++)
@@ -32,9 +32,9 @@ static uint32_t power(uint8_t base, uint8_t power_val)
 	return result;
 }
 
-uint16_t String_3ByteHexAddress_ToDecimal(uint8_t* u8_tempAddress)
+uint16 String_3ByteHexAddress_ToDecimal(uint8* u8_tempAddress)
 {
-	sint8_t u8_loopCounter = Initial_Value;
+	sint8 u8_loopCounter = Initial_Value;
 	
 	for(u8_loopCounter = 2; u8_loopCounter >= 0; u8_loopCounter--)
 	{
@@ -86,11 +86,11 @@ uint16_t String_3ByteHexAddress_ToDecimal(uint8_t* u8_tempAddress)
 
 
 
-void integerToString(uint16_t u16_Num, uint8_t *pu8_String, uint8_t u8_base)
+void integerToString(uint16 u16_Num, uint8 *pu8_String, uint8 u8_base)
 {
 	if(u8_base == DEC)
 	{
-		uint16_t i=Initial_Value, n=Initial_Value;
+		uint16 i=Initial_Value, n=Initial_Value;
 		
 		n=u16_Num;
 		
@@ -120,9 +120,9 @@ void integerToString(uint16_t u16_Num, uint8_t *pu8_String, uint8_t u8_base)
 
 
 
-uint32_t nPowerM(uint32_t n, uint32_t m)
+uint32 nPowerM(uint32 n, uint32 m)
 {
-	uint64_t result = 1;
+	uint64 result = 1;
 	while(m != 0)
 	{
 		result  *= n;
@@ -134,16 +134,16 @@ uint32_t nPowerM(uint32_t n, uint32_t m)
 
 
 
-void stringToInteger(uint8_t* au8_string, uint32_t* u32_integer)
+void stringToInteger(uint8* au8_string, uint32* u32_integer)
 {
-	uint32_t u32_loopCounter = Initial_Value;
+	uint32 u32_loopCounter = Initial_Value;
 	*u32_integer = Initial_Value;
 	while(au8_string[u32_loopCounter]!= '\0')
 	{
 		u32_loopCounter++;
 	}
-	uint16_t numberOfchars = u32_loopCounter;
-	uint16_t u16_power = numberOfchars;
+	uint16 numberOfchars = u32_loopCounter;
+	uint16 u16_power = numberOfchars;
 
 	for(u32_loopCounter = 0; u32_loopCounter < numberOfchars; u32_loopCounter++)
 	{
@@ -155,10 +155,10 @@ void stringToInteger(uint8_t* au8_string, uint32_t* u32_integer)
 
 
 
-uint8_t stringCmp(uint8_t * str1, uint8_t * str2)
+uint8 stringCmp(uint8 * str1, uint8 * str2)
 {
-	uint8_t u8_counter = Initial_Value;
-	uint8_t u8_isEqual = TRUE;
+	uint8 u8_counter = Initial_Value;
+	uint8 u8_isEqual = TRUE;
 
 	while(str1[u8_counter] != END_OF_STRING)
 	{
@@ -179,9 +179,9 @@ uint8_t stringCmp(uint8_t * str1, uint8_t * str2)
 
 
 
-void separateInteger(uint8_t* pau8_floatString, uint8_t* pau8_integerString, uint16_t u16_lengthToStop)
+void separateInteger(uint8* pau8_floatString, uint8* pau8_integerString, uint16 u16_lengthToStop)
 {
-	uint16_t u16_loopCounter = Initial_Value;
+	uint16 u16_loopCounter = Initial_Value;
 	for(u16_loopCounter = Initial_Value; u16_loopCounter < u16_lengthToStop; u16_loopCounter++)
 	{
 		pau8_integerString[u16_loopCounter] = pau8_floatString[u16_loopCounter];
@@ -190,10 +190,10 @@ void separateInteger(uint8_t* pau8_floatString, uint8_t* pau8_integerString, uin
 }
 
 
-void separateDecimal(uint8_t* pau8_floatString, uint8_t* pau8_decimalString, uint16_t u16_lengthToStart,  uint16_t u16_floatArraySize)
+void separateDecimal(uint8* pau8_floatString, uint8* pau8_decimalString, uint16 u16_lengthToStart,  uint16 u16_floatArraySize)
 {
-	uint16_t u16_loopCounter = Initial_Value;
-	uint8_t u8_decimalLength = u16_floatArraySize-u16_lengthToStart;
+	uint16 u16_loopCounter = Initial_Value;
+	uint8 u8_decimalLength = u16_floatArraySize-u16_lengthToStart;
 	
 	for(u16_loopCounter = Initial_Value; u16_loopCounter < u8_decimalLength; u16_loopCounter++)
 	{
@@ -203,9 +203,9 @@ void separateDecimal(uint8_t* pau8_floatString, uint8_t* pau8_decimalString, uin
 	pau8_decimalString[u8_decimalLength] = END_OF_STRING;
 }
 
-uint8_t stringLength(uint8_t* string)
+uint8 stringLength(uint8* string)
 {
-	uint8_t u8_loopIndex=0;
+	uint8 u8_loopIndex=0;
 	while(string[u8_loopIndex] != '\0')
 	{
 		u8_loopIndex++;
@@ -213,12 +213,12 @@ uint8_t stringLength(uint8_t* string)
 	return u8_loopIndex+1;
 }
 
-float32_t stringToFloat(uint8_t* string)
+float32 stringToFloat(uint8* string)
 {
-	uint8_t strLen = stringLength(string)-1;
-	uint8_t u8_loopIndex=0;
-	float32_t f32_digit = 1;
-	float32_t f32_num = 0;
+	uint8 strLen = stringLength(string)-1;
+	uint8 u8_loopIndex=0;
+	float32 f32_digit = 1;
+	float32 f32_num = 0;
 	for(u8_loopIndex=0 ;u8_loopIndex<strLen; u8_loopIndex++)
 	{
 		if(string[u8_loopIndex] == '.')
@@ -240,18 +240,18 @@ float32_t stringToFloat(uint8_t* string)
 }
 
 
-void floatToString(float32_t f32_num, uint8_t* string)
+void floatToString(float32 f32_num, uint8* string)
 {
-	uint32_t u32_num = (uint32_t)f32_num;
-	uint8_t u8_digitCount=0;
-	uint8_t u8_indexDot=0;
-	uint32_t temp = 0;
+	uint32 u32_num = (uint32)f32_num;
+	uint8 u8_digitCount=0;
+	uint8 u8_indexDot=0;
+	uint32 temp = 0;
 	while(u32_num !=0)
 	{
 		u32_num/=10;
 		u8_digitCount++;
 	}
-	u32_num = (uint32_t)f32_num;
+	u32_num = (uint32)f32_num;
 	u8_indexDot = u8_digitCount--;
 	while (u32_num)
 	{
@@ -259,7 +259,7 @@ void floatToString(float32_t f32_num, uint8_t* string)
 		string[u8_digitCount--] = temp;
 		u32_num /= 10;
 	}
-	u32_num = (uint32_t)f32_num;
+	u32_num = (uint32)f32_num;
 	f32_num -= u32_num;
 	u32_num = f32_num*10;
 	string[u8_indexDot++] = '.';
@@ -272,19 +272,19 @@ void floatToString(float32_t f32_num, uint8_t* string)
 
 
 
-void stringConcatenate(uint8_t* destination, uint8_t* source)
+void stringConcatenate(uint8* destination, uint8* source)
 {
-	uint8_t index = 0;
-	uint8_t sourceLength = stringLength(source);
-	uint8_t destinationLength = stringLength(destination)-1;
+	uint8 index = 0;
+	uint8 sourceLength = stringLength(source);
+	uint8 destinationLength = stringLength(destination)-1;
 	for(index=0;index<=(sourceLength-1);index++)
 		destination[destinationLength+index] = source[index];
 }
 
 
-uint8_t Max_String_Num(uint8_t* string1, uint8_t* string2)
+uint8 Max_String_Num(uint8* string1, uint8* string2)
 {
-    uint8_t u8_retValue = stringCmp(string1,string2);
+    uint8 u8_retValue = stringCmp(string1,string2);
 
     switch(u8_retValue)
     {
@@ -302,7 +302,7 @@ uint8_t Max_String_Num(uint8_t* string1, uint8_t* string2)
     default:
         break;
     }
-    uint8_t u8_loopIndex = 0;
+    uint8 u8_loopIndex = 0;
 
     while(string1[u8_loopIndex] != '\0')
     {
@@ -316,28 +316,28 @@ uint8_t Max_String_Num(uint8_t* string1, uint8_t* string2)
 }
 
 
-void EmptyString(uint8_t *string)
+void EmptyString(uint8 *string)
 {
-	uint8_t u8_loopIndex=0;
+	uint8 u8_loopIndex=0;
 	while(string[u8_loopIndex] != '\0')
 		string[u8_loopIndex++] = '\0';
 }
 
-void stringCopy(uint8_t* source, uint8_t* destination)
+void stringCopy(uint8* source, uint8* destination)
 {
-    uint8_t u8_loopIndex=0;
+    uint8 u8_loopIndex=0;
     while(source[u8_loopIndex] != '\0')
     {
 	    destination[u8_loopIndex] = source[u8_loopIndex];
 	    u8_loopIndex++;
     }
 }
-void stringHexToNum(uint8_t *pu8_String, uint16_t *pu16_Num)
+void stringHexToNum(uint8 *pu8_String, uint16 *pu16_Num)
 {
-	sint8_t s8_loopIndex=0;
-	uint8_t u8_powerValue=0;
-	uint8_t temp_val=0;
-	uint8_t u8_stringLength = stringLength(pu8_String)-1;
+	sint8 s8_loopIndex=0;
+	uint8 u8_powerValue=0;
+	uint8 temp_val=0;
+	uint8 u8_stringLength = stringLength(pu8_String)-1;
 	*pu16_Num = 0;
 	for(s8_loopIndex=u8_stringLength-1 ; s8_loopIndex>=0 ; s8_loopIndex--)
 	{

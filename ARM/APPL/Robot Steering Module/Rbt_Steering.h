@@ -11,7 +11,7 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 /*-*-*-*-*- INCLUDES *-*-*-*-*-*/
-#include "../../../ECUAL/Motor Module/Motor.h"
+#include "Motor.h"
 #include "Rbt_Steering_Cfg.h"
 
 /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
@@ -35,17 +35,17 @@
 /*
  * Data Type for Robot state
  */
-typedef uint8_t RobotState_t;
+typedef uint8 RobotState_t;
 
 /*
  * Data Type for Robot direction
  */
-typedef uint8_t RobotDir_t;
+typedef uint8 RobotDir_t;
 
 /*
  * Data Type for Robot Speed
  */
-typedef uint8_t RobotSpeed_t;
+typedef uint8 RobotSpeed_t;
 
 /*
  * Data Type for Module's Input
@@ -84,25 +84,26 @@ typedef struct
  *                      Function Prototypes                                    *
  *******************************************************************************/
 /* Function to initialize the Robot module */
-Robot_Status_t RbtSteering_init(void);
+Std_ReturnType RbtSteering_init(void);
 
 /* Function to move the Robot a given direction with given speed in % */
-Robot_Status_t RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+Std_ReturnType RbtSteering_move(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 
 /* Function to stop Robot */
-Robot_Status_t RbtSteering_stop(void);
+Std_ReturnType RbtSteering_stop(void);
 
 /* Periodic Function || Dispatcher of the Robot Steering Module */
-Robot_Status_t RbtSteering_mainFunction(void);
+Std_ReturnType RbtSteering_mainFunction(void);
 
 /* Robot Steering Module Setter */
-Robot_Status_t RbtSteering_setData(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
+Std_ReturnType RbtSteering_setData(RobotDir_t u8_direction, RobotSpeed_t u8_speed);
 
 /* Robot Steering Module Getter */
-Robot_Status_t RbtSteering_getData(RobotDir_t *pu8_direction, RobotSpeed_t *pu8_speed);
+Std_ReturnType RbtSteering_getData(RobotDir_t *pu8_direction, RobotSpeed_t *pu8_speed);
 /*******************************************************************************
  *                       External Variables                                    *
  *******************************************************************************/
 extern const RbtSteering_Config_t RbtSteering_Configuratons;
 
 #endif /* RBT_STEERING_H_ */
+

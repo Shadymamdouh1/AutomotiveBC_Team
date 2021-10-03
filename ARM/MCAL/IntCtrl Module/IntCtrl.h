@@ -80,7 +80,7 @@
 #define GPIOK_vecID                   52U
 #define GPIOL_vecID                   53U
 #define SSI2_vecID                    54U
-#define SSI2_vecID                    55U
+#define SSI2_vecIDs                    55U
 #define UART3_vecID                   56U
 #define UART4_vecID                   57U
 #define UART5_vecID                   58U
@@ -131,7 +131,7 @@
 #define PWM1_GEN0_vecID              103U
 #define PWM1_GEN1_vecID              104U
 #define PWM1_GEN2_vecID              105U
-#define PWM1_GEN2_vecID              106U
+#define PWM1_GEN2_vecIDs              106U
 #define PWM1_FAULT_vecID             107U
 #define INVALID_ID_vecID             108U
 
