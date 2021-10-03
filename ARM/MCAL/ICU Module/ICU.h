@@ -17,20 +17,20 @@
 /*
  * Data type for the ICU Channel
  */
-typedef uint8_t ICU_channel_t;
+typedef uint8 ICU_channel_t;
 
 /*
  * Data type for the ICU Counts
  */
-typedef uint32_t ICU_Counts_t;
+typedef uint32 ICU_Counts_t;
 
 /*
  * Data type for the ICU Configurations
  */
 typedef struct
 {
-	uint8_t Gpt_Channel;
-	uint8_t Ext_InterruptChannel;
+	uint8 Gpt_Channel;
+	uint8 Ext_InterruptChannel;
 }ICU_ChannelConfig_t;
 
 Std_ReturnType ICU_Init(void);

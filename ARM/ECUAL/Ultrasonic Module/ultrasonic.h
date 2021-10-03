@@ -15,12 +15,12 @@
 #include "../../Microcontroller/Std_types.h"
 #include "Ultrasonic_LCfg.h"
 
-typedef uint8_t US_Channel_t;
+typedef uint8 US_Channel_t;
 
 typedef struct US_Config_t
 {
 	ICU_channel_t ICU_ChannedID;
-	uint8_t Trigger_Pin;
+	uint8 Trigger_Pin;
 }US_ChannelConfig_t;
 
 /************************************************************

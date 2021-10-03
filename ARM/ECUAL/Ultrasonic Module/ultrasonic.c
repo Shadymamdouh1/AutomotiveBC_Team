@@ -17,7 +17,7 @@
 #define TOGGLE_DELAY_COUNTS			100U
 /********************************Global variables******************************/
 
-static uint8_t US_State[US_USED_CHANNELS] = {US_STOPPED};
+static uint8 US_State[US_USED_CHANNELS] = {US_STOPPED};
     
 
 Std_ReturnType Ultrasonic_Init(void)
@@ -32,7 +32,7 @@ Std_ReturnType Ultrasonic_Init(void)
 
 void US_Trigger(US_Channel_t US_ChannelID)
 {
-	uint8_t u8_counter=0;
+	uint8 u8_counter=0;
 	Dio_WriteChannel(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_HIGH);
 	/* delay */
 	for(u8_counter=0 ;u8_counter<TOGGLE_DELAY_COUNTS ;u8_counter++);
@@ -41,11 +41,11 @@ void US_Trigger(US_Channel_t US_ChannelID)
 }
 
 
-uint16_t US_CalDistance(US_Channel_t US_ChannelID, uint32_t u32_counts)
+uint16 US_CalDistance(US_Channel_t US_ChannelID, uint32 u32_counts)
 {
-	uint16_t u16_Disance=0;
-	float32_t time_f32 ;
-	//time_f32 = (u32_counts *((float32_t)(strGpt_Channels[ ICU_Configurations[ US_Configurations[US_ChannelID].ICU_ChannedID ].Gpt_Channel ].u8_Prescaler)\
+	uint16 u16_Disance=0;
+	float32 time_f32 ;
+	//time_f32 = (u32_counts *((float32)(strGpt_Channels[ ICU_Configurations[ US_Configurations[US_ChannelID].ICU_ChannedID ].Gpt_Channel ].u8_Prescaler)\
 		//							/SYS_CLOCK_FREQUENCY));
 
 	
@@ -56,10 +56,10 @@ uint16_t US_CalDistance(US_Channel_t US_ChannelID, uint32_t u32_counts)
 }
 
 
-Std_ReturnType Ultrasonic_GetDistance(US_Channel_t US_ChannelID ,  uint16_t *u16_Distance)
+Std_ReturnType Ultrasonic_GetDistance(US_Channel_t US_ChannelID ,  uint16 *u16_Distance)
 {
-	uint32_t US_Counts=0;
-	uint16_t u16_DistanceVal=0;
+	uint32 US_Counts=0;
+	uint16 u16_DistanceVal=0;
 	/***************************************************************
 						Error handling
 	**************************************************************/
