@@ -20,11 +20,11 @@
 /***********************************************************************/
 
 /**************************Global variables*******************************/
-static uint8_t ICU_state[ICU_USED_CHANNELS] = {ICU_STOPPED} ;
-static uint32_t ICU_Counts[ICU_USED_CHANNELS] = {0};
+static uint8 ICU_state[ICU_USED_CHANNELS] = {ICU_STOPPED} ;
+static uint32 ICU_Counts[ICU_USED_CHANNELS] = {0};
 
-volatile  uint32_t RisingCurrentTime[ICU_USED_CHANNELS] ;
-volatile  uint32_t FallingCurrentTime[ICU_USED_CHANNELS] ;
+volatile  uint32 RisingCurrentTime[ICU_USED_CHANNELS] ;
+volatile  uint32 FallingCurrentTime[ICU_USED_CHANNELS] ;
 /*********************************************************************/
 static void ICU_CH0CallBackFunction(void)
 {
@@ -66,7 +66,7 @@ static void ICU_CH0CallBackFunction(void)
 Std_ReturnType ICU_Init(void)
 {
 	GptInit();
-	uint8_t loopCounter_u8 = 0;
+	uint8 loopCounter_u8 = 0;
 	for (loopCounter_u8=0; loopCounter_u8<ICU_USED_CHANNELS; loopCounter_u8++)
 	{
 		/* update function state */
