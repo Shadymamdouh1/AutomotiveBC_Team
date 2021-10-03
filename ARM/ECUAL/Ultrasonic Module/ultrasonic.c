@@ -33,11 +33,11 @@ Std_ReturnType Ultrasonic_Init(void)
 void US_Trigger(US_Channel_t US_ChannelID)
 {
 	uint8_t u8_counter=0;
-	Dio_writePin(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_HIGH);
+	Dio_WriteChannel(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_HIGH);
 	/* delay */
 	for(u8_counter=0 ;u8_counter<TOGGLE_DELAY_COUNTS ;u8_counter++);
 	
-	Dio_writePin(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_LOW);
+	Dio_WriteChannel(US_Configurations[US_ChannelID].Trigger_Pin ,PIN_LOW);
 }
 
 
@@ -45,9 +45,11 @@ uint16_t US_CalDistance(US_Channel_t US_ChannelID, uint32_t u32_counts)
 {
 	uint16_t u16_Disance=0;
 	float32_t time_f32 ;
-	time_f32 = (u32_counts *((float32_t)(strGpt_Channels[ ICU_Configurations[ US_Configurations[US_ChannelID].ICU_ChannedID ].Gpt_Channel ].u8_Prescaler)\
-									/SYS_CLOCK_FREQUENCY));
+	//time_f32 = (u32_counts *((float32_t)(strGpt_Channels[ ICU_Configurations[ US_Configurations[US_ChannelID].ICU_ChannedID ].Gpt_Channel ].u8_Prescaler)\
+		//							/SYS_CLOCK_FREQUENCY));
+
 	
+	time_f32 = u32_counts /1000.0;  // divide by 1000 to convert from msec to seconds
 	u16_Disance=( ((SOUND_VELOCITY*time_f32)/US_DISTANCE_DIVISION) *US_METER_CM_FACTOR );
 	
 	return u16_Disance;
